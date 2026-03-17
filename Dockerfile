@@ -11,6 +11,7 @@ RUN npm run build
 FROM nginx:1.27-alpine AS runner
 
 ENV PORT=80
+LABEL org.opencontainers.image.source="https://github.com/SantiagoAtehortuaSoto/LGYM-front-despliegue"
 
 COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
 COPY docker/40-env-config.sh /docker-entrypoint.d/40-env-config.sh
