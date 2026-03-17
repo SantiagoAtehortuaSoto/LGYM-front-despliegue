@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FileDown, Store } from "lucide-react";
-import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 
 import DataTable, {
@@ -13,6 +12,7 @@ import { ModalVerVenta } from "../Ventas/modalVentas";
 import { getToken } from "../../../hooks/Acceder_API/authService";
 import { SelectorEstado } from "../../../components/dataTables/badgesEstado";
 import { normalizePaginatedResponse } from "../../../../../shared/utils/pagination";
+import { exportRowsToWorkbook } from "../../../../../shared/utils/exportWorkbook";
 
 const ESTADO_OPCIONES_UI = [
   { value: "Activo", label: "Activo", color: "#10b981", id_estado: 1 },
@@ -368,7 +368,7 @@ function VentasMembresias() {
     setVentaSeleccionada(null);
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
     const dataToExport = filteredVentas.map((venta) => {
       const config = getEstadoVentaConfig(venta.estado_venta);
       return {
@@ -381,11 +381,22 @@ function VentasMembresias() {
       };
     });
 
-    const ws = XLSX.utils.json_to_sheet(dataToExport);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Ventas");
-    XLSX.writeFile(wb, "ventas_membresias.xlsx");
-    toast.success("Exportación lista");
+    if (!dataToExport.length) {
+      toast.error("No hay ventas para exportar");
+      return;
+    }
+
+    try {
+      await exportRowsToWorkbook({
+        rows: dataToExport,
+        fileName: "ventas_membresias.xlsx",
+        sheetName: "Ventas",
+      });
+      toast.success("Exportación lista");
+    } catch (error) {
+      console.error("Error exportando ventas de membresías:", error);
+      toast.error("No se pudo exportar el archivo");
+    }
   };
 
   const columnas = useMemo(

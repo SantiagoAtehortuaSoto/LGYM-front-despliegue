@@ -17,6 +17,8 @@ import { getMembresias } from "../../../hooks/Membresia_API/Membresia";
 import { obtenerAsistenciasClientes } from "../../../hooks/Asistencias_API/Asistencias_API";
 import { getToken } from "../../../hooks/Acceder_API/authService";
 import { obtenerUsuarios, obtenerRolesUsuarios } from "../../../hooks/Usuarios_API/API_Usuarios";
+import { obtenerBeneficiarios } from "../../../hooks/Beneficiarios_API/benefeiciarios_API";
+import { normalizePaginatedResponse } from "../../../../../shared/utils/pagination";
 
 const MONTHS = [
   "Enero",

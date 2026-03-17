@@ -20,6 +20,7 @@
     "@tabler/icons-react": "^3.36.1",
     "antd": "^5.27.4",
     "axios": "^1.13.0",
+    "exceljs": "^4.4.0",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.542.0",
     "react": "^19.1.0",
@@ -30,8 +31,7 @@
     "react-router-dom": "^6.24.1",
     "react-toastify": "^11.0.5",
     "recharts": "^3.2.1",
-    "toastr": "^2.1.4",
-    "xlsx": "^0.18.5"
+    "toastr": "^2.1.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",

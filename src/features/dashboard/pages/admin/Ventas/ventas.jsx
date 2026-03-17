@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FileDown, Store } from "lucide-react";
-import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 
 import DataTable, {
@@ -39,6 +38,7 @@ import {
   STATUS_CHANGE_ERROR_MESSAGE,
   STATUS_CHANGE_SUCCESS_MESSAGE,
 } from "../../../../../shared/utils/statusChangeMessages";
+import { exportRowsToWorkbook } from "../../../../../shared/utils/exportWorkbook";
 
 const ESTADO_OPCIONES_UI = [
   { value: "PENDIENTE", label: "Pendiente", color: "#f59e0b", id_estado: 3 },
@@ -1312,7 +1312,7 @@ function VentasPage({ view = "gestion" }) {
     }
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
     const dataToExport = ventasVista.map((venta) => {
       const config = getEstadoVentaConfig(venta.estado_venta);
       return {
@@ -1327,11 +1327,22 @@ function VentasPage({ view = "gestion" }) {
       };
     });
 
-    const ws = XLSX.utils.json_to_sheet(dataToExport);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Ventas");
-    XLSX.writeFile(wb, isCompletados ? "ventas_completadas.xlsx" : "ventas.xlsx");
-    toast.success("Exportación lista");
+    if (!dataToExport.length) {
+      toast.error("No hay ventas para exportar");
+      return;
+    }
+
+    try {
+      await exportRowsToWorkbook({
+        rows: dataToExport,
+        fileName: isCompletados ? "ventas_completadas.xlsx" : "ventas.xlsx",
+        sheetName: "Ventas",
+      });
+      toast.success("Exportación lista");
+    } catch (error) {
+      console.error("Error exportando ventas:", error);
+      toast.error("No se pudo exportar el archivo");
+    }
   };
 
   const columnas = useMemo(
