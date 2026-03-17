@@ -4,6 +4,12 @@ import { buildEndpointWithQuery } from "../../../../shared/utils/pagination";
 // usuariosAPI.jsx
 const API_URL = API_BASE_URL;
 
+function clearAuthSession() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  window.dispatchEvent(new Event("auth-change"));
+}
+
 // Helper to get auth token from localStorage
 function getAuthToken() {
   return localStorage.getItem("token");
@@ -60,8 +66,7 @@ export async function apiRequest(
         `Error: ${response.status} ${response.statusText}`;
 
       if (response.status === 401) {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
+        clearAuthSession();
         errorMessage = "Sesión expirada. Por favor, inicia sesión nuevamente.";
       } else if (response.status === 403) {
         errorMessage = "No tienes permisos para realizar esta acción";
