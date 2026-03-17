@@ -32,6 +32,11 @@ let permissionsRefreshInFlight = null;
 let lastPermissionsSyncedAtMs = 0;
 
 // ---------------- Utils ----------------
+function sanitizeStoredToken(value) {
+  if (!value) return "";
+  return String(value).replace(/^Bearer\s+/i, "").trim();
+}
+
 async function parseJSON(res) {
   const text = await res.text();
   try {
@@ -256,8 +261,19 @@ export const login = async (email, password) => {
     }
 
     // Acepta varios nombres de token
-    const token =
-      data.token || data.access_token || data.jwt || data.tokenSesion;
+    const token = sanitizeStoredToken(
+      data.token ||
+        data.access_token ||
+        data.accessToken ||
+        data.jwt ||
+        data.tokenSesion ||
+        data.authToken ||
+        data.data?.token ||
+        data.data?.access_token ||
+        data.data?.accessToken ||
+        res.headers.get("x-refreshed-token") ||
+        res.headers.get("authorization")
+    );
     if (!token) throw new Error(data.msg || "Email o contraseña incorrectos");
 
     const payload = (() => {
@@ -676,15 +692,29 @@ export function isAdmin() {
 
 // === Helpers de sesión ===
 export function getToken() {
-  return localStorage.getItem("token") || null;
+  const token = sanitizeStoredToken(localStorage.getItem("token"));
+  if (!token) return null;
+
+  if (localStorage.getItem("token") !== token) {
+    localStorage.setItem("token", token);
+  }
+
+  return token;
 }
 
 /** Devuelve { valid: boolean, payload?: object, reason?: string } */
 export function validateToken(token = getToken()) {
   if (!token) return { valid: false, reason: "missing" };
-  const payload = decodeJwtPayload(token);
-  if (!payload || typeof payload !== "object")
-    return { valid: false, reason: "decode" };
+  const normalizedToken = sanitizeStoredToken(token);
+  const tokenParts = normalizedToken.split(".");
+
+  if (tokenParts.length !== 3) {
+    return { valid: true, payload: null, reason: "opaque" };
+  }
+
+  const payload = decodeJwtPayload(normalizedToken);
+  if (!payload || typeof payload !== "object" || Object.keys(payload).length === 0)
+    return { valid: true, payload: null, reason: "opaque" };
   if (payload.exp) {
     const expMs = Number(payload.exp) * 1000;
     if (Number.isFinite(expMs) && Date.now() >= expMs) {
@@ -692,6 +722,13 @@ export function validateToken(token = getToken()) {
     }
   }
   return { valid: true, payload };
+}
+
+export function normalizeStoredToken() {
+  const token = sanitizeStoredToken(localStorage.getItem("token"));
+  if (!token) return null;
+  localStorage.setItem("token", token);
+  return token;
 }
 
 export function isAuthenticated() {

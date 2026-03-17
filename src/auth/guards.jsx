@@ -1,9 +1,12 @@
 // src/auth/guards.jsx
 import { Navigate, Outlet } from "react-router-dom";
-import { getRole } from "../features/dashboard/hooks/Acceder_API/authService.jsx";
+import {
+  getRole,
+  getToken,
+} from "../features/dashboard/hooks/Acceder_API/authService.jsx";
 
 export function RequireAuth() {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   return token ? <Outlet /> : <Navigate to="/acceder" replace />;
 }
 
