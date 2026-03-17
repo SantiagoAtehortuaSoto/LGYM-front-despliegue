@@ -1,5 +1,4 @@
 import { API_BASE_URL } from "../apiConfig";
-import { getRole } from "../Acceder_API/authService";
 import {
   buildEndpointWithQuery,
   mapPaginatedCollectionResponse,
@@ -35,10 +34,66 @@ const normalizeList = (data) => {
   return [];
 };
 
-const isClientLikeRole = () => {
-  const normalizedRole = String(getRole() || "")
+const normalizeStoredRole = (raw) => {
+  const value = String(raw ?? "")
     .trim()
     .toLowerCase();
+
+  if (!value) return "";
+  if (/(^|[_\-\s])admin(istrador)?($|[_\-\s])/.test(value)) return "admin";
+  if (/(emplead|instructor|staff|entrenador)/.test(value)) return "empleado";
+  if (/(usuario|user|cliente|beneficiario|member|miembro)/.test(value)) {
+    return "usuario";
+  }
+  if (value === "1" || value === "99") return "admin";
+  if (value === "2") return "empleado";
+  if (value === "3" || value === "6" || value === "33") return "usuario";
+  return "";
+};
+
+const readStoredRole = () => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    const candidates = [
+      user?.role,
+      user?.rol,
+      user?.perfil,
+      user?.tipo,
+      user?.tipo_usuario,
+      user?.tipoUsuario,
+      ...(Array.isArray(user?.roles_usuarios) ? user.roles_usuarios : []),
+    ];
+
+    for (const candidate of candidates) {
+      if (!candidate) continue;
+
+      if (typeof candidate === "object") {
+        const nestedRole = normalizeStoredRole(
+          candidate?.nombre ??
+            candidate?.name ??
+            candidate?.rol ??
+            candidate?.role ??
+            candidate?.tipo ??
+            candidate?.tipo_usuario ??
+            candidate?.id_rol ??
+            candidate?.id
+        );
+        if (nestedRole) return nestedRole;
+        continue;
+      }
+
+      const normalizedRole = normalizeStoredRole(candidate);
+      if (normalizedRole) return normalizedRole;
+    }
+  } catch {
+    return "";
+  }
+
+  return "";
+};
+
+const isClientLikeRole = () => {
+  const normalizedRole = readStoredRole();
   return normalizedRole === "usuario" || normalizedRole === "cliente";
 };
 
