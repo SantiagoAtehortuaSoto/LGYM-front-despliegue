@@ -240,7 +240,7 @@
 
 @media (max-width: 768px) {
     .sidebar-container {
-        display: none;
+        display: block;
     }
 
     .dashboard-header {

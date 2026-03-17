@@ -2,14 +2,19 @@ import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import SidebarEmpleados from "../../../shared/components/sidebar/sidebarEmpleados";
 import HeaderAdmin from "../../../shared/components/header/header-ad";
+const MOBILE_BREAKPOINT = 992;
+
 const EmpleadoDashboard = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 992);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
+  const [sidebarOpen, setSidebarOpen] = useState(
+    () => window.innerWidth >= MOBILE_BREAKPOINT
+  );
+  const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
 
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 992;
+      const mobile = window.innerWidth < MOBILE_BREAKPOINT;
       setIsMobile(mobile);
+      setSidebarOpen((current) => (mobile ? false : current));
     };
 
     window.addEventListener("resize", handleResize);
@@ -38,9 +43,10 @@ const EmpleadoDashboard = () => {
   };
 
   return (
-    <div className="main-ad">
-      <div 
+    <div className={`main-ad ${isMobile ? "main-ad--mobile" : "main-ad--desktop"}`}>
+      <div
         className={`sidebar-container ${sidebarOpen ? "open" : "closed"}`}
+        aria-hidden={isMobile && !sidebarOpen}
       >
         <SidebarEmpleados isOpen={sidebarOpen} />
       </div>
@@ -52,7 +58,7 @@ const EmpleadoDashboard = () => {
         />
       )}
 
-      <div className="main-ad-column">
+      <div className={`main-ad-column ${!sidebarOpen ? "expanded" : ""}`}>
         <HeaderAdmin onMenuClick={toggleSidebar} isSidebarOpen={sidebarOpen} />
         <Outlet />
       </div>

@@ -1,10 +1,13 @@
 .pedidos-usuario-producto {
-  display: inline-block;
-  min-width: 180px;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   font-weight: 500;
   color: #1f2937;
-  word-break: break-word;
-  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pedidos-usuario-msg {

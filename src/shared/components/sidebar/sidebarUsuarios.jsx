@@ -252,6 +252,10 @@ function getLatestCompletedMembershipName(sales = []) {
   return completed[0]?.membershipName || "";
 }
 
+function isCurrentMembershipStatus(status = "") {
+  return status === "COMPLETADO" || status === "ACTIVO";
+}
+
 function isPremiumMembership(name) {
   const normalized = String(name || "")
     .normalize("NFD")
@@ -293,10 +297,8 @@ const SidebarUsuario = () => {
             ? benefRaw
             : [];
         const membershipFromBenef = getMembershipNameFromBeneficiarios(beneficiarios, user);
-        if (membershipFromBenef) {
-          setCanSeeCitas(isPremiumMembership(membershipFromBenef));
-          return;
-        }
+        setCanSeeCitas(isPremiumMembership(membershipFromBenef));
+        return;
       } catch {
         // Fallback a ventas si beneficiarios no responde.
       }
@@ -336,7 +338,12 @@ const SidebarUsuario = () => {
   }, [loadCitasAccess]);
 
   useEffect(() => {
-    const onMembershipChanged = () => {
+    const onMembershipChanged = (event) => {
+      const status = normalizeStatus(event?.detail?.estado);
+      if (status && !isCurrentMembershipStatus(status)) {
+        setCanSeeCitas(false);
+        return;
+      }
       loadCitasAccess();
     };
     window.addEventListener("membresia-estado-actualizada", onMembershipChanged);

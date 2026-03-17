@@ -76,7 +76,10 @@ const columnasPedidos = [
     field: "producto",
     label: "Producto",
     Cell: ({ value }) => (
-      <span className="pedidos-usuario-producto">
+      <span
+        className="pedidos-usuario-producto"
+        title={value || "-"}
+      >
         {value || "-"}
       </span>
     ),

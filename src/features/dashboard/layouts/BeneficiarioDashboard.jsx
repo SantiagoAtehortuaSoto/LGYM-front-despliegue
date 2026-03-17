@@ -5,9 +5,11 @@ import SidebarUsuario from "../../../shared/components/sidebar/sidebarUsuarios";
 import HeaderUsuario from "../../../shared/components/header/header-us";
 import CarritoCompras from "../../../shared/components/Carrito/carrito";
 import { useCarrito } from "../../../shared/components/Carrito/carritoContext";
+const MOBILE_BREAKPOINT = 992;
+
 const BeneficiarioDashboard = () => {
   // Mobile initially closed, Desktop initially open
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [carritoAbierto, setCarritoAbierto] = useState(false);
   const [fabBumpKey, setFabBumpKey] = useState(0);
@@ -19,18 +21,14 @@ const BeneficiarioDashboard = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 992;
+      const mobile = window.innerWidth < MOBILE_BREAKPOINT;
       setIsMobile(mobile);
-      if (!mobile && !sidebarOpen) {
-        setSidebarOpen(true);
-      } else if (mobile && sidebarOpen) {
-         setSidebarOpen(false);
-      }
+      setSidebarOpen((current) => (mobile ? false : current));
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [sidebarOpen]);
+  }, []);
 
   useEffect(() => {
     if (isMobile && sidebarOpen) {
@@ -55,9 +53,10 @@ const BeneficiarioDashboard = () => {
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
-    <div className="main-ad">
-      <div 
+    <div className={`main-ad ${isMobile ? "main-ad--mobile" : "main-ad--desktop"}`}>
+      <div
         className={`sidebar-container ${sidebarOpen ? "open" : "closed"}`}
+        aria-hidden={isMobile && !sidebarOpen}
       >
         <SidebarUsuario isOpen={sidebarOpen} />
       </div>
@@ -71,7 +70,7 @@ const BeneficiarioDashboard = () => {
 
       <div className={`main-ad-column ${!sidebarOpen ? 'expanded' : ''}`}>
         <header className="header-usuario-logiado">
-          <HeaderUsuario onMenuClick={toggleSidebar} />
+          <HeaderUsuario onMenuClick={toggleSidebar} isSidebarOpen={sidebarOpen} />
         </header>
 
         <main className="content">

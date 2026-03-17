@@ -2,24 +2,24 @@ import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../../../shared/components/sidebar/sidebar";
 import HeaderAdmin from "../../../shared/components/header/header-ad";
+const MOBILE_BREAKPOINT = 992;
+
 const AdminDashboard = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
+  const [sidebarOpen, setSidebarOpen] = useState(
+    () => window.innerWidth >= MOBILE_BREAKPOINT
+  );
 
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 992;
+      const mobile = window.innerWidth < MOBILE_BREAKPOINT;
       setIsMobile(mobile);
-      // En desktop, el sidebar inicia cerrado para mejor UX
-      // En mobile, siempre inicia cerrado
-      if (!mobile && !sidebarOpen) {
-        // Mantener el estado actual en desktop
-      }
+      setSidebarOpen((current) => (mobile ? false : current));
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [sidebarOpen]);
+  }, []);
 
   useEffect(() => {
     // Controlar el scroll del body cuando el sidebar está abierto en mobile
@@ -43,9 +43,10 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="main-ad">
-      <div 
+    <div className={`main-ad ${isMobile ? "main-ad--mobile" : "main-ad--desktop"}`}>
+      <div
         className={`sidebar-container ${sidebarOpen ? "open" : "closed"}`}
+        aria-hidden={isMobile && !sidebarOpen}
       >
         <Sidebar isOpen={sidebarOpen} />
       </div>
@@ -57,11 +58,7 @@ const AdminDashboard = () => {
         />
       )}
 
-      <div
-        className={
-          sidebarOpen ? "main-ad-column-open" : "main-ad-column-closed"
-        }
-      >
+      <div className={`main-ad-column ${!sidebarOpen ? "expanded" : ""}`}>
         <HeaderAdmin onMenuClick={toggleSidebar} isSidebarOpen={sidebarOpen} />
         <Outlet />
       </div>

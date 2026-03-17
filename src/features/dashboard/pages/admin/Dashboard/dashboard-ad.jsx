@@ -18,7 +18,6 @@ import { obtenerAsistenciasClientes } from "../../../hooks/Asistencias_API/Asist
 import { obtenerBeneficiarios } from "../../../hooks/Beneficiarios_API/benefeiciarios_API";
 import { getToken } from "../../../hooks/Acceder_API/authService";
 import { obtenerUsuarios, obtenerRolesUsuarios } from "../../../hooks/Usuarios_API/API_Usuarios";
-import { obtenerBeneficiarios } from "../../../hooks/Beneficiarios_API/benefeiciarios_API";
 import { normalizePaginatedResponse } from "../../../../../shared/utils/pagination";
 
 const MONTHS = [
@@ -1466,7 +1465,7 @@ const Dashboard = () => {
   ]);
 
   const statusText = loading
-    ? "Cargando datos reales desde API..."
+    ? "Cargando datos de metricas..."
     : `Datos de ${MONTHS[selectedPeriod.monthIndex]} ${selectedPeriod.year}`;
 
   const openPendingSalesModal = useCallback(() => {

@@ -452,10 +452,8 @@ const HeaderUsuario = ({ onMenuClick, isSidebarOpen }) => {
             ? benefRaw
             : [];
         const membershipFromBenef = getActiveMembershipFromBeneficiarios(beneficiarios, user);
-        if (membershipFromBenef) {
-          setCompletedMembership(membershipFromBenef);
-          return;
-        }
+        setCompletedMembership(membershipFromBenef || "");
+        return;
       } catch {
         // Fallback a ventas/usuario si beneficiarios no responde.
       }
@@ -494,7 +492,12 @@ const HeaderUsuario = ({ onMenuClick, isSidebarOpen }) => {
   }, [cargarMembresiaCompletada]);
 
   useEffect(() => {
-    const onMembershipChanged = () => {
+    const onMembershipChanged = (event) => {
+      const status = normalizeMembershipStatus(event?.detail?.estado);
+      if (status && !isCurrentMembershipStatus(status)) {
+        setCompletedMembership("");
+        return;
+      }
       cargarMembresiaCompletada();
     };
     window.addEventListener("membresia-estado-actualizada", onMembershipChanged);
@@ -533,13 +536,12 @@ const HeaderUsuario = ({ onMenuClick, isSidebarOpen }) => {
         : norm === "empleado"
           ? "Empleado"
           : "Cliente";
-    const computedMembership = completedMembership || "Sin membresia completada";
-    const membershipLabel = String(computedMembership).toLowerCase();
+    const membershipLabel = String(completedMembership || "").trim().toLowerCase();
     const computedInitial = getInitialFrom(computedName);
     const computedAvatarToneClass = colorFromString(computedName || email || "user");
     return {
       displayName: computedName,
-      subtitle: `${membershipLabel} - ${roleLabel}`,
+      subtitle: membershipLabel ? `${membershipLabel} - ${roleLabel}` : `sin membresia - ${roleLabel}`,
       initial: computedInitial,
       avatarToneClass: computedAvatarToneClass,
     };

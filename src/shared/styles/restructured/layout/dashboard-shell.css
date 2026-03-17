@@ -43,6 +43,14 @@
     transform: translateX(0);
 }
 
+.main-ad {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: clip;
+}
+
 /* Main content */
 .main-ad-column {
     display: flex;
@@ -154,11 +162,13 @@
     transition: all 0.3s ease-in-out;
     backdrop-filter: blur(2px);
     display: none;
+    pointer-events: none;
 }
 
 .sidebar-overlay.active {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 }
 
 /* Estilos para el buscador */
@@ -250,6 +260,7 @@
         visibility: hidden;
         transition: all 0.3s ease-in-out;
         backdrop-filter: blur(2px);
+        pointer-events: none;
     }
 
     /* body.sidebar-open .sidebar-overlay {
@@ -513,6 +524,7 @@
         transition: all 0.3s ease-in-out;
         z-index: 1500;
         /* debajo del sidebar */
+        pointer-events: none;
     }
 
     /* Activo */
@@ -520,6 +532,7 @@
     .sidebar-overlay.show {
         opacity: 1;
         visibility: visible;
+        pointer-events: auto;
     }
 
     /* Contenido principal no se mueve */

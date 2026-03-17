@@ -131,23 +131,6 @@ const calcularImc = (peso, altura) => {
   return Number.isFinite(imc) ? imc : null;
 };
 
-const getSeguimientoToneClass = (estadoTexto = "") => {
-  const normalized = String(estadoTexto)
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-  if (normalized.includes("activo") || normalized.includes("complet")) {
-    return "badge-tone--completado";
-  }
-  if (normalized.includes("inactivo") || normalized.includes("cancel")) {
-    return "badge-tone--cancelado";
-  }
-  if (normalized.includes("proceso")) {
-    return "badge-tone--en-proceso";
-  }
-  return "badge-tone--pendiente";
-};
-
 const obtenerImcRegistro = (registro = {}) => {
   const imcDirecto = obtenerValorDetalle(registro, ["imc", "indice de masa"], true);
   if (Number.isFinite(imcDirecto)) return imcDirecto;
@@ -170,38 +153,6 @@ const columnasSeguimiento = [
   { field: "deporte", label: "Deporte" },
   { field: "actividad", label: "Actividad" },
   { field: "fecha_registro", label: "Fecha" },
-  {
-    field: "estado",
-    label: "Estado",
-    Cell: ({ value, row }) => {
-      const estadoNumerico = Number(row.id_estado ?? value);
-      const estadoTextoMap = {
-        1: "Activo",
-        2: "Inactivo",
-        3: "Pendiente",
-        4: "En Proceso",
-        5: "Completado",
-        6: "Cancelado",
-      };
-      const estadoTexto =
-        estadoTextoMap[estadoNumerico] ||
-        (typeof value === "string" ? value : "Pendiente");
-
-      return (
-        <span
-          className={`badge-estado badge-pequeno badge-con-borde badge-estado--readonly seguimiento-user-status ${getSeguimientoToneClass(
-            estadoTexto
-          )}`}
-        >
-          <span className="badge-content">
-            {estadoTexto.toString().toLowerCase() === "pendiente"
-              ? "Pendiente"
-              : estadoTexto}
-          </span>
-        </span>
-      );
-    },
-  },
 ];
 
 const normalizar = (texto = "") =>
@@ -698,7 +649,7 @@ const SeguimientoUsuario = () => {
       const coincideBusqueda =
         !searchQuery ||
         normalizar(
-          `${registro.id} ${obtenerImcRegistro(registro) ?? ""} ${registro.deporte || ""} ${registro.actividad || ""} ${registro.fecha_registro || ""} ${registro.estado || ""}`,
+          `${registro.id} ${obtenerImcRegistro(registro) ?? ""} ${registro.deporte || ""} ${registro.actividad || ""} ${registro.fecha_registro || ""}`,
         ).includes(normalizar(searchQuery));
 
       const fechaRegistro = extraerFechaRegistroISO(registro);
