@@ -1,4 +1,6 @@
 import React from "react";
+import gymBanner from "../../../../../assets/Gym-fondo.png";
+
 const InicioUsuario = () => {
   const userName = "Rinzler Kaf";
 
@@ -29,7 +31,7 @@ const InicioUsuario = () => {
       </div>
       <div className="banner-imagen inicio-usuario__banner">
         <img
-          src="https://images.unsplash.com/photo-1554284126-3e0b9a7a7a1a?auto=format&fit=crop&w=800&q=80"
+          src={gymBanner}
           alt="Gym"
           className="inicio-usuario__banner-img"
         />

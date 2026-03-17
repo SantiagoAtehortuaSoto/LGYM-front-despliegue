@@ -5,9 +5,13 @@ import "./shared/styles/restructured/index.css";
 import "react-toastify/dist/ReactToastify.css";
 import { CarritoProvider } from "./shared/components/Carrito/carritoContext";
 import { installFetchErrorTracker } from "./shared/utils/fetchErrorTracker";
-import { normalizeStoredToken } from "./features/dashboard/hooks/Acceder_API/authService";
+import {
+  ensureAuthFreshness,
+  normalizeStoredToken,
+} from "./features/dashboard/hooks/Acceder_API/authService";
 
 normalizeStoredToken();
+ensureAuthFreshness();
 installFetchErrorTracker();
 
 ReactDOM.createRoot(document.getElementById("root")).render(

@@ -145,7 +145,7 @@ const ContactosLanding = () => {
                 <a
                   href="https://www.instagram.com/nuevaera_fitness/"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   aria-label="Instagram"
                 >
                   <IconBrandInstagram size={25} color="#fff" strokeWidth={1.5} />

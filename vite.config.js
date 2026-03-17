@@ -20,6 +20,8 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       chunkSizeWarningLimit: 4000,
+      sourcemap: false,
+      reportCompressedSize: false,
     },
     server: {
       proxy: {

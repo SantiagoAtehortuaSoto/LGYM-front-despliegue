@@ -4,25 +4,52 @@ server {
 
   root /usr/share/nginx/html;
   index index.html;
+  autoindex off;
+  etag on;
+
+  add_header Content-Security-Policy "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https: http:; connect-src 'self' https: http: ws: wss:; manifest-src 'self'; worker-src 'self' blob:;" always;
+  add_header X-Frame-Options "DENY" always;
+  add_header X-Content-Type-Options "nosniff" always;
+  add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  add_header Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()" always;
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
 
   location = /healthz {
     access_log off;
     default_type text/plain;
+    add_header Cache-Control "no-store" always;
     return 200 "ok";
   }
 
-  location = /env-config.js {
-    add_header Cache-Control "no-store, no-cache, must-revalidate";
+  location ~* \.map$ {
+    access_log off;
+    return 404;
+  }
+
+  location = /index.html {
+    add_header Cache-Control "no-store, max-age=0, must-revalidate" always;
     try_files $uri =404;
+  }
+
+  location = /env-config.js {
+    default_type application/javascript;
+    add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+    alias /tmp/env-config.js;
   }
 
   location / {
     try_files $uri $uri/ /index.html;
   }
 
-  location ~* \.(?:css|gif|ico|jpeg|jpg|js|png|svg|woff2?)$ {
+  location ^~ /assets/ {
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000, immutable" always;
+    try_files $uri =404;
+  }
+
+  location ~* \.(?:css|gif|ico|jpeg|jpg|js|png|svg|webp|avif|woff2?)$ {
     expires 7d;
-    add_header Cache-Control "public, max-age=604800";
+    add_header Cache-Control "public, max-age=604800" always;
     try_files $uri =404;
   }
 }

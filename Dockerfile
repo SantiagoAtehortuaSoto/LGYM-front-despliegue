@@ -1,25 +1,29 @@
-FROM node:20-alpine AS builder
+FROM node:22-bookworm-slim AS build
 
 WORKDIR /app
 
+ENV CI=true \
+  NODE_ENV=development
+
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --no-audit --no-fund
 
 COPY . .
 RUN npm run build
 
-FROM nginx:1.27-alpine AS runner
+FROM nginxinc/nginx-unprivileged:stable-bookworm AS runtime
 
-ENV PORT=80
+ENV PORT=8080
 LABEL org.opencontainers.image.source="https://github.com/SantiagoAtehortuaSoto/LGYM-front-despliegue"
 
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
 COPY docker/40-env-config.sh /docker-entrypoint.d/40-env-config.sh
 RUN sed -i 's/\r$//' /docker-entrypoint.d/40-env-config.sh \
-  && chmod +x /docker-entrypoint.d/40-env-config.sh
+  && chmod 0555 /docker-entrypoint.d/40-env-config.sh
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=build --chown=101:101 /app/dist /usr/share/nginx/html
 
-EXPOSE 80
+USER 101:101
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD sh -c 'wget -q -O /dev/null "http://127.0.0.1:${PORT:-80}/healthz" || exit 1'
+EXPOSE 8080

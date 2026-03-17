@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "audit:prod": "npm audit --omit=dev",
+    "scan:trivy:fs": "trivy fs --scanners vuln,secret,misconfig .",
+    "scan:trivy:image": "trivy image --scanners vuln,secret,misconfig lgym-frontend:latest"
   },
   "dependencies": {
     "@ant-design/icons": "^6.0.2",

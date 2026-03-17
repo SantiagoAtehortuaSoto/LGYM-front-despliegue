@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     image: lgym-frontend:latest
     ports:
-      - "${FRONTEND_PORT:-8080}:80"
+      - "${FRONTEND_PORT:-8080}:8080"
     environment:
       VITE_API_BASE_URL: "${VITE_API_BASE_URL:-http://localhost:3000}"
       VITE_API_URL: "${VITE_API_URL:-}"
@@ -14,4 +14,12 @@ services:
       VITE_DEV_USE_PROXY: "${VITE_DEV_USE_PROXY:-false}"
       VITE_API_PRODUCTOS_URL: "${VITE_API_PRODUCTOS_URL:-}"
       VITE_DIAS_PLAZO_RECLAMO: "${VITE_DIAS_PLAZO_RECLAMO:-3}"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    init: true
     restart: unless-stopped

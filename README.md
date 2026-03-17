@@ -36,12 +36,12 @@ docker compose down
 
 ```bash
 docker build -t lgym-frontend .
-docker run -d --name lgym-frontend -p 8080:80 -e VITE_API_BASE_URL=http://localhost:3000 lgym-frontend
+docker run -d --name lgym-frontend -p 8080:8080 -e VITE_API_BASE_URL=http://localhost:3000 lgym-frontend
 ```
 
 ## Despliegue
 
-La imagen sirve archivos estaticos con `nginx` y soporta fallback de rutas para `React Router`. La configuracion del frontend se inyecta en runtime mediante `env-config.js`, por lo que puedes reutilizar la misma imagen en distintos entornos cambiando solo las variables del contenedor.
+La imagen sirve archivos estaticos con `nginx` no privilegiado y soporta fallback de rutas para `React Router`. La configuracion del frontend se inyecta en runtime mediante `env-config.js`, por lo que puedes reutilizar la misma imagen en distintos entornos cambiando solo variables publicas del contenedor.
 
 Importante: la URL de la API debe ser alcanzable desde el navegador del usuario final. Si tu backend corre en otro dominio o puerto, configura CORS o publica ambos servicios detras del mismo dominio.
 

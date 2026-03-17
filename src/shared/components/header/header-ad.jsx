@@ -8,9 +8,10 @@ import {
   IconLogout,
   IconChevronDown,
 } from "@tabler/icons-react";
+import { buildUrl } from "../../../features/dashboard/hooks/apiConfig";
+import { getToken } from "../../../features/dashboard/hooks/Acceder_API/authService";
 
-const API_BASE = "https://totalitarian-punchily-lon.ngrok-free.dev";
-const NOTIFICATIONS_ENDPOINT = `${API_BASE}/api/notificaciones/mias`;
+const NOTIFICATIONS_ENDPOINT = buildUrl("/notificaciones/mias");
 const SHOW_NOTIFICATIONS_BELL = false;
 
 // ------- helpers de sesión -------
@@ -118,7 +119,7 @@ const HeaderAdmin = ({ onMenuClick, isSidebarOpen }) => {
       return;
     }
 
-    const token = localStorage.getItem("token");
+    const token = getToken();
     setCargandoNotificaciones(true);
     try {
       const response = await fetch(NOTIFICATIONS_ENDPOINT, {
