@@ -190,17 +190,18 @@ function extractRoleFrom(obj = {}) {
   if (!obj || typeof obj !== "object") return "";
 
   const resolved = [
-    obj,
     obj.role,
     obj.rol,
     obj.perfil,
     obj.tipo,
     obj.tipo_usuario,
     obj.tipoUsuario,
+    obj.nombre_rol,
+    obj.rol_nombre,
+    obj.role_name,
     obj.roles_usuarios,
     obj.roles,
     obj.authorities,
-    obj.permisos,
     obj.id_rol,
     obj.rol_id,
     obj.roleId,
