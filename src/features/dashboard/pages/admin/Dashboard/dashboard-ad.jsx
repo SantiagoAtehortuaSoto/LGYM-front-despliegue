@@ -244,23 +244,6 @@ const parseDateValue = (value) => {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 };
 
-const parseHourValue = (value) => {
-  if (value === null || value === undefined || value === "") return null;
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return Math.max(0, Math.min(23, Math.floor(value)));
-  }
-
-  const text = String(value).trim();
-  if (!text) return null;
-
-  const timeMatch = text.match(/(\d{1,2})(?::\d{1,2})?/);
-  if (!timeMatch) return null;
-
-  const hour = Number(timeMatch[1]);
-  if (!Number.isFinite(hour)) return null;
-  return Math.max(0, Math.min(23, hour));
-};
-
 const inPeriod = (date, monthIndex, year) => {
   if (!date) return false;
   return date.getUTCFullYear() === year && date.getUTCMonth() === monthIndex;
@@ -310,25 +293,6 @@ const getSaleStatus = (sale) =>
   normalizeEstadoVenta(
     sale?.estado_venta ?? sale?.estado ?? sale?.id_estado ?? sale?.estadoVenta
   );
-
-const getSaleUserKey = (sale) => {
-  const userId = getSaleUserId(sale);
-  if (userId !== null && userId !== undefined && userId !== "") {
-    return `id-${userId}`;
-  }
-
-  const fallbackName = normalizeText(
-    sale?.usuario_nombre ??
-    sale?.cliente ??
-    sale?.cliente_nombre ??
-    sale?.nombre_cliente ??
-    sale?.usuario?.nombre ??
-    sale?.usuario?.nombre_completo ??
-    sale?.usuario?.username
-  );
-
-  return fallbackName ? `name-${fallbackName}` : null;
-};
 
 const getTextFromCandidate = (...candidates) => {
   for (const candidate of candidates) {
@@ -512,12 +476,6 @@ const formatSaleDate = (value) => {
   return saleDateFormatter.format(parsedDate);
 };
 
-const formatHourLabel = (hour24) => {
-  const isPm = hour24 >= 12;
-  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
-  return `${hour12}${isPm ? "PM" : "AM"}`;
-};
-
 const getSaleDisplayId = (sale, fallbackIndex = null) => {
   const directId = getTextFromCandidate(
     sale?.numero_venta,
@@ -646,23 +604,6 @@ const getUserDisplayName = (user) =>
     user?.full_name,
     user?.email
   );
-
-const getUtcDayStart = (date) =>
-  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-
-const isWithinLastDays = (date, days, referenceDate = new Date()) => {
-  if (!date || !Number.isFinite(days) || days <= 0) return false;
-  const diffMs = getUtcDayStart(referenceDate) - getUtcDayStart(date);
-  const diffDays = Math.floor(diffMs / (24 * 60 * 60 * 1000));
-  return diffDays >= 0 && diffDays <= days;
-};
-
-const isWithinPreviousDaysWindow = (date, days, referenceDate = new Date()) => {
-  if (!date || !Number.isFinite(days) || days <= 0) return false;
-  const diffMs = getUtcDayStart(referenceDate) - getUtcDayStart(date);
-  const diffDays = Math.floor(diffMs / (24 * 60 * 60 * 1000));
-  return diffDays > days && diffDays <= days * 2;
-};
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
@@ -991,13 +932,19 @@ const Dashboard = () => {
   );
 
   const ticketCurrent = useMemo(
-    () => (validSalesCurrent.length ? totalVentasCurrent / validSalesCurrent.length : 0),
-    [validSalesCurrent.length, totalVentasCurrent]
+    () =>
+      completedSalesCurrent.length
+        ? totalIngresosCurrent / completedSalesCurrent.length
+        : 0,
+    [completedSalesCurrent.length, totalIngresosCurrent]
   );
 
   const ticketPrevious = useMemo(
-    () => (validSalesPrevious.length ? totalVentasPrevious / validSalesPrevious.length : 0),
-    [validSalesPrevious.length, totalVentasPrevious]
+    () =>
+      completedSalesPrevious.length
+        ? totalIngresosPrevious / completedSalesPrevious.length
+        : 0,
+    [completedSalesPrevious.length, totalIngresosPrevious]
   );
 
   // Mapa userId => fecha de registro usando self-beneficiarios como fuente primaria
@@ -1637,13 +1584,22 @@ const Dashboard = () => {
             </h2>
             <p className="admin-home-kpi-sub">{kpi.sub}</p>
             {kpi.id === "ventas" ? (
-              <button
-                className="admin-home-kpi-action"
-                onClick={openPendingSalesModal}
-                type="button"
-              >
-                Ver ventas pendientes ({pendingSalesCurrent.length})
-              </button>
+              <>
+                <button
+                  className="admin-home-kpi-action"
+                  onClick={openPendingSalesModal}
+                  type="button"
+                >
+                  Ver ventas pendientes ({pendingSalesCurrent.length})
+                </button>
+                <button
+                  className="admin-home-kpi-action"
+                  onClick={openIncomeDetailsModal}
+                  type="button"
+                >
+                  Ver ingresos completados ({completedSalesCurrent.length})
+                </button>
+              </>
             ) : null}
             {kpi.id === "clientes-nuevos" ? (
               <button
@@ -1987,17 +1943,21 @@ const Dashboard = () => {
                     <article className="admin-home-income-summary-card">
                       <p>Ingreso total completado</p>
                       <h4>{formatMoney(totalIngresosCurrent)}</h4>
+                      <span>
+                        {formatPercentDelta(
+                          getDeltaPercent(totalIngresosCurrent, totalIngresosPrevious)
+                        )}{" "}
+                        vs mes anterior
+                      </span>
                     </article>
 
                     <article className="admin-home-income-summary-card">
                       <p>Ticket promedio completado</p>
-                      <h4>
-                        {formatMoney(
-                          completedSalesCurrent.length
-                            ? totalIngresosCurrent / completedSalesCurrent.length
-                            : 0
-                        )}
-                      </h4>
+                      <h4>{formatMoney(ticketCurrent)}</h4>
+                      <span>
+                        {formatPercentDelta(getDeltaPercent(ticketCurrent, ticketPrevious))}{" "}
+                        vs mes anterior
+                      </span>
                     </article>
 
                     <article className="admin-home-income-summary-card">
