@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { pdf } from "@react-pdf/renderer";
 import toast from "react-hot-toast";
 import { useCarrito } from "../../components/Carrito/carritoContext";
 import { getProductos } from "../../../features/dashboard/hooks/Productos_API_Landing/API_Productos_Landing";
@@ -10,7 +9,6 @@ import {
   crearComprobanteVenta,
   mapCarritoToPayload,
 } from "../../../features/dashboard/hooks/Comprobante_API/Comprobante_API";
-import ComprobanteDocumento from "./comprobanteDocumento";
 
 // const DIAS_PLAZO_RECLAMO = 3;
 
@@ -106,6 +104,11 @@ export const DescargarComprobante = ({
   };
 
   const generarPDFLocal = async ({ items: itemsEvaluar, subtotal: subtotalEvaluar, total: totalEvaluar, plazoMaximo }) => {
+    const [{ pdf }, { default: ComprobanteDocumento }] = await Promise.all([
+      import("@react-pdf/renderer"),
+      import("./comprobanteDocumento"),
+    ]);
+
     const blob = await pdf(
       <ComprobanteDocumento
         items={itemsEvaluar}

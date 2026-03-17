@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { IconShoppingCart } from "@tabler/icons-react";
 import { Download } from "lucide-react";
-import { pdf } from "@react-pdf/renderer";
 import BuscadorUniversal from "../../../components/BuscadorUniversal";
 import DataTable, {
   DEFAULT_DATA_TABLE_PAGE_SIZE,
 } from "../../../components/dataTables/dataTable";
 import { ModalVerPedido } from "./modalPedido";
-import ComprobanteDocumento from "../../../../../shared/components/Carrito/comprobanteDocumento";
 import toast from "react-hot-toast";
 import "../../../../../shared/styles/restructured/pages/pedidos-usuario-page.css";
 import { obtenerPedidosUsuario } from "../../../hooks/Pedidos_US_API/Pedidos_API_US";
@@ -347,7 +345,7 @@ const PedidosUsuario = () => {
     });
   }, [pedidos, searchQuery]);
 
-  const descargarPedido = useCallback((pedido) => {
+  const descargarPedido = useCallback(async (pedido) => {
     if (!pedido) {
       toast.warn("No hay informacion del pedido para descargar.");
       return;
@@ -369,30 +367,29 @@ const PedidosUsuario = () => {
         parseCurrencyToNumber(pedidoNormalizado.total) ??
         subtotal;
 
-      pdf(
+      const [{ pdf }, { default: ComprobanteDocumento }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("../../../../../shared/components/Carrito/comprobanteDocumento"),
+      ]);
+
+      const blob = await pdf(
         <ComprobanteDocumento
           items={items}
           subtotal={subtotal}
           total={Number(total || 0)}
           plazoMaximo={pedidoNormalizado.plazo_maximo || pedidoNormalizado.fecha_entrega}
         />
-      )
-        .toBlob()
-        .then((blob) => {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = `orden_${numero}.pdf`;
-          link.click();
-          URL.revokeObjectURL(url);
-          toast.success("Orden descargada correctamente.");
-        })
-        .catch((error) => {
-          console.error("Error al generar el PDF del pedido:", error);
-          toast.error("No se pudo generar la orden del pedido.");
-        });
+      ).toBlob();
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `orden_${numero}.pdf`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success("Orden descargada correctamente.");
     } catch (error) {
-      console.error("Error al preparar la orden del pedido:", error);
+      console.error("Error al generar la orden del pedido:", error);
       toast.error("No se pudo descargar la orden del pedido.");
     }
   }, []);
