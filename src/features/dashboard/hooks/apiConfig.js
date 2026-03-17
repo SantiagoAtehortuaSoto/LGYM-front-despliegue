@@ -4,15 +4,17 @@ const DEFAULT_API_BASE_URL = "http://localhost:3000";
 
 const normalizeUrl = (value) => String(value || "").trim().replace(/\/+$/, "");
 const ABSOLUTE_HTTP_URL_RE = /^https?:\/\//i;
+const ROOT_RELATIVE_URL_RE = /^\//;
 
 const sanitizePublicUrl = (value, label) => {
   const normalized = normalizeUrl(value);
   if (!normalized) return "";
   if (ABSOLUTE_HTTP_URL_RE.test(normalized)) return normalized;
+  if (ROOT_RELATIVE_URL_RE.test(normalized)) return normalized;
 
   if (typeof console !== "undefined") {
     console.warn(
-      `[SECURITY] Ignorando ${label} porque no usa un esquema http(s) valido.`
+      `[SECURITY] Ignorando ${label} porque no usa un esquema http(s) o una ruta relativa valida.`
     );
   }
 
