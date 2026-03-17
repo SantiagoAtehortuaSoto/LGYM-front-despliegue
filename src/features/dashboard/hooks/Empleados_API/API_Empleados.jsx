@@ -9,6 +9,32 @@ function clearAuthSession() {
   window.dispatchEvent(new Event("auth-change"));
 }
 
+function shouldInvalidateSession(responseData = {}, response = null) {
+  const authText = [
+    responseData?.message,
+    responseData?.msg,
+    responseData?.error,
+    responseData?.detail,
+    response?.statusText,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  if (!authText) return false;
+
+  const mentionsAuth =
+    /(token|jwt|sesion|sesión|session|credencial|credential|auth|authorization|bearer)/i.test(
+      authText
+    );
+  const looksExpired =
+    /(expir|vencid|invalid|inv[aá]lid|no valido|no v[aá]lido|malform|unauthorized|no autorizado|missing|faltante|ausente)/i.test(
+      authText
+    );
+
+  return mentionsAuth && looksExpired;
+}
+
 function getAuthToken() {
   return localStorage.getItem("token");
 }
@@ -119,8 +145,14 @@ export async function apiRequest(
       if (response.status === 400 && !errorMessage) {
         errorMessage = 'Datos inválidos. Por favor, verifica la información ingresada.';
       } else if (response.status === 401) {
-        clearAuthSession();
-        errorMessage = "Sesión expirada. Por favor, inicia sesión nuevamente.";
+        if (shouldInvalidateSession(responseData, response)) {
+          clearAuthSession();
+          errorMessage =
+            "Sesión expirada. Por favor, inicia sesión nuevamente.";
+        } else {
+          errorMessage =
+            errorMessage || "No autorizado para consultar este recurso.";
+        }
       } else if (response.status === 403 && !errorMessage) {
         errorMessage = "No tienes permisos para realizar esta acción";
       } else if (response.status === 404 && !errorMessage) {

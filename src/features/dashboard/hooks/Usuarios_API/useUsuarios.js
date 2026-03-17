@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo, useRef } from "react";
 import {
   obtenerUsuarios,
+  obtenerUsuariosClientes,
   crearUsuario,
   actualizarUsuario,
   eliminarUsuario,
@@ -70,6 +71,19 @@ export function useUsuarios() {
     },
     [],
   );
+
+  const buildFallbackRoleAssignment = useCallback((roleId, roleName, extra = {}) => {
+    const parsedRoleId = Number(roleId);
+    return {
+      rol_id: Number.isFinite(parsedRoleId) ? parsedRoleId : roleId ?? null,
+      rol_nombre: roleName,
+      id_rol_rol: {
+        id_rol: Number.isFinite(parsedRoleId) ? parsedRoleId : roleId ?? null,
+        nombre_rol: roleName,
+      },
+      ...extra,
+    };
+  }, []);
 
   const normalizePermisosAsignados = useCallback((items = []) => {
     if (!Array.isArray(items)) return [];
@@ -149,6 +163,144 @@ export function useUsuarios() {
       .trim()
       .toLowerCase();
   }, []);
+
+  const buildFallbackUsers = useCallback(
+    async () => {
+      const [clientesResult, empleadosResult] = await Promise.allSettled([
+        cargarTodasLasPaginas(obtenerUsuariosClientes, {
+          preferredKeys: ["usuarios", "clientes", "data"],
+        }),
+        cargarTodasLasPaginas(obtenerEmpleados, {
+          preferredKeys: ["empleados", "data"],
+        }),
+      ]);
+
+      const clientesBase =
+        clientesResult.status === "fulfilled" && Array.isArray(clientesResult.value)
+          ? clientesResult.value
+          : [];
+      const empleadosBase =
+        empleadosResult.status === "fulfilled" && Array.isArray(empleadosResult.value)
+          ? empleadosResult.value
+          : [];
+
+      const clientesNormalizados = clientesBase
+        .filter(Boolean)
+        .map((cliente) => {
+          const roleInfo = buildFallbackRoleAssignment(33, "Cliente");
+          const userId = resolveUserId(cliente);
+          return {
+            ...cliente,
+            id_usuario: userId,
+            rol_id: 33,
+            rol_nombre: "Cliente",
+            permisosAsignados: [],
+            rolesIds: [33],
+            rolesNombres: ["Cliente"],
+            roles_usuarios: [
+              {
+                id_usuario: userId,
+                ...roleInfo,
+                permisosAsignados: [],
+              },
+            ],
+            id_rol_rol: {
+              ...roleInfo.id_rol_rol,
+              permisosAsignados: [],
+            },
+          };
+        });
+
+      const empleadosNormalizados = empleadosBase
+        .filter(Boolean)
+        .map((empleado) => {
+          const userId = resolveUserId(empleado);
+          const fallbackRoleId = Number(empleado?.id_rol ?? empleado?.rol_id ?? 2);
+          const roleId =
+            getRoleIdFromRecord(empleado) ??
+            (Number.isFinite(fallbackRoleId) ? fallbackRoleId : 2);
+          const roleName =
+            getRoleNameFromRecord(empleado) ||
+            empleado?.cargo ||
+            empleado?.tipo_empleado ||
+            "Empleado";
+          const permisosAsignados = mergePermisosAsignados(
+            empleado?.permisosAsignados || [],
+            empleado?.permisos || [],
+            empleado?.modules || [],
+            empleado?.id_rol_rol?.permisosAsignados || [],
+            empleado?.id_rol_rol?.permisos || [],
+          );
+          const hasAppointmentAccess =
+            permisosAsignados.length > 0
+              ? hasAppointmentAssignmentAccess(permisosAsignados)
+              : true;
+          const roleInfo = buildFallbackRoleAssignment(roleId, roleName, {
+            permisosAsignados,
+          });
+
+          return {
+            ...empleado,
+            ...(empleado?.id_usuario_usuario &&
+            typeof empleado.id_usuario_usuario === "object"
+              ? empleado.id_usuario_usuario
+              : {}),
+            id_usuario: userId,
+            id_empleado:
+              empleado?.id_empleado ?? empleado?.id ?? empleado?.id_usuario ?? null,
+            rol_id: roleInfo.rol_id,
+            rol_nombre: roleInfo.rol_nombre,
+            permisosAsignados,
+            hasAppointmentAccess,
+            rolesIds: Number.isFinite(Number(roleInfo.rol_id))
+              ? [Number(roleInfo.rol_id)]
+              : [],
+            rolesNombres: roleInfo.rol_nombre ? [roleInfo.rol_nombre] : [],
+            roles_usuarios: [
+              {
+                id_usuario: userId,
+                ...roleInfo,
+              },
+            ],
+            id_rol_rol: {
+              ...roleInfo.id_rol_rol,
+              permisosAsignados,
+            },
+          };
+        });
+
+      const combined = new Map();
+      [...clientesNormalizados, ...empleadosNormalizados].forEach((usuario) => {
+        const identityKey =
+          String(resolveUserId(usuario) ?? "").trim() ||
+          resolveEmail(usuario) ||
+          `${usuario?.rol_nombre || "usuario"}:${combined.size}`;
+        if (!identityKey) return;
+        combined.set(identityKey, {
+          ...(combined.get(identityKey) || {}),
+          ...usuario,
+        });
+      });
+
+      return {
+        usuarios: Array.from(combined.values()),
+        rolesFallback: [
+          { id_rol: 33, nombre_rol: "Cliente" },
+          { id_rol: 2, nombre_rol: "Empleado" },
+        ],
+      };
+    },
+    [
+      buildFallbackRoleAssignment,
+      cargarTodasLasPaginas,
+      getRoleIdFromRecord,
+      getRoleNameFromRecord,
+      hasAppointmentAssignmentAccess,
+      mergePermisosAsignados,
+      resolveEmail,
+      resolveUserId,
+    ],
+  );
 
   const normalizeText = useCallback((value) => {
     return String(value ?? "")
@@ -703,6 +855,29 @@ export function useUsuarios() {
 
       setUsuarios(processedUsers);
     } catch (err) {
+      const shouldTryFallback =
+        [401, 403].includes(Number(err?.status)) ||
+        /permiso|forbidden|unauthorized|autorizad|sesi[oó]n/i.test(
+          String(err?.message || ""),
+        );
+
+      if (shouldTryFallback) {
+        try {
+          const fallback = await buildFallbackUsers();
+          setRoles((prev) =>
+            Array.isArray(prev) && prev.length > 0 ? prev : fallback.rolesFallback,
+          );
+          setUsuarios(fallback.usuarios);
+          setError(null);
+          return;
+        } catch (fallbackError) {
+          console.error(
+            "Error cargando usuarios con fallback ligero:",
+            fallbackError,
+          );
+        }
+      }
+
       console.error("Error cargando usuarios:", err);
       setError(err);
       setUsuarios([]);
@@ -711,6 +886,7 @@ export function useUsuarios() {
       loadingRef.current = false;
     }
   }, [
+    buildFallbackUsers,
     extractList,
     cargarTodasLasPaginas,
     getRoleIdFromRecord,
