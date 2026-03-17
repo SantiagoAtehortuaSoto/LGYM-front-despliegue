@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "../apiConfig";
+import { getRole } from "../Acceder_API/authService";
 import {
   buildEndpointWithQuery,
   mapPaginatedCollectionResponse,
@@ -32,6 +33,13 @@ const normalizeList = (data) => {
   if (Array.isArray(data?.data)) return data.data;
   if (Array.isArray(data)) return data;
   return [];
+};
+
+const isClientLikeRole = () => {
+  const normalizedRole = String(getRole() || "")
+    .trim()
+    .toLowerCase();
+  return normalizedRole === "usuario" || normalizedRole === "cliente";
 };
 
 const apiRequest = async (endpoint, options = {}) => {
@@ -75,9 +83,18 @@ export async function obtenerAsistenciasClientes(options = {}) {
   const query =
     options?.query && typeof options.query === "object" ? options.query : {};
   const preserveResponseShape = Object.keys(query).length > 0;
-  const data = await apiRequest(buildEndpointWithQuery(CLIENTES_ENDPOINT, query), {
-    method: "GET",
-  });
+  let data;
+  try {
+    data = await apiRequest(buildEndpointWithQuery(CLIENTES_ENDPOINT, query), {
+      method: "GET",
+    });
+  } catch (error) {
+    const status = Number(error?.response?.status);
+    if (status === 403 && isClientLikeRole()) {
+      return preserveResponseShape ? { data: [] } : [];
+    }
+    throw error;
+  }
   if (!preserveResponseShape) return normalizeList(data);
   return mapPaginatedCollectionResponse(data, (item) => item, {
     preferredKeys: ["asistencias", "data"],
