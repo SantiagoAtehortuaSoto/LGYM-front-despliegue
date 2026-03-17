@@ -37,6 +37,8 @@ server {
     alias /tmp/env-config.js;
   }
 
+  include /tmp/api-proxy-location.conf;
+
   location / {
     try_files $uri $uri/ /index.html;
   }

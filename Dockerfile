@@ -16,6 +16,8 @@ FROM nginxinc/nginx-unprivileged:stable-bookworm AS runtime
 ENV PORT=8080
 LABEL org.opencontainers.image.source="https://github.com/SantiagoAtehortuaSoto/LGYM-front-despliegue"
 
+USER root
+
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
 COPY docker/40-env-config.sh /docker-entrypoint.d/40-env-config.sh
