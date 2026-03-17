@@ -1,0 +1,91 @@
+.modal-ventas-membresias__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+}
+
+.modal-ventas-membresias__card {
+  margin-bottom: 16px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.modal-ventas-membresias__card--actions {
+  margin-bottom: 0;
+}
+
+.modal-ventas-membresias__section-title {
+  margin: 0 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #28a745;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.modal-ventas-membresias__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.modal-ventas-membresias__field {
+  margin-bottom: 15px;
+}
+
+.modal-ventas-membresias__label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+  font-weight: 700;
+}
+
+.modal-ventas-membresias__input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.modal-ventas-membresias__input:focus {
+  outline: none;
+  border-color: #d20103;
+  box-shadow: 0 0 0 3px rgba(210, 1, 3, 0.08);
+}
+
+.modal-ventas-membresias__input--error {
+  border-color: #dc3545 !important;
+}
+
+.modal-ventas-membresias__error-text {
+  margin-top: 5px;
+  margin-bottom: 0;
+  color: #dc3545;
+  font-size: 12px;
+}
+
+.modal-ventas-membresias__select {
+  appearance: none;
+  background-color: #fff;
+}
+
+.modal-ventas-membresias__textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.modal-ventas-membresias__notes-readonly {
+  min-height: 100px;
+  background-color: #f9f9f9;
+  white-space: pre-wrap;
+}
+
+.modal-ventas-membresias__actions-row {
+  padding: 0;
+  margin-top: 0;
+  border-top: 1px solid #e5e7eb;
+}

@@ -1,0 +1,39 @@
+// Script de prueba para API de ngrok
+// Puedes ejecutar esto en la consola del navegador para probar la API
+
+// Función simple para probar la API de ngrok
+window.testNgrokAPI = async () => {
+  console.log('🔍 Probando API de ngrok...');
+
+  try {
+    const response = await fetch('https://totalitarian-punchily-lon.ngrok-free.dev/servicios', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+
+    console.log('📊 Response Status:', response.status);
+    console.log('📄 Content-Type:', response.headers.get('content-type'));
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('✅ API funcionando correctamente');
+      console.log('📋 Datos recibidos:', data);
+      return { success: true, data };
+    } else {
+      const errorText = await response.text();
+      console.log('❌ Error response:', errorText);
+      return { success: false, error: errorText };
+    }
+  } catch (error) {
+    console.log('❌ Error de conexión:', error.message);
+    return { success: false, error: error.message };
+  }
+};
+
+// También puedes probar directamente:
+// testNgrokAPI()
+
+console.log('🔧 Función de prueba disponible: testNgrokAPI()');

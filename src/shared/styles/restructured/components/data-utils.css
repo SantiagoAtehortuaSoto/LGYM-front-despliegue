@@ -1,0 +1,41 @@
+.roles-permisos-empty {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  font-size: 0.85rem;
+  color: #6b7280;
+  display: inline-block;
+}
+
+.roles-permisos-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 480px;
+}
+
+.roles-permisos-admin-total {
+  font-size: 0.85rem;
+  color: #111827;
+  font-weight: 600;
+}
+
+.roles-permisos-admin-list {
+  font-size: 0.8rem;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.roles-permisos-count {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.12);
+  color: #3730a3;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.data-producto-estado .badge-content {
+  min-width: 80px;
+}

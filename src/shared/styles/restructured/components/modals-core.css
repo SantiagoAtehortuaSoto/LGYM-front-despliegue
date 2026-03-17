@@ -1,0 +1,223 @@
+/* N?cleo compartido de modales */
+/* SuperposiciÃ³n base del modal */
+.capa-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* evita que quede pegado al header */
+    z-index: var(--z-modal-backdrop);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 76px 12px 12px;
+}
+
+.modal-overlay.capa-modal {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal-overlay.capa-modal.modal-core-overlay {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5000;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 12px;
+    overflow: hidden;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+/* Fuente unificada para todo el contenido de modales */
+.capa-modal,
+.contenedor-modal,
+.modal-contenido,
+.manners-modal-content,
+.confirm-modal-overlay,
+.confirm-modal-shell,
+.modal-pedido {
+  font-family: var(--font-sans, "Montserrat", "Segoe UI", sans-serif);
+}
+
+.capa-modal :is(button, input, select, textarea),
+.contenedor-modal :is(button, input, select, textarea),
+.modal-contenido :is(button, input, select, textarea),
+.manners-modal-content :is(button, input, select, textarea),
+.confirm-modal-shell :is(button, input, select, textarea),
+.modal-pedido :is(button, input, select, textarea) {
+  font-family: inherit;
+}
+
+/* Contenedor del modal */
+.contenedor-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 480px;
+  max-height: 86vh;
+  overflow: hidden;
+  position: relative;
+  z-index: var(--z-modal);
+  animation: fadeInModal 0.2s ease-out;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TamaÃ±os del modal */
+.modal-pequeno {
+  max-width: 400px;
+}
+
+.modal-mediano {
+  max-width: 620px;
+}
+
+.modal-grande {
+  max-width: 780px;
+}
+
+.modal-extra {
+  max-width: 88%;
+}
+
+.modal-core-shell {
+  background-color: #fff;
+  margin: 0;
+  padding: 16px;
+  border-radius: 12px;
+  width: min(92vw, 560px);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  cursor: default;
+}
+
+.modal-core-close {
+  color: #aaa;
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 10;
+  border: none;
+  background: transparent;
+  padding: 0;
+  line-height: 1;
+}
+
+.modal-core-header {
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+  color: #fff;
+  padding: 16px;
+  border-radius: 10px 10px 0 0;
+  margin: -16px -16px 14px -16px;
+}
+
+.modal-core-header-icon {
+  margin: 0 24px;
+  display: block;
+}
+
+.modal-core-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+/* Encabezado del modal */
+.encabezado-modal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+  border-radius: 8px 8px 0 0;
+}
+
+.botones-accion {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.boton-editar {
+  background-color: var(--color-secondary-blue);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.encabezado-modal h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.4;
+}
+
+/* Cuerpo del modal */
+.cuerpo-modal {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+/* Pie del modal */
+.pie-modal {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  background-color: white;
+  border-radius: 0 0 8px 8px;
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 0.85rem 1rem;
+  margin-top: auto;
+  flex-shrink: 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.contenedor-botones {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Utilidad modal renombrada para evitar colisiones */
+.modal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+

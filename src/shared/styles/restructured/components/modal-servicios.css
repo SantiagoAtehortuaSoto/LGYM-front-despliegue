@@ -1,0 +1,38 @@
+.modal-servicios__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-servicios__input--error {
+  border-color: #dc3545 !important;
+}
+
+.modal-servicios__error-text {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.modal-servicios__textarea {
+  border-color: #ccc;
+}
+
+.modal-servicios__view-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-servicios__view-textarea {
+  min-height: 120px;
+  background-color: #f9f9f9;
+  resize: none;
+}
+
+.modal-servicios__view-footer {
+  padding: 1rem 0 0;
+  border-top: 1px solid #e5e7eb;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}

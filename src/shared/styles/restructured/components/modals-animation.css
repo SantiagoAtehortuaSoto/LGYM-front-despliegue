@@ -1,0 +1,47 @@
+/* Shared modal opening animations */
+.capa-modal:not(.modal-core-overlay),
+.confirm-modal-overlay,
+.manners-modal-overlay {
+  animation: modal-overlay-fade-in 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.contenedor-modal:not([style*="transform"]),
+.modal-contenido:not([style*="transform"]),
+.confirm-modal-shell,
+.manners-modal-content {
+  animation: modal-surface-pop-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes modal-overlay-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-surface-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .capa-modal:not(.modal-core-overlay),
+  .confirm-modal-overlay,
+  .manners-modal-overlay,
+  .contenedor-modal:not([style*="transform"]),
+  .modal-contenido:not([style*="transform"]),
+  .confirm-modal-shell,
+  .manners-modal-content {
+    animation: none;
+  }
+}

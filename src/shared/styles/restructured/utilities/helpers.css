@@ -1,0 +1,46 @@
+/* Helpers utilitarios compartidos */
+/* Clases de utilidad */
+.flex {
+  display: flex;
+}
+
+.justificar-entre {
+  justify-content: space-between;
+}
+
+.espacio-2 {
+  gap: 0.5rem;
+}
+
+.espacio-3 {
+  gap: 0.75rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.texto-pequeno {
+  font-size: 0.875rem;
+}
+
+.texto-gris-600 {
+  color: #4b5563 !important;
+}
+
+.texto-negro {
+  color: #000 !important;
+}
+
+.medio {
+  font-weight: 500;
+}
+
+.centrar-modal {
+  justify-content: center;
+  align-items: center;
+}

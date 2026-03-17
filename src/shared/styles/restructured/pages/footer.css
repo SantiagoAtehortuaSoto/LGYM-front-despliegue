@@ -1,0 +1,212 @@
+/* Footer */
+/* ===== Fuentes ===== *//* ===== Variables =====
+   AJUSTA --top-bg AL COLOR EXACTO DEL BLOQUE SUPERIOR  */
+:root {
+  --top-bg: #f4f4f4;      /* color del bloque superior */
+  --wave-height: 120px;   /* altura visible de la ola (sube/baja aquí) */
+}
+
+/* ===== Footer base ===== */
+.footer-animado {
+  position: relative;
+  width: 100%;
+  background: #e41000; /* rojo del footer */
+  min-height: 260px;
+  /* empuja el contenido por DEBAJO de la ola */
+  padding: calc(var(--wave-height) + 28px) 20px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  color: #fff;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Capa “tapafugas” para cubrir cualquier hairline recta bajo la ola */
+.footer-animado::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--wave-height) - 1px);
+  left: 0; right: 0;
+  height: 3px;                 /* fino, sólo para cubrir líneas */
+  background: #e41000;         /* mismo rojo del footer */
+  z-index: 2;                  /* por encima de la máscara */
+  pointer-events: none;
+}
+
+/* ===== Contenido (3 columnas) ===== */
+.contenido-pie-pagina {
+  position: relative;
+  z-index: 3; /* por encima de la ola y burbujas */
+  width: 100%;
+  max-width: 1200px;
+  margin: 0;                 /* sin márgenes extra arriba */
+  padding: 0 20px;
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 36px 32px;
+}
+
+.contenido-pie-pagina > div { min-width: 0; }
+
+.contenido-pie-pagina h3 {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  margin: 0 0 14px 0;
+  color: #fff;
+  letter-spacing: .2px;
+}
+
+/* Texto con iconos (contacto) */
+.contenido-pie-pagina p {
+  margin: 8px 0;
+  color: #fff;
+  display: flex;
+  align-items: center;      /* icono alineado con texto */
+  gap: 10px;                /* espacio icono-texto */
+  line-height: 1.45;
+  font-size: 13px;
+}
+.contenido-pie-pagina p svg { flex: 0 0 auto; }
+
+/* Enlaces rápidos: lista VERTICAL */
+.contenido-pie-pagina a {
+  display: block;           /* uno debajo de otro */
+  margin: 6px 0;
+  font-size: 13px;
+  color: #fff;
+  text-decoration: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.contenido-pie-pagina a:hover {
+  opacity: .9;
+  transform: translateX(1px);
+}
+
+/* ===== Sociales / línea / copyright ===== */
+.sociales {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 24px 0 10px;
+}
+.sociales svg {
+  width: 25px; height: 25px;
+  cursor: pointer;
+  transition: transform .25s, opacity .25s;
+  opacity: .95;
+}
+.sociales svg:hover { transform: scale(1.1); opacity: 1; }
+
+.linea {
+  position: relative;
+  z-index: 3;
+  width: 90%;
+  height: 1px;
+  background: rgba(255,255,255,.3);
+  margin: 12px auto;
+}
+.copyright {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 12px;
+  opacity: .85;
+}
+
+/* =================================================================== */
+/* ===============  OLA ÚNICA (seamless y arriba)  =================== */
+/* =================================================================== */
+.ola-mascara {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: var(--wave-height);   /* usa la variable para coherencia */
+  background: var(--top-bg);    /* color EXACTO del bloque superior */
+  z-index: 1;
+  pointer-events: none;
+  backface-visibility: hidden;  /* evita hairlines en algunos navegadores */
+
+  /* Tile de 1200px: inicio/fin MISMA altura y pendiente → sin cortes */
+  -webkit-mask-image: url('data:image/svg+xml;utf8,\
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="120" viewBox="0 0 1200 120">\
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">\
+<stop offset="0" stop-color="white"/><stop offset="0.78" stop-color="white"/>\
+<stop offset="0.80" stop-color="black"/><stop offset="1" stop-color="black"/>\
+</linearGradient></defs>\
+<!-- Seamless: arranca/termina en y=76 con misma pendiente -->\
+<path fill=\"url(%23g)\" d=\"M0,0 H1200 V76 \
+C1075,66  925,88  800,76 \
+C675,64   525,88  400,76 \
+C275,66   125,88  0,76 V0 Z\"/>\
+</svg>');
+  mask-image: url('data:image/svg+xml;utf8,\
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="120" viewBox="0 0 1200 120">\
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">\
+<stop offset="0" stop-color="white"/><stop offset="0.78" stop-color="white"/>\
+<stop offset="0.80" stop-color="black"/><stop offset="1" stop-color="black"/>\
+</linearGradient></defs>\
+<path fill=\"url(%23g)\" d=\"M0,0 H1200 V76 \
+C1075,66  925,88  800,76 \
+C675,64   525,88  400,76 \
+C275,66   125,88  0,76 V0 Z\"/>\
+</svg>');
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+
+  -webkit-mask-size: 1200px 120px;
+  mask-size: 1200px 120px;
+  -webkit-mask-position: 0% 100%;
+  mask-position: 0% 100%;
+
+  animation: wave-mask-move 20s linear infinite; /* velocidad */
+  will-change: mask-position, -webkit-mask-position;
+}
+
+@keyframes wave-mask-move {
+  from { -webkit-mask-position: 0% 100%;     mask-position: 0% 100%; }
+  to   { -webkit-mask-position: -1200px 100%; mask-position: -1200px 100%; }
+}
+
+/* =================================================================== */
+/* ========================  Burbujas (opcional)  ==================== */
+/* =================================================================== */
+.burbujas {
+  position: absolute; inset: 0; overflow: hidden;
+  z-index: 2;
+}
+.burbujas span{
+  position:absolute; bottom:-150px; width:40px; height:40px;
+  background:#fff; opacity:.22; border-radius:50%;
+  box-shadow:0 0 10px rgba(255,255,255,.35), 0 0 28px rgba(255,255,255,.2);
+  animation:bubble-rise 20s linear infinite; will-change:transform,opacity;
+}
+.burbujas span:nth-child(1){ left: 8%;  animation-delay:0s;  animation-duration:12s; --drift:12px; }
+.burbujas span:nth-child(2){ left:18%; width:22px; height:22px; animation-delay:2s;  animation-duration:14s; --drift:-16px; }
+.burbujas span:nth-child(3){ left:30%; animation-delay:4s;  animation-duration:16s; --drift:20px; }
+.burbujas span:nth-child(4){ left:43%; width:60px; height:60px; animation-delay:0s;  animation-duration:18s; --drift:-10px; }
+.burbujas span:nth-child(5){ left:55%; animation-delay:3s;  animation-duration:15s; --drift:14px; }
+.burbujas span:nth-child(6){ left:66%; width:50px; height:50px; animation-delay:5s;  animation-duration:20s; --drift:-18px; }
+.burbujas span:nth-child(7){ left:73%; width:28px; height:28px; animation-delay:1s;  animation-duration:17s; --drift:10px; }
+.burbujas span:nth-child(8){ left:82%; width:18px; height:18px; animation-delay:6s;  animation-duration:13s; --drift:-8px; }
+.burbujas span:nth-child(9){ left:88%; width:44px; height:44px; animation-delay:3s;  animation-duration:21s; --drift:16px; }
+.burbujas span:nth-child(10){left:93%; width:32px; height:32px; animation-delay:7s;  animation-duration:19s; --drift:-12px; }
+
+@keyframes bubble-rise{
+  0%   { transform:translate3d(0,0,0) scale(1);   opacity:.18; }
+  50%  { transform:translate3d(calc(var(--drift,0px)*.5), -520px, 0) scale(1.25); opacity:.24; }
+  100% { transform:translate3d(var(--drift,0px), -1050px,0) scale(1.5); opacity:0; }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 992px) {
+  .contenido-pie-pagina { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+}
+@media (max-width: 640px) {
+  .contenido-pie-pagina { grid-template-columns: 1fr; }
+}

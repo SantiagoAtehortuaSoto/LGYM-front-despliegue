@@ -1,0 +1,17 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lgym-frontend:latest
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    environment:
+      VITE_API_BASE_URL: "${VITE_API_BASE_URL:-http://localhost:3000}"
+      VITE_API_URL: "${VITE_API_URL:-}"
+      VITE_API_URL_OVERRIDE: "${VITE_API_URL_OVERRIDE:-false}"
+      VITE_API_PATH_PREFIX: "${VITE_API_PATH_PREFIX:-}"
+      VITE_DEV_USE_PROXY: "${VITE_DEV_USE_PROXY:-false}"
+      VITE_API_PRODUCTOS_URL: "${VITE_API_PRODUCTOS_URL:-}"
+      VITE_DIAS_PLAZO_RECLAMO: "${VITE_DIAS_PLAZO_RECLAMO:-3}"
+    restart: unless-stopped

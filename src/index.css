@@ -1,0 +1,48 @@
+:root {
+  --primarColor: #d7301f;
+  --backgroundColor: #FFFFFF;
+  --sidebarColor: #0d1e4c;
+  --sidebardashboard: #E8EAE5;
+  --modalbackground: #FFFAFE;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  background-color: var(--backgroundColor);
+}
+
+.view-more{
+  background-color: #68A4F1;
+}
+
+.view-more:hover{
+  background-color: #4d97ff;
+}
+
+.edit{
+  background-color: #F29D01
+}
+
+.edit:hover{
+  background-color: #ffa600;
+}
+
+.delete{
+  background-color: #ff3a0f;
+}
+
+.delete:hover{
+  background-color: #f83200;
+}
+
+.create{
+  background-color: #00ff5b;
+}
+
+.create:hover{
+  background-color: #00e24f;
+}

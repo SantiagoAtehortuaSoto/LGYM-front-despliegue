@@ -1,0 +1,8 @@
+.pedidos-admin-numero {
+  display: inline-block;
+  min-width: 120px;
+}
+
+.pedidos-admin-error-text {
+  color: #dc2626;
+}

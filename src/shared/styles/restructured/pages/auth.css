@@ -1,0 +1,625 @@
+/* Auth */
+/* ===== Reset general ===== */
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: var(--font-sans);
+}
+
+/* ===== Fondo principal ===== */
+.contenedor-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    background: url("../../../../assets/fondo_login_nuevaera.png") center/cover no-repeat;
+    position: relative;
+    padding: 5vh 20px;
+    box-sizing: border-box;
+}
+
+.contenedor-login::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+    z-index: 0;
+}
+
+/* ===== Formulario principal ===== */
+.login-formulario {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(18px);
+    border-radius: 14px;
+    padding: 2rem 3rem;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 4px 40px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+    animation: fadeIn 0.8s ease forwards;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.login-formulario .register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 850px;
+}
+
+/* ===== Registro (modo expandido) ===== */
+.registro-activo .login-formulario {
+    max-width: 1150px;
+    padding: 2.5rem 3rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* ===== Logo y títulos ===== */
+.logo-acceder {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.logo-acceder img {
+    width: 110px;
+    height: auto;
+    margin-bottom: 0.8rem;
+    user-select: none;
+}
+
+.titulo {
+    font-size: clamp(1.4rem, 2vw, 1.8rem);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.4rem;
+}
+
+.subtitulo {
+    font-size: 0.95rem;
+    color: #d1d5db;
+    margin-bottom: 1.8rem;
+}
+
+/* ===== Etiquetas ===== */
+.grupo-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #f87171;
+    margin-bottom: 6px;
+    text-align: left;
+}
+
+.icono-label {
+    color: #f87171;
+}
+
+/* ===== Inputs con icono ===== */
+.input-icono {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1.2rem;
+}
+
+.input-icono input,
+.input-icono select,
+.input-icono textarea {
+    width: 100%;
+    padding: 11px 14px 11px 38px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 0.9rem;
+    outline: none;
+    transition:
+        border-color 0.3s ease,
+        background 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.input-icono input:focus,
+.input-icono select:focus,
+.input-icono textarea:focus {
+    border-color: #dc2626;
+    background: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
+}
+
+.input-icono .icono {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #f87171;
+    font-size: 1rem;
+    pointer-events: none;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #f87171;
+    cursor: pointer;
+}
+
+/* ===== GRID Registro ===== */
+.grid-registro {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem 1.4rem;
+    width: 100%;
+    text-align: left;
+}
+
+/* Campos generales */
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== Ajuste SOLO para los inputs del LOGIN ===== */
+/* Cuando NO estamos en modo registro, hacer que email y password
+   ocupen todo el ancho disponible y queden centrados como en tu diseño */
+.contenedor-login:not(.registro-activo) .campo-email,
+.contenedor-login:not(.registro-activo) .campo-password {
+    width: 100%;
+    max-width: 360px;
+}
+
+/* ===== Inputs, selects y textareas ===== */
+.campo input,
+.campo select,
+.campo textarea {
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: white;
+    outline: none;
+    font-size: 0.9rem;
+    transition:
+        border-color 0.3s ease,
+        background 0.3s ease;
+}
+
+.campo textarea {
+    min-height: 42px;
+    resize: vertical;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    border-color: #dc2626;
+    background: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
+}
+
+.campo select option {
+    background: #1f1f1f;
+    color: #fff;
+}
+
+/* Cuando hay error, solo enfatizar el input, no destruir el layout */
+.campo.con-error input,
+.campo.con-error select,
+.campo.con-error textarea {
+    border-color: #f97373;
+    box-shadow: 0 0 0 1px rgba(249, 115, 129, 0.3);
+}
+
+/* ===== BOTÓN ===== */
+.boton-login {
+    width: 280px;
+    padding: 13px;
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.3s ease;
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
+}
+
+.boton-login:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 18px rgba(220, 38, 38, 0.6);
+    animation: glow 1.5s infinite ease-in-out;
+}
+
+.boton-login:active {
+    transform: scale(0.97);
+}
+
+.acciones {
+    display: flex;
+    justify-content: center;
+    grid-column: 1 / -1;
+    margin-top: 1.5rem;
+}
+
+.acciones--stacked {
+    flex-direction: column;
+    gap: 12px;
+}
+
+.boton-link--muted {
+    opacity: 0.6;
+}
+
+/* ===== Enlaces ===== */
+.olvido,
+.registro span,
+.volver {
+    color: #f87171;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.olvido:hover,
+.registro span:hover,
+.volver:hover {
+    text-decoration: underline;
+    color: #fff;
+}
+
+.registro {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* ===== Mensajes debajo de inputs (errores / info / OK) ===== */
+.mensaje-error,
+.mensaje-ok,
+.mensaje-info {
+    margin-top: 6px;
+    font-size: 0.8rem;
+    line-height: 1.3;
+}
+
+.mensaje-error {
+    color: #fecaca;
+    /* rojo suave */
+}
+
+.mensaje-ok {
+    color: #bbf7d0;
+    /* verde suave */
+}
+
+.mensaje-info {
+    color: #fcd34d;
+    /* amarillo suave */
+}
+
+/* Hint genérico */
+.hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+/* Estados de input (verde/rojo suave) */
+input.input-error,
+select.input-error,
+textarea.input-error {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
+}
+
+input.input-valid,
+select.input-valid,
+textarea.input-valid {
+    border-color: #22c55e !important;
+    /* verde */
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15) !important;
+}
+
+/* Contenedor para puntito de estado junto al email/documento */
+.input-con-status {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-con-status input {
+    width: 100%;
+    padding-right: 34px;
+    /* espacio para el puntito */
+}
+
+/* Indicador circular de estado (a la derecha del input) */
+.status-dot {
+    position: absolute;
+    right: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 9999px;
+    background: transparent;
+    opacity: 0.9;
+}
+
+.status-dot.ok {
+    background: #22c55e;
+    /* verde disponible */
+}
+
+.status-dot.taken {
+    background: #dc2626;
+    /* rojo tomado */
+}
+
+.status-dot.checking {
+    background: #f59e0b;
+    /* ámbar verificando */
+    animation: pulseDot 1s infinite ease-in-out;
+}
+
+/* Animación suave para "verificando..." */
+@keyframes pulseDot {
+
+    0%,
+    100% {
+        transform: scale(0.9);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+/* ===== Botón secundario: .boton-link ===== */
+.boton-link {
+    --fg: #f87171;
+    --fg-hover: #ffffff;
+    --border: rgba(248, 113, 113, 0.45);
+    --border-hover: rgba(248, 113, 113, 0.85);
+    --bg: rgba(255, 255, 255, 0.06);
+    --bg-hover: rgba(255, 255, 255, 0.14);
+
+    appearance: none;
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    user-select: none;
+    backdrop-filter: blur(10px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 200px;
+    text-align: center;
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.15s ease,
+        box-shadow 0.25s ease;
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.06) inset,
+        0 6px 18px rgba(0, 0, 0, 0.28),
+        0 0 8px rgba(220, 38, 38, 0.22);
+}
+
+.boton-link:hover {
+    background: var(--bg-hover);
+    color: var(--fg-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-1px);
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.08) inset,
+        0 10px 26px rgba(0, 0, 0, 0.35),
+        0 0 16px rgba(220, 38, 38, 0.35);
+}
+
+.boton-link:active {
+    transform: translateY(0);
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.06) inset,
+        0 6px 18px rgba(0, 0, 0, 0.28),
+        0 0 10px rgba(220, 38, 38, 0.28);
+}
+
+.boton-link[disabled],
+.boton-link[aria-busy="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    filter: grayscale(10%);
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.05) inset,
+        0 4px 12px rgba(0, 0, 0, 0.22);
+}
+
+.boton-link:focus-visible {
+    outline: none;
+    box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.25),
+        0 0 0 6px rgba(220, 38, 38, 0.55),
+        0 6px 18px rgba(0, 0, 0, 0.28);
+}
+
+/* Espaciado entre botones dentro de .acciones */
+.acciones .boton-link+.boton-link {
+    margin-top: 8px;
+}
+
+/* ===== RESPONSIVIDAD ===== */
+@media (max-width: 1000px) {
+    .registro-activo .login-formulario {
+        max-width: 95%;
+        padding: 2rem;
+    }
+
+    .grid-registro {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem 1rem;
+    }
+
+    .boton-login {
+        width: 100%;
+        max-width: 360px;
+    }
+}
+
+@media (max-width: 700px) {
+    .registro-activo .login-formulario {
+        max-width: 95%;
+        padding: 1.8rem;
+    }
+
+    .grid-registro {
+        grid-template-columns: 1fr;
+    }
+
+    .boton-login {
+        width: 100%;
+    }
+
+    .titulo {
+        font-size: 1.25rem;
+    }
+
+    .subtitulo {
+        font-size: 0.85rem;
+    }
+}
+
+/* ===== Efecto glow ===== */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(220, 38, 38, 0.8);
+    }
+
+    100% {
+        box-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
+    }
+}
+
+/* Animación de fadeIn del contenedor principal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* tarjeta un poco más ancha pero sin tocar login */
+.login-formulario.verificar-card {
+    max-width: 480px;
+    padding: 2.5rem 3rem 3rem;
+}
+
+/* envoltorio para centrar el formulario */
+.verificar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* formulario angosto y centrado */
+.verificar-form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    gap: 1rem;
+}
+
+/* cada campo ocupa todo el ancho del form */
+.verificar-form .campo {
+    width: 100%;
+}
+
+.verificar-form .campo input {
+    width: 100%;
+}
+
+/* alineación de label + icono */
+.verificar-form .grupo-label {
+    justify-content: flex-start;
+}
+
+/* botón principal a ancho completo */
+.verificar-form .acciones {
+    margin-top: 1.5rem;
+}
+
+.verificar-form .boton-login {
+    width: 100%;
+    max-width: none;
+}
+
+/* botón "Reenviar código" también ancho completo */
+.verificar-form .verificar-reenviar {
+    width: 100%;
+    margin-top: 0.75rem;
+}
+
+/* separador inferior del texto "¿Ya verificaste tu cuenta?" */
+.verificar-registro {
+    margin-top: 1.2rem;
+}
+
+/* input del código estilo OTP */
+.codigo-verificacion-input input {
+    text-align: center;
+    font-size: 1.1rem;
+    letter-spacing: 0.28em;
+    padding-right: 14px;
+}
+
+/* responsive para móvil */
+@media (max-width: 700px) {
+    .login-formulario.verificar-card {
+        max-width: 95%;
+        padding: 2rem 1.6rem 2.4rem;
+    }
+
+    .verificar-form {
+        max-width: 100%;
+    }
+}

@@ -1,0 +1,18 @@
+.pedidos-usuario-producto {
+  display: inline-block;
+  min-width: 180px;
+  font-weight: 500;
+  color: #1f2937;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.pedidos-usuario-msg {
+  margin: 0 0 12px;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.pedidos-usuario-msg--error {
+  color: #dc3545;
+}

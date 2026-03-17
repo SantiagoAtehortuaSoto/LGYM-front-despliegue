@@ -1,0 +1,190 @@
+.citas-admin-page {
+  padding: 0 1.25rem 1rem;
+}
+
+.citas-admin-page .encabezado-acciones,
+.citas-admin-page .citas-admin-layout {
+  width: min(100%, 1360px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.citas-admin-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+  gap: 1.2rem;
+  align-items: stretch;
+  padding: 0.25rem 0.5rem 0.5rem;
+}
+
+.citas-admin-stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.95rem;
+  padding: 0.2rem 0.35rem;
+  min-height: 560px;
+}
+
+.citas-admin-stat-card {
+  text-align: left;
+  border: none;
+  width: min(100%, 360px);
+  margin-inline: auto;
+}
+
+.citas-admin-stat-card .card-footer {
+  text-transform: none;
+}
+
+.citas-admin-stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.citas-admin-calendar-wrap {
+  min-width: 0;
+}
+
+.citas-admin-calendar-wrap .calendario-citas {
+  width: 100%;
+  padding: 0;
+}
+
+/* Compactar calendario admin para que luzca como la vista de usuario */
+.citas-admin-page .citas-admin-calendar-wrap {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 0.7rem 0.75rem 0.8rem;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+}
+
+.citas-admin-page .citas-admin-calendar-wrap .calendario-citas {
+  min-height: 560px;
+  padding: 0 0.35rem 0.35rem;
+}
+
+.citas-admin-page .citas-admin-calendar-wrap .calendario-citas .fc {
+  min-height: 560px !important;
+  height: 560px !important;
+}
+
+.citas-admin-page .citas-admin-calendar-wrap .calendario-citas .fc .fc-scrollgrid {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.citas-admin-page .citas-admin-calendar-wrap .calendario-citas .fc-header-toolbar {
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 0.85rem;
+}
+
+.citas-admin-page .citas-admin-calendar-wrap .calendario-citas .fc .fc-daygrid-day-frame {
+  min-height: 82px;
+}
+
+.citas-admin-page .citas-admin-calendar-wrap .calendario-citas .fc .fc-col-header-cell-cushion {
+  padding: 0.45rem 0.3rem;
+}
+
+.citas-admin-proximas-modal {
+  max-height: 62vh;
+  overflow-y: auto;
+  padding-right: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.citas-admin-proximas-empty {
+  margin: 0;
+  text-align: center;
+  color: #64748b;
+  padding: 1rem 0;
+}
+
+.citas-admin-proxima-card {
+  width: 100%;
+  text-align: left;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  padding: 0.75rem 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.citas-admin-proxima-card:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.14);
+  transform: translateY(-1px);
+}
+
+.citas-admin-proxima-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.45rem;
+}
+
+.citas-admin-proxima-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  color: #475569;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 1100px) {
+  .citas-admin-page {
+    padding: 0 0.8rem 0.9rem;
+  }
+
+  .citas-admin-layout {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+
+  .citas-admin-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    justify-content: initial;
+    padding: 0;
+    min-height: auto;
+  }
+
+  .citas-admin-stat-card {
+    width: 100%;
+    margin-inline: 0;
+  }
+
+  .citas-admin-page .citas-admin-calendar-wrap {
+    padding: 0.65rem 0.65rem 0.75rem;
+  }
+
+  .citas-admin-page .citas-admin-calendar-wrap .calendario-citas {
+    min-height: 500px;
+  }
+
+  .citas-admin-page .citas-admin-calendar-wrap .calendario-citas .fc {
+    min-height: 500px !important;
+    height: 500px !important;
+  }
+}
+
+@media (max-width: 820px) {
+  .citas-admin-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .citas-admin-page .citas-admin-calendar-wrap .calendario-citas {
+    min-height: auto;
+    padding: 0;
+  }
+
+  .citas-admin-page .citas-admin-calendar-wrap .calendario-citas .fc {
+    min-height: auto !important;
+    height: auto !important;
+  }
+}

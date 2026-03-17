@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: lgym-frontend
+    runtime: docker
+    healthCheckPath: /healthz
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
+      - key: VITE_API_URL
+        value: ""
+      - key: VITE_API_URL_OVERRIDE
+        value: "false"
+      - key: VITE_API_PATH_PREFIX
+        value: ""
+      - key: VITE_API_PRODUCTOS_URL
+        value: ""
+      - key: VITE_DEV_USE_PROXY
+        value: "false"
+      - key: VITE_DIAS_PLAZO_RECLAMO
+        value: "3"

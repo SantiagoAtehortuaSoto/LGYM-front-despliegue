@@ -1,0 +1,43 @@
+/* Programar citas */
+.empty-state-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem;
+    /* Medium padding */
+    background-color: #f9fafb;
+    border-radius: 10px;
+    /* Medium radius */
+    border: 1px dashed #e5e7eb;
+    margin: 1.5rem auto;
+    /* Centered with medium margin */
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    /* Wider max-width for better presence */
+}
+
+.empty-state-icon {
+    color: #9ca3af;
+    margin-bottom: 1rem;
+    /* Medium spacing */
+    opacity: 0.8;
+}
+
+.empty-state-title {
+    color: #374151;
+    font-size: 1.15rem;
+    /* Medium font size */
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-description {
+    color: #6b7280;
+    font-size: 0.95rem;
+    /* Medium text size */
+    max-width: 450px;
+    line-height: 1.5;
+    margin: 0;
+}

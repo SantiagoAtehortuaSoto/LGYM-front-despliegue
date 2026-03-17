@@ -1,0 +1,19 @@
+.asistencias-toggle-group {
+  display: flex;
+  gap: 8px;
+}
+
+.asistencias-toggle-btn.is-active-clientes {
+  background-color: #dc2626;
+  color: #fff;
+}
+
+.asistencias-toggle-btn.is-active-empleados {
+  background-color: #1f2937;
+  color: #fff;
+}
+
+.asistencias-error {
+  color: #dc2626;
+  margin-top: 8px;
+}

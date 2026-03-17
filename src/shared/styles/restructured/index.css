@@ -1,0 +1,37 @@
+@import "./settings/tokens.css";
+@import "./settings/fonts.css";
+@import "./base/reset.css";
+@import "./base/animations.css";
+@import "./base/scrollbar.css";
+@import "./utilities/helpers.css";
+
+@import "./layout/dashboard-shell.css";
+@import "./layout/sidebar-nav.css";
+@import "./layout/header-dashboard.css";
+@import "./layout/header-landing.css";
+
+@import "./components/forms.css";
+@import "./components/tables.css";
+@import "./components/badges.css";
+@import "./components/modals-core.css";
+@import "./components/modals-dashboard.css";
+@import "./components/modals-manners.css";
+@import "./components/modals-animation.css";
+@import "./components/calendar.css";
+@import "./components/cart.css";
+@import "./components/loading.css";
+@import "./components/agendarCitas.css";
+@import "./components/calendarioCitas.css";
+@import "./components/data-utils.css";
+
+@import "./pages/auth.css";
+@import "./pages/configuration.css";
+@import "./pages/landing-home.css";
+@import "./pages/landing-products.css";
+@import "./pages/landing-services.css";
+@import "./pages/landing-contact.css";
+@import "./pages/footer.css";
+@import "./pages/not-found.css";
+@import "./pages/dashboard-admin-home.css";
+@import "./pages/dashboard-user-home.css";
+@import "./pages/programar-citas.css";

@@ -1,0 +1,92 @@
+.seguimiento-user-status .badge-content {
+  min-width: 96px;
+  height: 32px;
+  padding: 0 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: capitalize;
+}
+
+.seguimiento-user-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  margin-left: auto;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.seguimiento-user-filter-control {
+  display: flex;
+  align-items: center;
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid #d4d4d8;
+  background-color: #fff;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  transition: all 0.2s ease;
+  min-width: 0;
+}
+
+.seguimiento-user-filter-period {
+  width: 158px;
+  flex: 0 0 158px;
+  padding: 0 7px;
+  gap: 6px;
+  order: 2;
+}
+
+.seguimiento-user-filter-select {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 12.5px;
+  color: #1f2937;
+  width: 100%;
+  min-width: 0;
+  font-weight: 500;
+  padding-right: 2px;
+}
+
+.seguimiento-user-filter-search {
+  min-width: 280px;
+  max-width: 420px;
+  flex: 0 1 360px;
+  padding: 0 16px;
+  gap: 12px;
+  order: 3;
+  border-radius: 999px;
+}
+
+.seguimiento-user-search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 17px;
+  color: #0f172a;
+  width: 100%;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.seguimiento-user-filter-icon {
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.seguimiento-user-clear-btn {
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  background-color: #f8fafc;
+  color: #334155;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  order: 1;
+  white-space: nowrap;
+}

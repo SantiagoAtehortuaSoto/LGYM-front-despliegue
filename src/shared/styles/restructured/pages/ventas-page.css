@@ -1,0 +1,34 @@
+.ventas-page .table-container {
+    width: 100%;
+    min-width: 0;
+}
+
+.ventas-page .table-container .contenedor-tabla {
+    width: 100%;
+    max-width: min(1280px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Evita que la tabla se desborde en tamaños intermedios y mantiene scroll horizontal */
+@media (min-width: 769px) and (max-width: 1200px) {
+    .ventas-page .table-container .contenedor-tabla {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .ventas-page .table-container .tabla-datos {
+        min-width: 980px;
+    }
+}
+
+/* En móvil, la tabla ya usa su layout responsive por filas */
+@media (max-width: 768px) {
+    .ventas-page .table-container .contenedor-tabla {
+        max-width: 100%;
+    }
+
+    .ventas-page .table-container .tabla-datos {
+        min-width: 0;
+    }
+}

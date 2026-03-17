@@ -1,0 +1,66 @@
+RRN_BACKUP_NAME=status_modal_state_palette
+DATE=2026-02-17
+OWNER=dashboard_frontend
+
+[purpose]
+Save status-tone mapping for ConfirmModal state changes.
+Use this file as rollback reference if style or tone rules are reverted.
+
+[previous_behavior_before_refactor]
+activate=green
+deactivate=orange
+warning=orange
+default=blue
+delete=red
+reset=fallback_to_default_blue
+
+[requested_policy]
+inactivo_or_cancelado=red
+activo_or_completado=green
+en_proceso=blue
+pendiente=orange
+
+[active_mapping]
+1=success
+2=danger
+3=warning
+4=info
+5=success
+6=danger
+ACTIVO=success
+INACTIVO=danger
+PENDIENTE=warning
+EN_PROCESO=info
+COMPLETADO=success
+CANCELADO=danger
+PAGADA=success
+ANULADA=danger
+
+[type_fallback_mapping]
+activate=success
+deactivate=danger
+warning=warning
+reset=warning
+default=info
+process=info
+delete=danger
+
+[files_updated_to_send_target_status]
+LGYM/src/features/dashboard/components/dataTables/dataTable.jsx
+LGYM/src/features/dashboard/components/dataTables/badgesEstado.jsx
+LGYM/src/features/dashboard/pages/admin/Clientes/clientes.jsx
+LGYM/src/features/dashboard/pages/admin/servicios/servicios.jsx
+LGYM/src/features/dashboard/pages/admin/Roles/Roles.jsx
+LGYM/src/features/dashboard/pages/admin/Membresias/Membresias.jsx
+LGYM/src/features/dashboard/pages/admin/Empleados/empleados.jsx
+LGYM/src/features/dashboard/pages/admin/productos/modales-productos.jsx
+LGYM/src/features/dashboard/pages/admin/Roles/modalRoles.jsx
+LGYM/src/features/dashboard/pages/admin/pedidos/Pedidos.jsx
+LGYM/src/features/dashboard/pages/admin/pedidos/modales-pedidos.jsx
+LGYM/src/features/dashboard/pages/beneficiario/pedidos/modalPedido.jsx
+LGYM/src/features/dashboard/pages/admin/Ventas/ventas.jsx
+
+[rollback_hint]
+If you want the old visual behavior:
+1) Restore LGYM/src/shared/components/ConfirmModal/confirmModal.jsx.
+2) Remove targetStatus props from files listed above.

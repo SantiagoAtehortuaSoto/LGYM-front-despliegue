@@ -1,0 +1,79 @@
+.modal-programar-cita__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-programar-cita__card {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.modal-programar-cita__section-title {
+  margin: 0 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #28a745;
+  color: #333;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.modal-programar-cita__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.modal-programar-cita__field {
+  margin-bottom: 0;
+}
+
+.modal-programar-cita__label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 700;
+  color: #555;
+}
+
+.modal-programar-cita__required {
+  color: #dc3545;
+}
+
+.modal-programar-cita__input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.modal-programar-cita__input:focus {
+  outline: none;
+  border-color: #d20103;
+  box-shadow: 0 0 0 3px rgba(210, 1, 3, 0.08);
+}
+
+.modal-programar-cita__input--error {
+  border-color: #dc3545 !important;
+}
+
+.modal-programar-cita__error-text {
+  margin-top: 5px;
+  margin-bottom: 0;
+  color: #dc3545;
+  font-size: 12px;
+}
+
+.modal-programar-cita__textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.modal-programar-cita__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}

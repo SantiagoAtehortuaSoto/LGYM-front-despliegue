@@ -1,0 +1,28 @@
+server {
+  listen ${PORT};
+  server_name _;
+
+  root /usr/share/nginx/html;
+  index index.html;
+
+  location = /healthz {
+    access_log off;
+    default_type text/plain;
+    return 200 "ok";
+  }
+
+  location = /env-config.js {
+    add_header Cache-Control "no-store, no-cache, must-revalidate";
+    try_files $uri =404;
+  }
+
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+
+  location ~* \.(?:css|gif|ico|jpeg|jpg|js|png|svg|woff2?)$ {
+    expires 7d;
+    add_header Cache-Control "public, max-age=604800";
+    try_files $uri =404;
+  }
+}
