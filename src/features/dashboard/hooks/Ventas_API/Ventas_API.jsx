@@ -29,6 +29,12 @@ const ESTADO_ID_MAP = {
 const sanitizeBearer = (token) =>
   token ? String(token).replace(/^Bearer\s+/i, "").trim() : undefined;
 
+const toRuntimeUrl = (value) =>
+  new URL(
+    value,
+    typeof window !== "undefined" ? window.location.origin : "http://localhost"
+  );
+
 const normalizeOptions = (options) => {
   if (typeof options === "string") return { token: options };
   return options || {};
@@ -359,7 +365,7 @@ const buildVentaPayload = (venta) => {
 
 export const obtenerDetallesVentas = async (options) => {
   const { token, query = {} } = normalizeOptions(options);
-  const url = new URL(URL_VENTAS_DETALLES);
+  const url = toRuntimeUrl(URL_VENTAS_DETALLES);
   Object.entries(query).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== "") {
       url.searchParams.set(k, String(v));
@@ -374,14 +380,14 @@ export const obtenerDetallesVentas = async (options) => {
 
 const obtenerVentasDesdeEndpoint = async (urlListado, options) => {
   const { token, query = {} } = normalizeOptions(options);
-  const urlVentas = new URL(urlListado);
+  const urlVentas = toRuntimeUrl(urlListado);
   Object.entries(query).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== "") {
       urlVentas.searchParams.set(k, String(v));
     }
   });
 
-  const urlDetalles = new URL(URL_VENTAS_DETALLES);
+  const urlDetalles = toRuntimeUrl(URL_VENTAS_DETALLES);
   Object.entries(query).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== "") {
       urlDetalles.searchParams.set(k, String(v));

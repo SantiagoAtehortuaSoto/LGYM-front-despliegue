@@ -13,6 +13,12 @@ function sanitizeBearer(token) {
   return token.replace(/^Bearer\s+/i, "");
 }
 
+const toRuntimeUrl = (value) =>
+  new URL(
+    value,
+    typeof window !== "undefined" ? window.location.origin : "http://localhost"
+  );
+
 async function logAndFetch(label, url, init = {}) {
   const method = (init.method || "GET").toUpperCase();
 
@@ -33,7 +39,7 @@ async function logAndFetch(label, url, init = {}) {
    GET: Listado de membresías (con detalles incluidos)
 ====================================================== */
 export async function getMembresias({ token, query = {}, extraHeaders = {} } = {}) {
-  const u = new URL(URL_MEMBRESIA);
+  const u = toRuntimeUrl(URL_MEMBRESIA);
   Object.entries(query).forEach(([k, v]) => {
     if (v !== undefined && v !== null) u.searchParams.set(k, String(v));
   });
@@ -212,7 +218,7 @@ export async function actualizarEstadoMembresia(id, nuevoEstado, { token } = {})
    GET: Detalles de membresías (servicios asociados)
 ====================================================== */
 export async function getDetallesMembresias({ token, query = {}, extraHeaders = {} } = {}) {
-  const u = new URL(URL_DETALLES_MEMBRESIA);
+  const u = toRuntimeUrl(URL_DETALLES_MEMBRESIA);
   Object.entries(query).forEach(([k, v]) => {
     if (v !== undefined && v !== null) u.searchParams.set(k, String(v));
   });

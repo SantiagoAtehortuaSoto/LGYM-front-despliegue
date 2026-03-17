@@ -5,6 +5,12 @@ import { buildUrl } from "../apiConfig";
 const BASE_URL = buildUrl("/membresias");
 const DEFAULT_TIMEOUT_MS = 15000;
 
+const toRuntimeUrl = (value) =>
+  new URL(
+    value,
+    typeof window !== "undefined" ? window.location.origin : "http://localhost"
+  );
+
 /* ---------------- Token helpers ---------------- */
 function sanitizeToken(token) {
   if (!token) return undefined;
@@ -153,7 +159,7 @@ function buildFullPutBodyFromCurrent(current = {}, overrides = {}) {
 
 /* ---------------- API pública ---------------- */
 export async function obtenerMembresias({ token, query = {} } = {}) {
-  const u = new URL(BASE_URL);
+  const u = toRuntimeUrl(BASE_URL);
   Object.entries(query).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== "")
       u.searchParams.set(k, String(v));

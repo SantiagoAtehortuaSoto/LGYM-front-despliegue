@@ -65,6 +65,12 @@ async function api(url, { method = "GET", headers = {}, body } = {}) {
   return data ?? {};
 }
 
+const toRuntimeUrl = (value) =>
+  new URL(
+    value,
+    typeof window !== "undefined" ? window.location.origin : "http://localhost"
+  );
+
 // --- Utils JWT y rol ---
 function safeBase64ToUtf8(base64Url) {
   try {
@@ -871,7 +877,7 @@ export async function fetchUserPermissionsWithFallback(roleId, userId) {
   if (fallbacks.length === 0) fallbacks.push("");
 
   for (const query of fallbacks) {
-    const url = new URL(`${apiRoot}/detallesrol`);
+    const url = toRuntimeUrl(`${apiRoot}/detallesrol`);
     if (query) {
       query.split("&").forEach((pair) => {
         const [k, v] = pair.split("=");
