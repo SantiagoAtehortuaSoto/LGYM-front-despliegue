@@ -164,6 +164,92 @@ export function useUsuarios() {
       .toLowerCase();
   }, []);
 
+  const normalizeText = useCallback((value) => {
+    return String(value ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLowerCase();
+  }, []);
+
+  const getRoleNameFromRecord = useCallback((record) => {
+    if (!record || typeof record !== "object") return "";
+
+    return String(
+      record?.rol_nombre ??
+        record?.nombre_rol ??
+        record?.nombre ??
+        record?.name ??
+        record?.rol?.nombre_rol ??
+        record?.rol?.nombre ??
+        record?.rol?.name ??
+        record?.role?.nombre_rol ??
+        record?.role?.nombre ??
+        record?.role?.name ??
+        record?.id_rol_rol?.nombre_rol ??
+        record?.id_rol_rol?.nombre ??
+        record?.id_rol_rol?.name ??
+        "",
+    ).trim();
+  }, []);
+
+  const getRoleIdFromRecord = useCallback((record) => {
+    if (!record || typeof record !== "object") return null;
+
+    const rawId =
+      record?.rol_id ??
+      record?.id_rol ??
+      record?.roleId ??
+      record?.rol?.id_rol ??
+      record?.rol?.id ??
+      record?.role?.id_rol ??
+      record?.role?.id ??
+      record?.id_rol_rol?.id_rol ??
+      record?.id_rol_rol?.id;
+
+    const parsed = Number(rawId);
+    return Number.isFinite(parsed) ? parsed : null;
+  }, []);
+
+  const getRoleNames = useCallback(
+    (usuario) => {
+      if (!usuario || typeof usuario !== "object") return [];
+
+      const names = [
+        getRoleNameFromRecord(usuario),
+        ...(Array.isArray(usuario?.rolesNombres) ? usuario.rolesNombres : []),
+        ...(Array.isArray(usuario?.roles_usuarios)
+          ? usuario.roles_usuarios.map((roleAssignment) =>
+              getRoleNameFromRecord(roleAssignment),
+            )
+          : []),
+      ]
+        .map((value) => String(value ?? "").trim())
+        .filter(Boolean);
+
+      return Array.from(new Set(names));
+    },
+    [getRoleNameFromRecord],
+  );
+
+  const hasAppointmentAssignmentAccess = useCallback(
+    (permisos = []) => {
+      const permisosModulo = normalizePermisosAsignados(permisos).filter(
+        (permiso) => {
+          const modulo = normalizeText(permiso?.modulo);
+          return (
+            Number(permiso?.id_permiso) === APPOINTMENT_PERMISSION_ID ||
+            modulo.includes("asignar cita") ||
+            modulo.includes("agendar cita")
+          );
+        },
+      );
+
+      return permisosModulo.length > 0;
+    },
+    [normalizePermisosAsignados, normalizeText],
+  );
+
   const buildFallbackUsers = useCallback(
     async () => {
       const [clientesResult, empleadosResult] = await Promise.allSettled([
@@ -300,92 +386,6 @@ export function useUsuarios() {
       resolveEmail,
       resolveUserId,
     ],
-  );
-
-  const normalizeText = useCallback((value) => {
-    return String(value ?? "")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .trim()
-      .toLowerCase();
-  }, []);
-
-  const getRoleNameFromRecord = useCallback((record) => {
-    if (!record || typeof record !== "object") return "";
-
-    return String(
-      record?.rol_nombre ??
-        record?.nombre_rol ??
-        record?.nombre ??
-        record?.name ??
-        record?.rol?.nombre_rol ??
-        record?.rol?.nombre ??
-        record?.rol?.name ??
-        record?.role?.nombre_rol ??
-        record?.role?.nombre ??
-        record?.role?.name ??
-        record?.id_rol_rol?.nombre_rol ??
-        record?.id_rol_rol?.nombre ??
-        record?.id_rol_rol?.name ??
-        "",
-    ).trim();
-  }, []);
-
-  const getRoleIdFromRecord = useCallback((record) => {
-    if (!record || typeof record !== "object") return null;
-
-    const rawId =
-      record?.rol_id ??
-      record?.id_rol ??
-      record?.roleId ??
-      record?.rol?.id_rol ??
-      record?.rol?.id ??
-      record?.role?.id_rol ??
-      record?.role?.id ??
-      record?.id_rol_rol?.id_rol ??
-      record?.id_rol_rol?.id;
-
-    const parsed = Number(rawId);
-    return Number.isFinite(parsed) ? parsed : null;
-  }, []);
-
-  const getRoleNames = useCallback(
-    (usuario) => {
-      if (!usuario || typeof usuario !== "object") return [];
-
-      const names = [
-        getRoleNameFromRecord(usuario),
-        ...(Array.isArray(usuario?.rolesNombres) ? usuario.rolesNombres : []),
-        ...(Array.isArray(usuario?.roles_usuarios)
-          ? usuario.roles_usuarios.map((roleAssignment) =>
-              getRoleNameFromRecord(roleAssignment),
-            )
-          : []),
-      ]
-        .map((value) => String(value ?? "").trim())
-        .filter(Boolean);
-
-      return Array.from(new Set(names));
-    },
-    [getRoleNameFromRecord],
-  );
-
-  const hasAppointmentAssignmentAccess = useCallback(
-    (permisos = []) => {
-      const permisosModulo = normalizePermisosAsignados(permisos).filter(
-        (permiso) => {
-          const modulo = normalizeText(permiso?.modulo);
-          return (
-            Number(permiso?.id_permiso) === APPOINTMENT_PERMISSION_ID ||
-            modulo.includes("asignar cita") ||
-            modulo.includes("agendar cita")
-          );
-        },
-      );
-
-      return permisosModulo.length > 0;
-    },
-    [normalizePermisosAsignados, normalizeText],
   );
 
   /** Helper mejorado para detectar si un usuario tiene un rol por id */
