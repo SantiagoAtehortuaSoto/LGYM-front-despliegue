@@ -142,15 +142,39 @@ function extractRawRole(user) {
     if (Array.isArray(c)) {
       const names = c
         .map((it) =>
-          typeof it === "string"
-            ? it
+          typeof it === "string" || typeof it === "number"
+            ? String(it)
             : typeof it === "object"
-            ? it.nombre || it.name || it.rol || it.role || ""
+            ? it.nombre ||
+              it.name ||
+              it.rol ||
+              it.role ||
+              it.id_rol ||
+              it.id ||
+              it.rol_id ||
+              it.roleId ||
+              ""
             : ""
         )
         .filter(Boolean);
       if (names.length) return names.join("|");
     }
+  }
+  const objectCandidate = candidates.find(
+    (x) => x && typeof x === "object" && !Array.isArray(x)
+  );
+  if (objectCandidate) {
+    return (
+      objectCandidate.nombre ||
+      objectCandidate.name ||
+      objectCandidate.rol ||
+      objectCandidate.role ||
+      objectCandidate.id_rol ||
+      objectCandidate.id ||
+      objectCandidate.rol_id ||
+      objectCandidate.roleId ||
+      ""
+    );
   }
   const first = candidates.find(
     (x) => typeof x === "string" || typeof x === "number"
@@ -181,7 +205,8 @@ function normalizeRole(raw) {
     if (/^\d+$/.test(val)) {
       const num = Number(val);
       if (num === 1 || num === 99) return "admin";
-      if (num === 33) return "usuario";
+      if (num === 3 || num === 6 || num === 33) return "usuario";
+      if (num === 2) return "empleado";
       return "empleado";
     }
     return "";

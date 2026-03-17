@@ -65,6 +65,12 @@ async function api(url, { method = "GET", headers = {}, body } = {}) {
   return data ?? {};
 }
 
+const toRuntimeUrl = (value) =>
+  new URL(
+    value,
+    typeof window !== "undefined" ? window.location.origin : "http://localhost"
+  );
+
 // --- Utils JWT y rol ---
 function safeBase64ToUtf8(base64Url) {
   try {
@@ -128,7 +134,8 @@ function normalizeRole(raw) {
   // ids típicos por si backend usa números (1=admin, 6=usuario; el resto, empleado)
   if (!Number.isNaN(numeric)) {
     if ([1, 99].includes(numeric)) return "admin";
-    if ([33].includes(numeric)) return "usuario";
+    if ([3, 6, 33].includes(numeric)) return "usuario";
+    if ([2].includes(numeric)) return "empleado";
     // cualquier otro id numérico se trata como empleado
     return "empleado";
   }
@@ -143,9 +150,75 @@ function normalizeRole(raw) {
   return "empleado";
 }
 
+function extractRoleCandidate(value) {
+  if (value == null) return "";
+
+  if (typeof value === "string" || typeof value === "number") {
+    const text = String(value).trim();
+    return text || "";
+  }
+
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => extractRoleCandidate(item))
+      .filter(Boolean)
+      .join("|");
+  }
+
+  if (typeof value === "object") {
+    const fields = [
+      value.nombre,
+      value.name,
+      value.rol,
+      value.role,
+      value.tipo,
+      value.tipo_usuario,
+      value.tipoUsuario,
+      value.id_rol,
+      value.id,
+      value.rol_id,
+      value.roleId,
+      value.id_role,
+      value.id_rol_rol,
+    ];
+
+    for (const field of fields) {
+      const resolved = extractRoleCandidate(field);
+      if (resolved) return resolved;
+    }
+  }
+
+  return "";
+}
+
 // Acepta: string, objeto { nombre }, o estructuras conocidas (user o payload)
 function extractRoleFrom(obj = {}) {
   if (!obj || typeof obj !== "object") return "";
+
+  const resolved = [
+    obj.role,
+    obj.rol,
+    obj.perfil,
+    obj.tipo,
+    obj.tipo_usuario,
+    obj.tipoUsuario,
+    obj.nombre_rol,
+    obj.rol_nombre,
+    obj.role_name,
+    obj.roles_usuarios,
+    obj.roles,
+    obj.authorities,
+    obj.id_rol,
+    obj.rol_id,
+    obj.roleId,
+    obj.id_role,
+    obj.id_rol_rol,
+  ]
+    .map((candidate) => extractRoleCandidate(candidate))
+    .filter(Boolean)
+    .join("|");
+
+  if (resolved) return normalizeRole(resolved);
 
   // 0) Si "obj" en sí MISMO es el rol (objeto con nombre)
   if (obj && typeof obj === "object" && ("nombre" in obj || "name" in obj)) {
@@ -303,6 +376,12 @@ export const login = async (email, password) => {
     const role = normalizeRole(rawRole);
 
     const rawUser = data.user || {};
+    const resolvedRole =
+      extractRoleFrom(rawUser) ||
+      extractRoleFrom(payload || {}) ||
+      extractRoleFrom(data.role || {}) ||
+      role ||
+      "usuario";
     const permisosAsignados =
       rawUser.permisosAsignados ||
       rawUser.permisos_asignados ||
@@ -331,7 +410,7 @@ export const login = async (email, password) => {
         payload.nombre ??
         email,
       email: rawUser.email ?? payload.email ?? email,
-      role, // "admin" | "empleado" | "usuario"
+      role: resolvedRole, // "admin" | "empleado" | "usuario"
       permisosAsignados: Array.isArray(permisosAsignados)
         ? permisosAsignados
         : [],
@@ -675,15 +754,14 @@ export function getCurrentUser() {
 
 export function getRole() {
   const u = getCurrentUser();
-  if (u?.role) return normalizeRole(u.role);
+  const userRole = extractRoleFrom(u || {});
+  if (userRole) return userRole;
   const token = localStorage.getItem("token");
   if (!token) return null;
   const payload = decodeJwtPayload(token);
-  const raw =
-    (payload.role && (payload.role.nombre || payload.role.name)) ||
-    payload.role ||
-    "";
-  return normalizeRole(raw);
+  const payloadRole = extractRoleFrom(payload || {});
+  if (payloadRole) return payloadRole;
+  return null;
 }
 
 export function isAdmin() {
@@ -799,7 +877,7 @@ export async function fetchUserPermissionsWithFallback(roleId, userId) {
   if (fallbacks.length === 0) fallbacks.push("");
 
   for (const query of fallbacks) {
-    const url = new URL(`${apiRoot}/detallesrol`);
+    const url = toRuntimeUrl(`${apiRoot}/detallesrol`);
     if (query) {
       query.split("&").forEach((pair) => {
         const [k, v] = pair.split("=");

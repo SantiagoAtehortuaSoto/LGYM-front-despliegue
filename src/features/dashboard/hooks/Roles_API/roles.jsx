@@ -15,6 +15,12 @@ function sanitizeBearer(token) {
   return token.replace(/^Bearer\s+/i, "");
 }
 
+const toRuntimeUrl = (value) =>
+  new URL(
+    value,
+    typeof window !== "undefined" ? window.location.origin : "http://localhost"
+  );
+
 async function logAndFetch(label, url, init = {}) {
   const method = (init.method || "GET").toUpperCase();
 
@@ -75,7 +81,7 @@ function buildHeaders({ token, extraHeaders = {}, acceptJson = true } = {}) {
    GET: Listado de roles
 ====================================================== */
 export async function getRoles({ token, query = {}, extraHeaders = {} } = {}) {
-  const u = new URL(URL_ROLES);
+  const u = toRuntimeUrl(URL_ROLES);
   Object.entries(query).forEach(([k, v]) => {
     if (v !== undefined && v !== null) u.searchParams.set(k, String(v));
   });
@@ -100,7 +106,7 @@ export async function getRoles({ token, query = {}, extraHeaders = {} } = {}) {
 export async function getDetallesRol(
   { token, query = {}, extraHeaders = {} } = {}
 ) {
-  const u = new URL(URL_DETALLES_ROL);
+  const u = toRuntimeUrl(URL_DETALLES_ROL);
   Object.entries(query).forEach(([k, v]) => {
     if (v !== undefined && v !== null) u.searchParams.set(k, String(v));
   });
@@ -134,7 +140,7 @@ export async function getDetallesRol(
 export async function getPermisosCatalog(
   { token, extraHeaders = {} } = {}
 ) {
-  const u = new URL(URL_PERMISOS);
+  const u = toRuntimeUrl(URL_PERMISOS);
   u.searchParams.set("groupByModulo", "true");
 
   return logAndFetch("[Roles][GET permisos]", u.toString(), {
