@@ -16,6 +16,8 @@ server {
     try_files $uri =404;
   }
 
+  include /etc/nginx/includes/api-proxy-location.conf;
+
   location / {
     try_files $uri $uri/ /index.html;
   }
