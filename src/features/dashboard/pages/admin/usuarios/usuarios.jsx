@@ -795,6 +795,7 @@ export default function Usuarios() {
           onClose={cerrarModal}
           isOpen={true}
           disabled={true}
+          closeOnOverlayClick={true}
           beneficiarios={beneficiarios}
           membresias={membresias}
           usuariosReferencia={usuarios}

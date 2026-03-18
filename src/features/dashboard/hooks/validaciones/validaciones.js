@@ -40,7 +40,7 @@ export const validarProveedor = (data, existentes = [], idActual = null) => {
   const errors = {};
   const nit = normalizar(data.nit);
   const nombre = normalizar(data.nombre);
-  const telefono = normalizar(data.telefono);
+  const telefono = normalizar(data.telefono).replace(/\D/g, "");
   const nombreContacto = normalizar(data.nombreContacto);
   const email = normalizar(data.email).toLowerCase();
   const direccion = normalizar(data.direccion);
@@ -50,7 +50,14 @@ export const validarProveedor = (data, existentes = [], idActual = null) => {
     const val = normalizarLower(valor);
     if (!val) return false;
     return existentes.some((p) => {
-      if (p.id_proveedor === idActual) return false;
+      const proveedorId = p?.id_proveedor ?? p?.id;
+      if (
+        idActual !== null &&
+        idActual !== undefined &&
+        String(proveedorId) === String(idActual)
+      ) {
+        return false;
+      }
       const actual = normalizarLower(p[campo]);
       return actual === val;
     });
@@ -62,17 +69,20 @@ export const validarProveedor = (data, existentes = [], idActual = null) => {
     const nitNum = parseInt(nit, 10);
     if (nitNum <= 0) errors.nit = "El NIT debe ser un número entero positivo mayor a 0";
     else if (nitNum > 2147483647) errors.nit = "El NIT es demasiado grande";
-    else if (nit.length < 6 || nit.length > 12) errors.nit = "El NIT debe tener entre 6 y 12 dígitos";
+    else if (nit.length < 9 || nit.length > 12) errors.nit = "El NIT debe tener entre 9 y 12 dígitos";
     else if (esDuplicado("nit_proveedor", nit)) errors.nit = "Ya existe un proveedor con ese NIT";
   }
 
   if (esVacio(nombre)) errors.nombre = "El nombre del proveedor es obligatorio";
+  else if (nombre.length < 3) errors.nombre = "El nombre debe tener mínimo 3 caracteres";
   else if (nombre.length > 80) errors.nombre = "El nombre no puede superar los 80 caracteres";
 
   if (esVacio(telefono)) errors.telefono = "El teléfono es obligatorio";
-  else if (telefono.length > 10) errors.telefono = "El teléfono no puede superar los 10 caracteres";
+  else if (!SOLO_NUMEROS.test(telefono)) errors.telefono = "El teléfono solo puede contener números";
+  else if (telefono.length !== 10) errors.telefono = "El teléfono debe tener 10 dígitos";
 
   if (esVacio(nombreContacto)) errors.nombreContacto = "El nombre de contacto es obligatorio";
+  else if (nombreContacto.length < 3) errors.nombreContacto = "El nombre de contacto debe tener mínimo 3 caracteres";
   else if (nombreContacto.length > 80) errors.nombreContacto = "El nombre de contacto no puede superar los 80 caracteres";
 
   if (esVacio(email)) errors.email = "El email es obligatorio";

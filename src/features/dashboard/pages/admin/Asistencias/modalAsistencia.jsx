@@ -17,6 +17,7 @@ import {
 } from "../../../components/dataTables/badgesEstado";
 
 const CLIENT_ROLE_ID = 33;
+const EMPLOYEE_ATTENDANCE_EXCLUDED_ROLE_IDS = new Set([32, CLIENT_ROLE_ID]);
 
 const MotionForm = motion.form;
 
@@ -103,6 +104,14 @@ const toTimeCalcValue = (value) => {
   if (!match) return null;
   const [, hh, mm, ss] = match;
   return `${hh}:${mm}:${ss || "00"}`;
+};
+
+const toMinutesFromTimeValue = (value) => {
+  const normalized = toTimeCalcValue(value);
+  if (!normalized) return null;
+  const [hours, minutes] = normalized.split(":").map(Number);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return null;
+  return hours * 60 + minutes;
 };
 
 /* ======================================================
@@ -356,7 +365,18 @@ export const ModalFormularioAsistencia = ({
             )
           : processedUsers.filter((user) => {
               const rolId = Number(user.rol_id || user.id_rol);
-              return rolId !== CLIENT_ROLE_ID;
+              const userId = user.id_usuario ?? user.id;
+              const currentAttendanceUserId = asistencia?.id_usuario;
+
+              if (
+                currentAttendanceUserId !== undefined &&
+                currentAttendanceUserId !== null &&
+                String(userId) === String(currentAttendanceUserId)
+              ) {
+                return true;
+              }
+
+              return !EMPLOYEE_ATTENDANCE_EXCLUDED_ROLE_IDS.has(rolId);
             });
 
         const normalized = filteredByTipo
@@ -399,7 +419,7 @@ export const ModalFormularioAsistencia = ({
     };
 
     fetchUsers();
-  }, [isOpen, isCliente]);
+  }, [asistencia, isOpen, isCliente]);
 
   useEffect(() => {
     if (!isOpen || !isCliente) {
@@ -584,6 +604,23 @@ export const ModalFormularioAsistencia = ({
       ) {
         newErrors.hora_entrada_empleado = "La hora de entrada debe ser anterior";
         newErrors.hora_salida_empleado = "La hora de salida debe ser posterior";
+      } else if (
+        formData.hora_entrada_empleado &&
+        formData.hora_salida_empleado
+      ) {
+        const minutosEntrada = toMinutesFromTimeValue(formData.hora_entrada_empleado);
+        const minutosSalida = toMinutesFromTimeValue(formData.hora_salida_empleado);
+        const duracionMinutos =
+          minutosEntrada !== null && minutosSalida !== null
+            ? minutosSalida - minutosEntrada
+            : null;
+
+        if (duracionMinutos !== null && duracionMinutos > 120) {
+          newErrors.hora_entrada_empleado =
+            "La asistencia del empleado no puede durar más de 2 horas";
+          newErrors.hora_salida_empleado =
+            "La hora de salida no puede superar 2 horas desde la entrada";
+        }
       }
     }
 
@@ -597,6 +634,21 @@ export const ModalFormularioAsistencia = ({
       ...prev,
       [name]: value,
     }));
+    if (
+      name === "hora_ingreso" ||
+      name === "hora_salida" ||
+      name === "hora_entrada_empleado" ||
+      name === "hora_salida_empleado"
+    ) {
+      setErrors((prev) => ({
+        ...prev,
+        hora_ingreso: "",
+        hora_salida: "",
+        hora_entrada_empleado: "",
+        hora_salida_empleado: "",
+      }));
+      return;
+    }
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }

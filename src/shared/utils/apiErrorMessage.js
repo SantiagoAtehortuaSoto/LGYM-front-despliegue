@@ -7,10 +7,16 @@ const GENERIC_ERROR_PATTERNS = [
 ];
 
 const TRACKER_KEY = "__LGYM_LAST_API_ERROR__";
+const FAILED_TO_FETCH_PATTERN = /failed to fetch/i;
 
 const normalizeMessage = (value) => {
   if (typeof value !== "string") return "";
-  return value.trim();
+  const message = value.trim();
+  if (!message) return "";
+  if (FAILED_TO_FETCH_PATTERN.test(message)) {
+    return "conexion con el api no disponible";
+  }
+  return message;
 };
 
 const stringifySafe = (value) => {

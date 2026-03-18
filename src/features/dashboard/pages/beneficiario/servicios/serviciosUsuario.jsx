@@ -1708,7 +1708,7 @@ const ServiciosUsuario = () => {
                         const relacionUsuario =
                           benef.id_relacion_usuario ||
                           benef.relacion_usuario ||
-                          benef.usuario_relacion ||
+                          // benef.usuario_relacion ||
                           {};
                         const baseNombre =
                           benef.nombre ||
@@ -1736,7 +1736,7 @@ const ServiciosUsuario = () => {
                             {relacion ? ` - ${relacion}` : ""}
                           </span>
                           {idRelacion ? (
-                            <span className="servicios-usuario__list-id">ID: {idRelacion}</span>
+                            <span className="servicios-usuario__list-id"></span>
                           ) : null}
                         </li>
                       );

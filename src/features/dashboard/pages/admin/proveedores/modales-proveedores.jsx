@@ -162,25 +162,24 @@ export const ModalFormularioProveedor = ({
   const [ciudadesOptions, setCiudadesOptions] = useState([]);
   const estaEditando = !!proveedor;
 
-  const { errors: erroresValidados, isValid: formularioValido } =
-    useMemo(() => {
-      const base = validarProveedor(
-        formData,
-        proveedoresExistentes,
-        proveedor?.id_proveedor ?? null
-      );
-      const extras = { ...base.errors };
+  const erroresValidados = useMemo(() => {
+    const base = validarProveedor(
+      formData,
+      proveedoresExistentes,
+      proveedor?.id_proveedor ?? null
+    );
+    const extras = { ...base.errors };
 
-      if (proveedor?.fecha_registro) {
-        const fechaRegistro = new Date(proveedor.fecha_registro);
-        const fechaActual = new Date();
-        if (fechaRegistro > fechaActual) {
-          extras.fechaRegistro = "La fecha de registro no puede ser futura";
-        }
+    if (proveedor?.fecha_registro) {
+      const fechaRegistro = new Date(proveedor.fecha_registro);
+      const fechaActual = new Date();
+      if (fechaRegistro > fechaActual) {
+        extras.fechaRegistro = "La fecha de registro no puede ser futura";
       }
+    }
 
-      return { errors: extras, isValid: Object.keys(extras).length === 0 };
-    }, [formData, proveedoresExistentes, proveedor]);
+    return extras;
+  }, [formData, proveedoresExistentes, proveedor]);
 
   useEffect(() => {
     const erroresVisibles = Object.fromEntries(
@@ -287,139 +286,6 @@ export const ModalFormularioProveedor = ({
     if (!/^\d+$/.test(contenido)) {
       e.preventDefault();
     }
-  };
-
-  // Validación en tiempo real
-  useEffect(() => {
-    const nuevosErrores = {};
-
-    // NIT - Validación específica solicitada: entero positivo, único
-    if (camposTocados.nit || formData.nit) {
-      if (!formData.nit.trim()) {
-        nuevosErrores.nit = "El NIT es obligatorio";
-      } else if (!/^[0-9]+$/.test(formData.nit)) {
-        nuevosErrores.nit = "El NIT solo puede contener números";
-      } else {
-        const nitNum = parseInt(formData.nit);
-        if (nitNum <= 0) {
-          nuevosErrores.nit = "El NIT debe ser un número entero positivo mayor a 0";
-        } else if (nitNum > 2147483647) {
-          nuevosErrores.nit = "El NIT es demasiado grande para ser procesado";
-        }
-      }
-    }
-
-    // Nombre - Obligatorio, máximo 80 caracteres
-    if (camposTocados.nombre || formData.nombre) {
-      if (!formData.nombre.trim()) {
-        nuevosErrores.nombre = "El nombre del proveedor es obligatorio";
-      } else if (formData.nombre.length > 80) {
-        nuevosErrores.nombre = "El nombre no puede superar los 80 caracteres";
-      }
-    }
-
-    // Teléfono - Obligatorio, máximo 10 caracteres (string)
-    if (camposTocados.telefono || formData.telefono) {
-      if (!formData.telefono.trim()) {
-        nuevosErrores.telefono = "El teléfono es obligatorio";
-      } else if (formData.telefono.length > 10) {
-        nuevosErrores.telefono = "El teléfono no puede superar los 10 caracteres";
-      }
-    }
-
-    // Nombre Contacto - Obligatorio, máximo 80 caracteres
-    if (camposTocados.nombreContacto || formData.nombreContacto) {
-      if (!formData.nombreContacto.trim()) {
-        nuevosErrores.nombreContacto = "El nombre de contacto es obligatorio";
-      } else if (formData.nombreContacto.length > 80) {
-        nuevosErrores.nombreContacto = "El nombre de contacto no puede superar los 80 caracteres";
-      }
-    }
-
-    // Email - Obligatorio, máximo 80 caracteres, formato válido
-    if (camposTocados.email || formData.email) {
-      if (!formData.email.trim()) {
-        nuevosErrores.email = "El email es obligatorio";
-      } else if (formData.email.length > 80) {
-        nuevosErrores.email = "El email no puede superar los 80 caracteres";
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        nuevosErrores.email = "Debe tener un formato válido de correo electrónico (usuario@dominio.com)";
-      }
-    }
-
-    // Dirección - Opcional, máximo 80 caracteres
-    if (formData.direccion && formData.direccion.length > 80) {
-      nuevosErrores.direccion = "La dirección no puede superar los 80 caracteres";
-    }
-
-    // Ciudad - Opcional, máximo 80 caracteres
-    if (formData.ciudad && formData.ciudad.length > 80) {
-      nuevosErrores.ciudad = "La ciudad no puede superar los 80 caracteres";
-    }
-
-    // Fecha registro - Validación para edición (no puede ser futura)
-    if (proveedor && proveedor.fecha_registro) {
-      const fechaRegistro = new Date(proveedor.fecha_registro);
-      const fechaActual = new Date();
-      if (fechaRegistro > fechaActual) {
-        nuevosErrores.fechaRegistro = "La fecha de registro no puede ser futura";
-      }
-    }
-
-    setErrores(nuevosErrores);
-  }, [formData, camposTocados]);
-
-  const validar = () => {
-    let temp = {};
-
-    // NIT
-    if (!formData.nit.trim()) {
-      temp.nit = "El NIT es obligatorio";
-    } else if (!/^[0-9]+$/.test(formData.nit)) {
-      temp.nit = "El NIT solo puede contener números";
-    } else {
-      const nitNum = parseInt(formData.nit);
-      if (nitNum <= 0) {
-        temp.nit = "El NIT debe ser un número entero positivo mayor a 0";
-      } else if (nitNum > 2147483647) {
-        temp.nit = "El NIT es demasiado grande para ser procesado";
-      } else if (formData.nit.length < 6 || formData.nit.length > 12) {
-        temp.nit = "El NIT debe tener entre 6 y 12 dígitos";
-      }
-    }
-
-    // Nombre
-    if (!formData.nombre.trim()) {
-      temp.nombre = "El nombre es obligatorio";
-    } else if (formData.nombre.length < 3) {
-      temp.nombre = "Debe tener al menos 3 caracteres";
-    } else if (formData.nombre.length > 100) {
-      temp.nombre = "No puede superar 100 caracteres";
-    }
-
-    // Teléfono
-    if (!formData.telefono.trim()) {
-      temp.telefono = "El teléfono es obligatorio";
-    } else if (!/^\+?[0-9]{7,15}$/.test(formData.telefono)) {
-      temp.telefono = "Teléfono inválido (ejemplo: +573001234567)";
-    }
-
-    // Nombre Contacto
-    if (formData.nombreContacto && formData.nombreContacto.length < 3) {
-      temp.nombreContacto = "Debe tener al menos 3 caracteres";
-    }
-
-    // Correo
-    if (!formData.email.trim()) {
-      temp.email = "El correo es obligatorio";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      temp.email = "Debe ser un correo válido";
-    }
-
-    // Dirección y Ciudad no son obligatorios ya que no están en la API
-
-    setErrores(temp);
-    return Object.keys(temp).length === 0;
   };
 
   const handleChange = (e) => {
@@ -552,7 +418,6 @@ export const ModalFormularioProveedor = ({
           <button
             className="boton boton-primario"
             onClick={handleSubmit}
-            disabled={!formularioValido}
           >
             {proveedor ? "Actualizar" : "Guardar"}
           </button>

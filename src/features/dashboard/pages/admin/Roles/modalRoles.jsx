@@ -265,6 +265,7 @@ const BaseRoleModal = ({
   onSave,
   showPermissions = true,
   disabled = false,
+  closeOnOverlayClick,
   permisoHelpers,
   existingRoles = [],
   isEdit = false,
@@ -310,6 +311,10 @@ const BaseRoleModal = ({
   const [permisosError, setPermisosError] = useState("");
   const isProtectedPrimaryRole = Number(formData.id) === PROTECTED_ROLE_ID;
   const permisosListos = Boolean(permisoHelpers);
+  const resolvedCloseOnOverlayClick =
+    typeof closeOnOverlayClick === "boolean"
+      ? closeOnOverlayClick
+      : !disabled;
 
   useEffect(() => {
     setFormData((prev) => {
@@ -454,7 +459,7 @@ const BaseRoleModal = ({
       onClose={onClose}
       title={title}
       size="md"
-      closeOnOverlayClick={!disabled}
+      closeOnOverlayClick={resolvedCloseOnOverlayClick}
       className="modal-mediano modal-roles__container"
       modalRef={modalRef}
       footer={
@@ -689,6 +694,7 @@ export const ModalVerRol = memo(({ rol, onClose, permisoHelpers }) =>
       onClose={onClose}
       onSave={async () => true}
       disabled
+      closeOnOverlayClick={true}
       permisoHelpers={permisoHelpers}
     />
   ) : null,
@@ -780,6 +786,7 @@ BaseRoleModal.propTypes = {
   onSave: PropTypes.func.isRequired,
   showPermissions: PropTypes.bool,
   disabled: PropTypes.bool,
+  closeOnOverlayClick: PropTypes.bool,
   permisoHelpers: PropTypes.object,
   existingRoles: PropTypes.array,
   isEdit: PropTypes.bool,

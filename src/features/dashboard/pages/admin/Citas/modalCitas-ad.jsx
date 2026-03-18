@@ -181,6 +181,10 @@ const ModalCitasAd = ({
   );
 
   const [formData, setFormData] = useState(EMPTY_FORM_DATA);
+  const isEditingAppointment = Boolean(
+    initialData?.id_agenda || initialData?.id || formData?.id_agenda,
+  );
+  const shouldHideEstado = hideEstado || !isEditingAppointment;
 
   const estados = OPCIONES_ESTADO_FLUJO.map((estado) => ({
     id_estado: estado.value,
@@ -323,7 +327,7 @@ const ModalCitasAd = ({
         nextErrors.actividad_agenda = "Debe seleccionar una actividad.";
       }
 
-      if (!hideEstado && !String(data.id_estado || "").trim()) {
+      if (!shouldHideEstado && !String(data.id_estado || "").trim()) {
         nextErrors.id_estado = "Debe seleccionar un estado.";
       }
 
@@ -344,7 +348,7 @@ const ModalCitasAd = ({
 
       return nextErrors;
     },
-    [empleados, hideEstado, lockCliente],
+    [empleados, lockCliente, shouldHideEstado],
   );
 
   const handleChange = useCallback(
@@ -1001,7 +1005,7 @@ const ModalCitasAd = ({
               ) : null}
             </div>
 
-            {!hideEstado ? (
+            {!shouldHideEstado ? (
               <div className="modal-field-group modal-field-group--compact">
                 <label className="modal-field-label">Estado</label>
                 <div className="modal-select-wrapper">

@@ -5,6 +5,10 @@ const normalizeText = (value) =>
     .trim()
     .toLowerCase();
 
+const MAX_APPOINTMENT_DURATION_MINUTES = 120;
+const MAX_APPOINTMENT_DURATION_MESSAGE =
+  "La hora de fin no puede superar en más de 2 horas la hora de inicio.";
+
 export const EMPLOYEE_SHIFT_VALUES = {
   MORNING: "manana",
   AFTERNOON: "tarde",
@@ -178,6 +182,15 @@ export const validateAppointmentTimeRange = ({ horaInicio, horaFin }) => {
     return {
       valid: false,
       message: "La hora de inicio debe ser menor a la hora de fin.",
+      startMinutes,
+      endMinutes,
+    };
+  }
+
+  if (endMinutes - startMinutes > MAX_APPOINTMENT_DURATION_MINUTES) {
+    return {
+      valid: false,
+      message: MAX_APPOINTMENT_DURATION_MESSAGE,
       startMinutes,
       endMinutes,
     };
@@ -448,6 +461,14 @@ export const validateAppointmentAgainstEmployeeSchedule = ({
     return {
       valid: false,
       message: "La hora de inicio debe ser menor a la hora de fin.",
+      schedule,
+    };
+  }
+
+  if (endMinutes - startMinutes > MAX_APPOINTMENT_DURATION_MINUTES) {
+    return {
+      valid: false,
+      message: MAX_APPOINTMENT_DURATION_MESSAGE,
       schedule,
     };
   }
