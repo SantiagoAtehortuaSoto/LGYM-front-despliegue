@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { isAttendanceAsistio } from "../../../../../shared/utils/attendanceStatus";
 import {
   IconHome,
   IconUser,
@@ -200,16 +201,6 @@ const normalizePedidoStatus = (raw) => {
   return "Pendiente";
 };
 
-const isAttendancePositive = (record = {}) => {
-  const numeric = Number(record?.id_estado);
-  if (numeric === 9) return false;
-  if (numeric === 8) return true;
-  const status = normalizeText(record?.estado ?? record?.id_estado_estado?.estado ?? "");
-  if (status.includes("no asist")) return false;
-  if (status.includes("asist")) return true;
-  return true;
-};
-
 const parseAgendaList = (raw) => {
   if (Array.isArray(raw)) return raw;
   if (Array.isArray(raw?.data)) return raw.data;
@@ -387,11 +378,17 @@ const DashboardUs = () => {
         const itemDate = parseDateValue(
           item?.fecha_asistencia || item?.asistencia_fecha || item?.fecha || item?.agenda_fecha,
         );
-        return itemDate && itemDate.getFullYear() === date.getFullYear() && itemDate.getMonth() === date.getMonth() && itemDate.getDate() === date.getDate();
+        return (
+          isAttendanceAsistio(item) &&
+          itemDate &&
+          itemDate.getFullYear() === date.getFullYear() &&
+          itemDate.getMonth() === date.getMonth() &&
+          itemDate.getDate() === date.getDate()
+        );
       });
       return {
         day,
-        attended: records.length > 0 ? records.some((item) => isAttendancePositive(item)) : false,
+        attended: records.length > 0,
       };
     });
   }, [asistencias]);

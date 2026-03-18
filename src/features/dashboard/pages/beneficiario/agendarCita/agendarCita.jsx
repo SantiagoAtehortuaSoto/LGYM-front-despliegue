@@ -25,6 +25,7 @@ import {
   normalizeAppointmentTimeValue,
   validateAppointmentScheduling,
 } from "../../../../../shared/utils/employeeSchedule";
+import { isAttendanceAsistio } from "../../../../../shared/utils/attendanceStatus";
 import toast from "react-hot-toast";
 import "../../../../../shared/styles/restructured/components/agendarCitas.css";
 
@@ -111,6 +112,15 @@ function parseAgendaList(raw) {
   if (Array.isArray(raw?.agenda)) return raw.agenda;
   if (Array.isArray(raw?.results)) return raw.results;
   return [];
+}
+
+function isAppointmentAsistio(cita = {}) {
+  const numericStatus = Number(cita?.id_estado);
+  if (Number.isFinite(numericStatus)) {
+    return numericStatus === 3 || numericStatus === 8;
+  }
+
+  return isAttendanceAsistio(cita);
 }
 
 const AgendarCita = () => {
@@ -234,7 +244,7 @@ const AgendarCita = () => {
       };
     }
 
-    const asistencias = citas.filter((c) => c.id_estado === 3).length;
+    const asistencias = citas.filter((c) => isAppointmentAsistio(c)).length;
     const citasProgramadas = citas.filter((c) => c.id_estado === 2);
     const citasPendientes = citas.filter((c) => c.id_estado === 1).length;
 

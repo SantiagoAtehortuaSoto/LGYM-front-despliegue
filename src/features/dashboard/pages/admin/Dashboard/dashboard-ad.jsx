@@ -19,6 +19,7 @@ import { obtenerBeneficiarios } from "../../../hooks/Beneficiarios_API/benefeici
 import { getToken } from "../../../hooks/Acceder_API/authService";
 import { obtenerUsuarios, obtenerRolesUsuarios } from "../../../hooks/Usuarios_API/API_Usuarios";
 import { normalizePaginatedResponse } from "../../../../../shared/utils/pagination";
+import { isAttendanceAsistio } from "../../../../../shared/utils/attendanceStatus";
 
 const MONTHS = [
   "Enero",
@@ -824,6 +825,7 @@ const Dashboard = () => {
     });
 
     rawData.asistenciasClientes.forEach((attendance) => {
+      if (!isAttendanceAsistio(attendance)) return;
       const date = getAttendanceDate(attendance);
       if (date) years.push(date.getUTCFullYear());
     });
@@ -1279,6 +1281,7 @@ const Dashboard = () => {
     const monthCount = new Array(12).fill(0);
 
     rawData.asistenciasClientes.forEach((attendance) => {
+      if (!isAttendanceAsistio(attendance)) return;
       const date = getAttendanceDate(attendance);
       if (!date || date.getUTCFullYear() !== selectedYear) return;
       const monthIdx = date.getUTCMonth();

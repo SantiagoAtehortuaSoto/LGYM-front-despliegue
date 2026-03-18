@@ -382,12 +382,6 @@ function CalendarioCitas({
     setSelectedCita(null);
   }, []);
 
-  const handleDateClick = useCallback((info) => {
-    const agendaFecha = formatDateKey(info?.dateStr || info?.date);
-    if (!agendaFecha) return;
-    setSelectedDay(agendaFecha);
-  }, []);
-
   const handleCloseDayModal = useCallback(() => {
     setSelectedDay("");
   }, []);
@@ -460,7 +454,6 @@ function CalendarioCitas({
         editable={false}
         events={calendarEvents}
         select={handleDateSelect}
-        dateClick={handleDateClick}
         eventClick={handleEventClick}
         slotMinTime="06:00:00"
         slotMaxTime="12:00:00"
