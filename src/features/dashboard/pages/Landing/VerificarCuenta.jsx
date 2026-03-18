@@ -143,7 +143,7 @@ const VerificarCuenta = () => {
 
             {/* Código */}
             <div
-              className={`campo campo-verificar codigo-verificacion-input ${
+              className={`campo campo-verificar código-verificacion-input ${
                 errors.code ? "con-error" : ""
               }`}
             >

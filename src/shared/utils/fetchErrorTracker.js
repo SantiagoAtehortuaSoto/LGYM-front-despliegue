@@ -22,8 +22,8 @@ const ENTITY_LABELS = {
   citas: "cita",
   compras: "pedido",
   empleados: "empleado",
-  login: "inicio de sesion",
-  logout: "cierre de sesion",
+  login: "inicio de sesión",
+  logout: "cierre de sesión",
   membresias: "membresia",
   pedidos: "pedido",
   productos: "producto",
@@ -122,15 +122,15 @@ const resolveActionMeta = ({ method, url }) => {
   if (isLoginAction && method === "POST") {
     return {
       kind: "login",
-      successLabel: "Iniciar sesion",
-      errorVerb: "iniciar sesion",
+      successLabel: "Iniciar sesión",
+      errorVerb: "iniciar sesión",
     };
   }
   if (isLogoutAction && ["POST", "DELETE"].includes(method)) {
     return {
       kind: "logout",
-      successLabel: "Cerrar sesion",
-      errorVerb: "cerrar sesion",
+      successLabel: "Cerrar sesión",
+      errorVerb: "cerrar sesión",
     };
   }
 
@@ -164,8 +164,8 @@ const resolveActionMeta = ({ method, url }) => {
   }
   return {
     kind: "generic",
-    successLabel: "Accion",
-    errorVerb: "procesar la accion",
+    successLabel: "Acción",
+    errorVerb: "procesar la acción",
   };
 };
 
@@ -182,11 +182,11 @@ const buildSuccessMessage = (requestInfo) => {
   const entity = resolveEntityLabel(requestInfo?.url);
 
   if (action.kind === "login") {
-    return "Inicio de sesion exitoso. Tus credenciales fueron validadas y tu sesion ya esta activa.";
+    return "Inicio de sesión exitoso. Tus credenciales fueron validadas y tu sesión ya esta activa.";
   }
 
   if (action.kind === "logout") {
-    return "Cierre de sesion exitoso. Tu sesion se cerro correctamente.";
+    return "Cierre de sesión exitoso. Tu sesión se cerro correctamente.";
   }
 
   if (action.kind === "status") {
@@ -223,11 +223,11 @@ const buildErrorPrefix = (requestInfo) => {
   const entity = resolveEntityLabel(requestInfo?.url);
 
   if (action.kind === "login") {
-    return "Inicio de sesion fallido. No se pudo validar tu correo o contrasena y tu sesion no se abrio";
+    return "Inicio de sesión fallido. No se pudo validar tu correo o contraseña y tu sesión no se abrio";
   }
 
   if (action.kind === "logout") {
-    return "No se pudo cerrar la sesion. Tu sesion continua activa";
+    return "No se pudo cerrar la sesión. Tu sesión continua activa";
   }
 
   if (action.kind === "status") {
@@ -238,7 +238,7 @@ const buildErrorPrefix = (requestInfo) => {
 
   if (action.kind === "create") {
     return entity
-      ? `No se pudo crear ${entity}. La accion no se completo y no se guardaron nuevos datos`
+      ? `No se pudo crear ${entity}. La acción no se completo y no se guardaron nuevos datos`
       : "No se pudo completar la creacion. No se guardaron nuevos datos";
   }
 

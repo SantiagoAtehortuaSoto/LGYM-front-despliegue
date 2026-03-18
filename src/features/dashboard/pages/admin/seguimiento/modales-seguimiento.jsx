@@ -913,14 +913,14 @@ export const ModalFormularioSeguimiento = ({
       if (!parametro) {
         erroresDetalle.parametro = "Parametro requerido";
       } else if (parametro.length > 200) {
-        erroresDetalle.parametro = "Maximo 200 caracteres";
+        erroresDetalle.parametro = "Máximo 200 caracteres";
       }
 
       const propiedad = normalizarTexto(detalle.propiedad);
       if (!propiedad) {
         erroresDetalle.propiedad = "Caracteristica requerida";
       } else if (propiedad.length > 200) {
-        erroresDetalle.propiedad = "Maximo 200 caracteres";
+        erroresDetalle.propiedad = "Máximo 200 caracteres";
       }
 
       const claveCombinacion =
@@ -1219,7 +1219,7 @@ export const ModalFormularioSeguimiento = ({
 
     const fechaStr = (formData.fecha_registro || "").trim();
     const fechaRegex = /^\d{4}-\d{2}-\d{2}$/;
-    // Normaliza la fecha: si es invalida o futura, fuerza hoy para evitar 500 del backend
+    // Normaliza la fecha: si es inválida o futura, fuerza hoy para evitar 500 del backend
     let fechaNormalizada = fechaRegex.test(fechaStr) ? fechaStr : hoy;
 
     // Comparar fechas correctamente (convertir a objetos Date para comparacion)
@@ -1828,12 +1828,12 @@ export const ModalEliminarSeguimiento = ({
       warningMessage={
         <div>
           <p>
-            Al eliminar este seguimiento, se perdera toda la informacion
+            Al eliminar este seguimiento, se perdera toda la información
             asociada incluyendo:
           </p>
           <ul data-seg-style="14">
             <li>Historial de parametros medidos</li>
-            <li>Informacion de evaluacion fisica</li>
+            <li>Información de evaluacion fisica</li>
             <li>Relaciones con caracteristicas registradas</li>
           </ul>
           <p data-seg-style="15">
@@ -1951,7 +1951,7 @@ export const ModalVerSeguimiento = ({ isOpen, onClose, registro }) => {
         if (!cancelado) {
           setUsuarioDetalle(usuarioEnRegistro);
           if (!usuarioEnRegistro) {
-            setErrorUsuario("No se pudo cargar informacion del usuario.");
+            setErrorUsuario("No se pudo cargar información del usuario.");
           }
         }
       } finally {
@@ -2169,7 +2169,7 @@ export const ModalVerSeguimiento = ({ isOpen, onClose, registro }) => {
     return "Obesidad grado III";
   };
 
-  // Informacion del usuario
+  // Información del usuario
   const nombreCompleto = (() => {
     const base =
       usuarioDetalle?.nombre_usuario ||
@@ -2247,7 +2247,7 @@ export const ModalVerSeguimiento = ({ isOpen, onClose, registro }) => {
   );
   const edadDecimal = calcularEdadDecimal(fechaNacimiento);
 
-  // Informacion de evaluacion
+  // Información de evaluacion
   const altura = obtenerValorDetalle(["altura", "talla"], true);
   const peso =
     obtenerValorDetalle(["peso"], true) ||
@@ -2337,7 +2337,7 @@ export const ModalVerSeguimiento = ({ isOpen, onClose, registro }) => {
               <h2
                 data-seg-style="24"
               >
-                Informacion Personal
+                Información Personal
               </h2>
               <div
                 data-seg-style="25"
@@ -2365,7 +2365,7 @@ export const ModalVerSeguimiento = ({ isOpen, onClose, registro }) => {
                 <div
                   data-seg-style="26"
                 >
-                  <span>Telefono:</span>
+                  <span>Teléfono:</span>
                   <span
                     data-seg-style="28"
                   >
@@ -2445,7 +2445,7 @@ export const ModalVerSeguimiento = ({ isOpen, onClose, registro }) => {
               <h2
                 data-seg-style="24"
               >
-                Informacion de Control
+                Información de Control
               </h2>
               <div
                 data-seg-style="25"

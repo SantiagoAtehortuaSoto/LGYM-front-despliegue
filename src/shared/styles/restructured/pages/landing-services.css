@@ -200,7 +200,7 @@ html, body { font-family: var(--font-sans); }
 
 /* ================== Temas por tier (ya NO usamos :nth-child) ================== */
 
-/* === BASICO (azul) === */
+/* === BÁSICO (azul) === */
 .pricing-card.variant-basico{
   border-color: rgba(90,169,255,.35);
 }
@@ -588,4 +588,91 @@ html, body { font-family: var(--font-sans); }
 
 .btn-reflect:hover {
   filter: brightness(1.15);     /* brillo extra */
+}
+
+@media (max-width: 1024px) {
+  .hero-fit {
+    background-attachment: scroll;
+    padding-bottom: 56px;
+  }
+
+  .hero-fit__inner {
+    padding-inline: 18px;
+  }
+
+  .pricing-grid {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-fit {
+    min-height: auto;
+    padding-top: calc(var(--header-h, 80px) + 24px);
+    padding-bottom: 42px;
+  }
+
+  .hero-fit__title {
+    font-size: clamp(2rem, 9vw, 3rem);
+  }
+
+  .hero-fit__subtitle {
+    margin-bottom: 24px;
+  }
+
+  .pricing-card {
+    padding: 22px 18px 20px;
+    border-radius: 20px;
+  }
+
+  .pricing-card__hdr {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .pricing-card__price {
+    white-space: normal;
+  }
+
+  .pricing-card__list {
+    gap: 8px;
+  }
+
+  .pricing-card__item {
+    font-size: 0.95rem;
+  }
+
+  .pricing-btn,
+  .pricing-card.variant-premium .pricing-btn {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .cart-fab {
+    right: 14px;
+    bottom: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-fit__inner {
+    padding-inline: 14px;
+  }
+
+  .pricing-grid {
+    gap: 16px;
+  }
+
+  .pricing-card {
+    padding: 18px 14px 18px;
+  }
+
+  .pricing-crown {
+    top: -4px;
+  }
+
+  .cart-panel {
+    height: 76vh;
+  }
 }

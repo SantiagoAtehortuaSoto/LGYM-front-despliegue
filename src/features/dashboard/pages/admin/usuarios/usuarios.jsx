@@ -34,7 +34,7 @@ import useCrudPermissions from "../../../hooks/Acceder_API/useCrudPermissions";
 
 const DEFAULT_PAGE_SIZE = DEFAULT_DATA_TABLE_PAGE_SIZE;
 const SELF_USER_ACTION_BLOCKED_MESSAGE =
-  "No puedes editar ni eliminar tu propio usuario mientras tienes la sesion iniciada.";
+  "No puedes editar ni eliminar tu propio usuario mientras tienes la sesión iniciada.";
 
 const normalizeRole = (value = "") =>
   String(value)
@@ -315,7 +315,7 @@ export default function Usuarios() {
         throw rolesUsuariosResult.reason;
       } else {
         console.warn(
-          "[usuarios] /roles_usuarios no disponible para la sesion actual; se usa informacion de /usuarios como fallback.",
+          "[usuarios] /roles_usuarios no disponible para la sesión actual; se usa información de /usuarios como fallback.",
           rolesUsuariosResult.reason,
         );
       }
@@ -450,7 +450,7 @@ export default function Usuarios() {
         : [];
       setMembresias(lista);
     } catch (error) {
-      console.error("Error al cargar membresias:", error);
+      console.error("Error al cargar membresías:", error);
       setMembresias([]);
     }
   };

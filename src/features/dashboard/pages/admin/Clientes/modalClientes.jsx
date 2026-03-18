@@ -1503,7 +1503,7 @@ const BaseClienteModal = ({
                     required={!formData.id_usuario}
                     minLength="8"
                     pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).+"
-                    title="Minimo 8 caracteres, con mayuscula, minuscula, numero y caracter especial"
+                    title="Mínimo 8 caracteres, con mayuscula, minuscula, número y caracter especial"
                     placeholder="Mínimo 8 caracteres"
                     className={`modal-clientes__input ${
                       errors.password ? "modal-clientes__input--error" : ""
@@ -1570,11 +1570,11 @@ const BaseClienteModal = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35, duration: 0.35 }}
           >
-            <h3 className="modal-clientes__section-title">Membresia</h3>
+            <h3 className="modal-clientes__section-title">Membresía</h3>
             <p className="modal-clientes__membership-text">
               {cargandoMembresias
-                ? "Cargando membresia..."
-                : membresiaPrincipalNombre || "Sin membresia asociada"}
+                ? "Cargando membresía..."
+                : membresiaPrincipalNombre || "Sin membresía asociada"}
             </p>
           </Motion.div>
         )}
@@ -1711,17 +1711,17 @@ const BaseClienteModal = ({
               label: "Correo",
               format: (_value, item) => {
                 const datos = obtenerDatosRelacion(item);
-                return datos.email || "Sin correo electronico";
+                return datos.email || "Sin correo electrónico";
               },
             },
             {
               key: "id_membresia",
-              label: "Membresia",
+              label: "Membresía",
               format: (_value, item) =>
                 obtenerNombreMembresia(item?.id_membresia, item),
             },
           ]}
-          warningMessage="Esta accion no se puede deshacer. Se eliminara la relacion del beneficiario con el titular."
+          warningMessage="Esta acción no se puede deshacer. Se eliminara la relación del beneficiario con el titular."
         />
       )}
     </>

@@ -515,11 +515,11 @@ function SidebarEmpleados({ isOpen = true }) {
             {configLinks.length > 0 && (
               <ExpandableButtons
                 isSidebarOpen={isOpen}
-                nombreBoton={"Configuracion"}
+                nombreBoton={"Configuración"}
                 links={configLinks}
-                isExpanded={openSection === "Configuracion"}
+                isExpanded={openSection === "Configuración"}
                 onToggle={(nextExpanded) =>
-                  handleSectionToggle("Configuracion", nextExpanded)
+                  handleSectionToggle("Configuración", nextExpanded)
                 }
               />
             )}

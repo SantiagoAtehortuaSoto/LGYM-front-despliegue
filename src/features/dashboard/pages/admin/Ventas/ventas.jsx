@@ -331,9 +331,9 @@ const calcularTotal = (detalles = []) =>
 // Mapea un detalle del formulario al formato que espera el backend
 const mapDetalleToBackend = (detalle = {}) => {
   const tipoBase = (detalle.tipoVenta || "").toUpperCase();
-  // Ajuste para coincidir con el ejemplo del backend: "MEMBRESÍA"
+  // Ajuste para coincidir con el ejemplo del backend: "MEMBRESIA"
   const tipo = tipoBase.startsWith("MEMB")
-    ? "MEMBRESÍA"
+    ? "MEMBRESIA"
     : tipoBase || "PRODUCTO";
 
   const base = {
@@ -347,7 +347,7 @@ const mapDetalleToBackend = (detalle = {}) => {
     const idNum = Number(detalle.recursoId);
     if (!Number.isNaN(idNum)) {
       if (tipo === "PRODUCTO") base.id_producto = idNum;
-      if (tipo === "MEMBRESÍA") base.id_membresia = idNum;
+      if (tipo === "MEMBRESIA") base.id_membresia = idNum;
       if (tipo === "SERVICIO") base.id_servicio = idNum;
     }
   }
@@ -527,7 +527,7 @@ const normalizarTipoVentaTexto = (valor = "") => {
     .trim();
 
   if (!limpio) return "";
-  if (limpio.includes("MEMB")) return "Membresia";
+  if (limpio.includes("MEMB")) return "Membresía";
   if (limpio.includes("SERV")) return "Servicio";
   if (limpio.includes("PROD")) return "Producto";
   return limpio.charAt(0) + limpio.slice(1).toLowerCase();
@@ -826,38 +826,26 @@ function VentasPage({ view = "gestion" }) {
           ? esEstadoVisibleEnCompletados(venta.estado_venta)
           : esEstadoVisibleEnGestion(venta.estado_venta)
       );
-      const ventasFiltradas = searchQuery
-        ? normalizadasPorVista.filter((venta) => coincideBusqueda(venta, searchQuery))
-        : normalizadasPorVista;
-      const isSearchResult = Boolean(searchQuery);
+      const ventasFiltradas = normalizadasPorVista;
       const hasServerPagination = hasExplicitPaginationInfo(resVentas);
-      const totalItemsResolved = isSearchResult
-        ? ventasFiltradas.length
-        : hasServerPagination
+      const totalItemsResolved = hasServerPagination
         ? totalItems
         : ventasFiltradas.length;
-      const totalPagesResolved = isSearchResult
-        ? Math.max(
-            1,
-            Math.ceil(totalItemsResolved / Math.max(1, pagination.limit))
-          )
-        : hasServerPagination
+      const totalPagesResolved = hasServerPagination
         ? totalPages
         : Math.max(
             1,
-            Math.ceil(totalItemsResolved / Math.max(1, pagination.limit))
+            Math.ceil(totalItemsResolved / Math.max(1, limit))
           );
-      const currentPageResolved = isSearchResult
-        ? 1
-        : hasServerPagination
+      const currentPageResolved = hasServerPagination
         ? resolvedPage
-        : Math.min(Math.max(1, pagination.page), totalPagesResolved);
-      const startIndex = hasServerPagination && !isSearchResult
+        : Math.min(Math.max(1, page), totalPagesResolved);
+      const startIndex = hasServerPagination
         ? 0
-        : (currentPageResolved - 1) * pagination.limit;
-      let ventasPaginaActual = hasServerPagination && !isSearchResult
+        : (currentPageResolved - 1) * limit;
+      let ventasPaginaActual = hasServerPagination
         ? ventasFiltradas
-        : ventasFiltradas.slice(startIndex, startIndex + pagination.limit);
+        : ventasFiltradas.slice(startIndex, startIndex + limit);
 
       ventasPaginaActual = await enriquecerVentasConNombreUsuario(
         ventasPaginaActual,
@@ -869,7 +857,7 @@ function VentasPage({ view = "gestion" }) {
       setPagination((prev) => ({
         ...prev,
         page: currentPageResolved,
-        limit: hasServerPagination && !isSearchResult ? resolvedLimit : prev.limit,
+        limit: hasServerPagination ? resolvedLimit : limit,
         totalPages: totalPagesResolved,
         totalItems: totalItemsResolved,
       }));
@@ -947,38 +935,24 @@ function VentasPage({ view = "gestion" }) {
             ? esEstadoVisibleEnCompletados(venta.estado_venta)
             : esEstadoVisibleEnGestion(venta.estado_venta)
         );
-        const ventasFiltradas = searchQuery
-          ? normalizadasPorVista.filter((venta) =>
-              coincideBusqueda(venta, searchQuery)
-            )
-          : normalizadasPorVista;
-        const isSearchResult = Boolean(searchQuery);
+        const ventasFiltradas = normalizadasPorVista;
         const hasServerPagination = hasExplicitPaginationInfo(resVentas);
-        const totalItemsResolved = isSearchResult
-          ? ventasFiltradas.length
-          : hasServerPagination
+        const totalItemsResolved = hasServerPagination
           ? totalItems
           : ventasFiltradas.length;
-        const totalPagesResolved = isSearchResult
-          ? Math.max(
-              1,
-              Math.ceil(totalItemsResolved / Math.max(1, pagination.limit))
-            )
-          : hasServerPagination
+        const totalPagesResolved = hasServerPagination
           ? totalPages
           : Math.max(
               1,
               Math.ceil(totalItemsResolved / Math.max(1, pagination.limit))
             );
-        const currentPageResolved = isSearchResult
-          ? 1
-          : hasServerPagination
+        const currentPageResolved = hasServerPagination
           ? resolvedPage
           : Math.min(Math.max(1, pagination.page), totalPagesResolved);
-        const startIndex = hasServerPagination && !isSearchResult
+        const startIndex = hasServerPagination
           ? 0
           : (currentPageResolved - 1) * pagination.limit;
-        let ventasPaginaActual = hasServerPagination && !isSearchResult
+        let ventasPaginaActual = hasServerPagination
           ? ventasFiltradas
           : ventasFiltradas.slice(
               startIndex,
@@ -995,7 +969,7 @@ function VentasPage({ view = "gestion" }) {
         setPagination((prev) => ({
           ...prev,
           page: currentPageResolved,
-          limit: hasServerPagination && !isSearchResult ? resolvedLimit : prev.limit,
+          limit: hasServerPagination ? resolvedLimit : prev.limit,
           totalPages: totalPagesResolved,
           totalItems: totalItemsResolved,
         }));
@@ -1321,7 +1295,7 @@ function VentasPage({ view = "gestion" }) {
         "Tipo de venta": obtenerTipoVentaVisual(venta),
         Cantidad: venta.totalItems,
         Fecha: formatearFecha(venta.fecha_venta),
-        "Plazo maximo": formatearFecha(venta.plazo_maximo),
+        "Plazo máximo": formatearFecha(venta.plazo_maximo),
         "Valor de venta": venta.valor_total_venta,
         Estado: config.label,
       };
@@ -1417,7 +1391,7 @@ function VentasPage({ view = "gestion" }) {
   );
 
   return (
-    <div className="contenido-pagina ventas-page">
+    <div className="contenido-página ventas-page">
       <div className="encabezado-acciones">
         <div className="titulo-con-icono">
           <Store size={40} className="icono-titulo" color="red" />

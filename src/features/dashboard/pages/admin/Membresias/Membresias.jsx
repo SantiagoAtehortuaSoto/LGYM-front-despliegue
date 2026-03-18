@@ -369,7 +369,7 @@ const MembresiasAdmin = () => {
       return activos;
     } catch (error) {
       console.error(
-        "No se pudo calcular asociaciones activas de la membresia:",
+        "No se pudo calcular asociaciones activas de la membresía:",
         error,
       );
       return 0;

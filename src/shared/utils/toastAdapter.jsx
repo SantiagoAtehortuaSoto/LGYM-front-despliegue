@@ -48,12 +48,12 @@ const enrichToastMessage = (type, rawMessage) => {
 
   const normalized = normalizeForMatch(original);
 
-  if (normalized === "inicio de sesion exitoso") {
-    return "Inicio de sesion exitoso. Tus credenciales fueron validadas y ya ingresaste a tu cuenta.";
+  if (normalized === "inicio de sesión exitoso") {
+    return "Inicio de sesión exitoso. Tus credenciales fueron validadas y ya ingresaste a tu cuenta.";
   }
 
-  if (normalized === "inicio de sesion fallido") {
-    return "Inicio de sesion fallido. No se pudo validar tu correo o contrasena, por eso no ingresaste.";
+  if (normalized === "inicio de sesión fallido") {
+    return "Inicio de sesión fallido. No se pudo validar tu correo o contraseña, por eso no ingresaste.";
   }
 
   const legacySuccessWithEntity = normalized.match(
@@ -109,7 +109,7 @@ const enrichToastMessage = (type, rawMessage) => {
     ) {
       return appendMessageDetail(
         original,
-        "La accion se completo y la informacion ya quedo guardada en el sistema."
+        "La acción se completo y la información ya quedo guardada en el sistema."
       );
     }
 
@@ -129,7 +129,7 @@ const enrichToastMessage = (type, rawMessage) => {
     ) {
       return appendMessageDetail(
         original,
-        "El registro ya no aparece en el listado despues de esta accion."
+        "El registro ya no aparece en el listado despues de esta acción."
       );
     }
 
@@ -159,7 +159,7 @@ const enrichToastMessage = (type, rawMessage) => {
   if (type === "error") {
     const legacyErrorCreate = normalized.match(/^algo salio mal al crear\s+(.+?)(\s+intenta|$)/);
     if (legacyErrorCreate) {
-      return `No se pudo crear ${legacyErrorCreate[1].trim()}. La accion no se completo y no se guardaron nuevos datos.`;
+      return `No se pudo crear ${legacyErrorCreate[1].trim()}. La acción no se completo y no se guardaron nuevos datos.`;
     }
 
     const legacyErrorUpdate = normalized.match(
@@ -186,7 +186,7 @@ const enrichToastMessage = (type, rawMessage) => {
     if (/\b(error al|no se pudo)\s+crear\b/.test(normalized)) {
       return appendMessageDetail(
         original,
-        "La accion fallo y no se guardo informacion nueva."
+        "La acción fallo y no se guardo información nueva."
       );
     }
 
@@ -196,14 +196,14 @@ const enrichToastMessage = (type, rawMessage) => {
     ) {
       return appendMessageDetail(
         original,
-        "Los cambios no se aplicaron y se mantiene la informacion anterior."
+        "Los cambios no se aplicaron y se mantiene la información anterior."
       );
     }
 
     if (/\b(error al|no se pudo)\s+eliminar\b/.test(normalized)) {
       return appendMessageDetail(
         original,
-        "El registro sigue existiendo porque la operacion no se completo."
+        "El registro sigue existiendo porque la operación no se completo."
       );
     }
 
@@ -217,7 +217,7 @@ const enrichToastMessage = (type, rawMessage) => {
     if (/\b(error al|no se pudo)\s+guardar\b/.test(normalized)) {
       return appendMessageDetail(
         original,
-        "La informacion no se guardo por este error."
+        "La información no se guardo por este error."
       );
     }
 
@@ -347,6 +347,7 @@ toast.isActive = (id) => toastify.isActive(id);
 export const Toaster = ({
   position = "top-right",
   toastOptions = {},
+  limit = 3,
   newestOnTop = false,
   reverseOrder = false,
   containerStyle,
@@ -362,6 +363,7 @@ export const Toaster = ({
     draggable
     pauseOnHover={toastOptions?.pauseOnHover ?? true}
     theme="colored"
+    limit={limit}
   />
 );
 

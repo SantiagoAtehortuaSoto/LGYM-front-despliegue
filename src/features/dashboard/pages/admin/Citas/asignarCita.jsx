@@ -550,6 +550,7 @@ const AsignarCita = () => {
         empleados={empleados}
         clientes={clientes}
         actividades={actividadesServicio}
+        agendaItems={agenda}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 /* Configuraci?n */
-/* Pagina base */
+/* Página base */
 .config-page {
   min-height: calc(100vh - var(--header-height, 70px));
   height: 100%;

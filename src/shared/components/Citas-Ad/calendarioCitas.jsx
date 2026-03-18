@@ -28,7 +28,7 @@ const BUTTON_TEXT = {
   today: "Hoy",
   month: "Mes",
   week: "Semana",
-  day: "Dia",
+  day: "Día",
   list: "Lista",
 };
 
@@ -74,7 +74,7 @@ const formatUtcDateKey = (value) => {
 };
 
 const formatDateLabel = (dateKey) => {
-  if (!dateKey) return "dia seleccionado";
+  if (!dateKey) return "día seleccionado";
 
   const parsed = new Date(`${dateKey}T00:00:00`);
   if (Number.isNaN(parsed.getTime())) return dateKey;
@@ -454,6 +454,7 @@ function CalendarioCitas({
         editable={false}
         events={calendarEvents}
         select={handleDateSelect}
+        dateClick={handleDateSelect}
         eventClick={handleEventClick}
         slotMinTime="06:00:00"
         slotMaxTime="12:00:00"

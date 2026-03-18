@@ -357,7 +357,7 @@ const ProductosLanding = ({ isLoggedIn }) => {
   }, [productoModal, location.pathname, location.search]);
 
   const handleCompra = (producto, e) => {
-    // Si no hay sesion, mandamos a login y terminamos
+    // Si no hay sesión, mandamos a login y terminamos
     if (!requireAuth()) return;
     const stockDisponible = getStockNumber(producto?.stock);
     const cantidadEnCarrito = getCantidadEnCarrito(producto.id);
@@ -686,10 +686,10 @@ const ProductosLanding = ({ isLoggedIn }) => {
             ) : (
               <p className="muted">
                 {esBusquedaGlobal
-                  ? "No se encontraron productos que coincidan con tu busqueda."
+                  ? "No se encontraron productos que coincidan con tu búsqueda."
                   : categoria === "bebidas"
-                  ? "Aun no tenemos bebidas disponibles."
-                  : "No se encontraron productos que coincidan con tu busqueda."}
+                  ? "Aún no tenemos bebidas disponibles."
+                  : "No se encontraron productos que coincidan con tu búsqueda."}
               </p>
             )}
           </div>
@@ -735,7 +735,7 @@ const ProductosLanding = ({ isLoggedIn }) => {
                 {productoModal.nombre}
               </h2>
               <p className="producto-modal__description">
-                {productoModal.descripcion || "Sin descripcion disponible."}
+                {productoModal.descripcion || "Sin descripción disponible."}
               </p>
 
               <div className="producto-modal__stats">

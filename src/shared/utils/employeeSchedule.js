@@ -240,14 +240,43 @@ const extractAgendaItemId = (item = {}) =>
   item?.extendedProps?.id ??
   null;
 
-const extractAgendaItemEmployeeId = (item = {}) =>
-  item?.id_empleado ??
-  item?.id_empleado_usuario?.id_usuario ??
-  item?.id_empleado_usuario?.id ??
-  item?.extendedProps?.id_empleado ??
-  item?.extendedProps?.id_empleado_usuario?.id_usuario ??
-  item?.extendedProps?.id_empleado_usuario?.id ??
-  null;
+const buildComparableIdList = (...values) => {
+  const unique = new Set();
+
+  values.flat(Infinity).forEach((value) => {
+    const comparable = toComparableId(value);
+    if (comparable != null) {
+      unique.add(comparable);
+    }
+  });
+
+  return Array.from(unique);
+};
+
+const extractAgendaItemEmployeeIds = (item = {}) =>
+  buildComparableIdList(
+    item?.id_empleado,
+    item?.id_empleado_usuario?.id_empleado,
+    item?.id_empleado_usuario?.id_usuario,
+    item?.id_empleado_usuario?.id,
+    item?.empleado_id,
+    item?.extendedProps?.id_empleado,
+    item?.extendedProps?.id_empleado_usuario?.id_empleado,
+    item?.extendedProps?.id_empleado_usuario?.id_usuario,
+    item?.extendedProps?.id_empleado_usuario?.id,
+    item?.extendedProps?.empleado_id,
+  );
+
+const extractTargetEmployeeIds = ({ employeeId = null, empleado = null }) =>
+  buildComparableIdList(
+    employeeId,
+    empleado?.id_empleado,
+    empleado?.id_usuario,
+    empleado?.id,
+    empleado?.id_empleado_usuario?.id_empleado,
+    empleado?.id_empleado_usuario?.id_usuario,
+    empleado?.id_empleado_usuario?.id,
+  );
 
 const extractAgendaItemDate = (item = {}) => {
   const directDate =
@@ -296,13 +325,16 @@ export const findAppointmentConflict = ({
   agendaItems = [],
   currentAppointmentId = null,
   employeeId = null,
+  empleado = null,
   agendaFecha,
   horaInicio,
   horaFin,
   matchByEmployee = true,
 }) => {
   const targetId = toComparableId(currentAppointmentId);
-  const targetEmployeeId = toComparableId(employeeId);
+  const targetEmployeeIds = new Set(
+    extractTargetEmployeeIds({ employeeId, empleado }),
+  );
   const rangeValidation = validateAppointmentTimeRange({ horaInicio, horaFin });
   if (!rangeValidation.valid) return null;
 
@@ -311,8 +343,12 @@ export const findAppointmentConflict = ({
     if (targetId != null && itemId === targetId) return false;
 
     if (matchByEmployee) {
-      const itemEmployeeId = toComparableId(extractAgendaItemEmployeeId(item));
-      if (targetEmployeeId == null || itemEmployeeId !== targetEmployeeId) {
+      const itemEmployeeIds = extractAgendaItemEmployeeIds(item);
+      const hasMatchingEmployee = itemEmployeeIds.some((id) =>
+        targetEmployeeIds.has(id),
+      );
+
+      if (targetEmployeeIds.size === 0 || !hasMatchingEmployee) {
         return false;
       }
     }
@@ -384,9 +420,11 @@ export const validateAppointmentScheduling = ({
   const conflictingAppointment = findAppointmentConflict({
     agendaItems,
     currentAppointmentId,
+    empleado,
     employeeId:
       employeeId ??
       empleado?.id_usuario ??
+      empleado?.id_empleado ??
       empleado?.id ??
       null,
     agendaFecha,

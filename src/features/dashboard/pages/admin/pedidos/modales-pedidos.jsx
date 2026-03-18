@@ -635,7 +635,7 @@ export const ModalFormularioPedido = ({
           setErrores({});
         } catch (error) {
           console.error("Error al cargar el pedido:", error);
-          toast.error("No se pudo cargar la informacion del pedido");
+          toast.error("No se pudo cargar la información del pedido");
         } finally {
           setCargandoPedido(false);
         }
@@ -770,7 +770,7 @@ export const ModalFormularioPedido = ({
       return;
     }
 
-    // Abrir configuracion inline para cantidad y precio
+    // Abrir configuración inline para cantidad y precio
     setProductoConfigurando({
       id,
       idProducto: String(id),
@@ -811,7 +811,7 @@ export const ModalFormularioPedido = ({
   const validarCampo = (name, value) => {
     let mensaje = "";
     if (name === "numeroPedido" && !value.trim())
-      mensaje = "El numero de pedido es obligatorio";
+      mensaje = "El número de pedido es obligatorio";
     else if (name === "idProveedor" && !value)
       mensaje = "Debe seleccionar un proveedor";
     else if (name !== "subtotal" && !value.trim())
@@ -824,7 +824,7 @@ export const ModalFormularioPedido = ({
     let temp = {};
 
     if (!formData.numeroPedido.trim()) {
-      temp.numeroPedido = "El numero de pedido es obligatorio";
+      temp.numeroPedido = "El número de pedido es obligatorio";
     }
 
     if (!formData.idProveedor) {
@@ -1393,7 +1393,7 @@ export const ModalFormularioPedido = ({
                             placeholder={
                               proveedorSeleccionadoRequerido
                                 ? "Buscar productos..."
-                                : "Seleccione un proveedor para habilitar la busqueda"
+                                : "Seleccione un proveedor para habilitar la búsqueda"
                             }
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -1482,7 +1482,7 @@ export const ModalFormularioPedido = ({
                                             }
                                             const cantidadNumerica = parseFloat(productoConfigurando.cantidad);
                                             if (isNaN(cantidadNumerica) || cantidadNumerica <= 0) {
-                                              toast.error("Cantidad invalida");
+                                              toast.error("Cantidad inválida");
                                               return;
                                             }
 
@@ -1615,7 +1615,7 @@ export const ModalFormularioPedido = ({
                                     <button
                                       onClick={() => removeFromCart(idx)}
                                       title="Eliminar producto"
-                                      className="boton-accion badge-eliminar modal-pedidos__selected-delete-btn"
+                                      className="boton-acción badge-eliminar modal-pedidos__selected-delete-btn"
                                     >
                                       <Trash2 size={14} />
                                       Eliminar
@@ -1710,13 +1710,13 @@ export const ModalEliminarPedido = ({ isOpen, onClose, onConfirm, pedido }) => {
       warningMessage={
         <>
           <p>
-            Al eliminar este pedido, se perdera toda la informacion asociada
+            Al eliminar este pedido, se perdera toda la información asociada
             incluyendo:
           </p>
           <ul className="modal-warning-list">
             <li>Historial de pedidos</li>
             <li>Relaciones con proveedores</li>
-            <li>Informacion de inventario relacionada</li>
+            <li>Información de inventario relacionada</li>
           </ul>
           <p className="modal-warning-emphasis">
             ¿Estas completamente seguro de que deseas continuar?
@@ -1809,7 +1809,7 @@ export const ModalVerPedido = ({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.4 }}
               >
-                <h3 className="modal-section-title">Informacion del pedido</h3>
+                <h3 className="modal-section-title">Información del pedido</h3>
 
                 <motion.div
                   className="modal-field-group"
@@ -1821,7 +1821,7 @@ export const ModalVerPedido = ({
                   <input
                     type="text"
                     className="modal-field-input"
-                    value={pedido.numero_pedido || "Sin numero"}
+                    value={pedido.numero_pedido || "Sin número"}
                     readOnly
                     disabled
                   />
@@ -2031,7 +2031,7 @@ export const ModalCambiarEstadoPedido = ({
   const detallePedido = (
     <div className="modal-pedidos__status-details">
       <div>
-        <strong>Pedido:</strong> {pedido.numero_pedido || "Sin numero"}
+        <strong>Pedido:</strong> {pedido.numero_pedido || "Sin número"}
       </div>
       <div>
         <strong>Producto:</strong> {pedido.producto || "Sin producto"}

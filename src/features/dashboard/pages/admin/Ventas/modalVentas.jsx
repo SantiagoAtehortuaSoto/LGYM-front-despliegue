@@ -71,7 +71,7 @@ const normalizeTipoVenta = (tipoRaw) => {
 const getTipoVentaMeta = (tipoRaw) => {
   const key = normalizeTipoVenta(tipoRaw);
   if (key === "MEMBRESIA") {
-    return { key, label: "Membresia", color: "#16a34a" };
+    return { key, label: "Membresía", color: "#16a34a" };
   }
   if (key === "SERVICIO") {
     return { key, label: "Servicio", color: "#0d9488" };
@@ -1294,7 +1294,7 @@ export const ModalCrearVenta = ({
                       </motion.div>
                     </div>
 
-                    {/* Resultados Busqueda */}
+                    {/* Resultados Búsqueda */}
                     <motion.div
                       data-ven-style="61"
                       initial={{ opacity: 0, y: 20 }}
@@ -1939,7 +1939,7 @@ export const ModalVerVenta = ({ venta, onClose, colorEstado = "#10b981" }) => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.3 }}
                 >
-                  <label className="modal-field-label">Plazo maximo</label>
+                  <label className="modal-field-label">Plazo máximo</label>
                   <input
                     type="text"
                     className="modal-field-input"

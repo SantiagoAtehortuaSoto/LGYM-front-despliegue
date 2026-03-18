@@ -887,3 +887,141 @@
 .cart-panel .cart-embed button[type="submit"] {
   width: 100% !important;
 }
+
+@media (max-width: 1024px) {
+  .productos-landing {
+    padding: calc(var(--header-h) + 20px) 24px 110px;
+  }
+
+  .pl-inner {
+    gap: 28px;
+  }
+
+  .Tienda-Productos {
+    padding-inline: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .productos-landing {
+    min-height: auto;
+    padding: calc(var(--header-h) + 18px) 18px 96px;
+  }
+
+  .productos-landing::before {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.72) 0%,
+      rgba(0, 0, 0, 0.44) 48%,
+      rgba(0, 0, 0, 0.18) 100%
+    );
+  }
+
+  .pl-inner {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .pl-text,
+  .pl-title,
+  .pl-desc {
+    max-width: 100%;
+  }
+
+  .pl-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pl-detail-btn,
+  .pl-cta {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .pl-image {
+    max-width: min(82vw, 380px);
+    max-height: 42vh;
+  }
+
+  .Tienda-Productos {
+    padding: 2.25rem 18px;
+  }
+
+  .tienda-header,
+  .tienda-actions,
+  .buscador-carrito {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .categorias {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+  }
+
+  .pill {
+    flex: 0 0 auto;
+  }
+
+  .buscador,
+  .buscador input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .icono-carrito {
+    width: 48px;
+    height: 48px;
+    align-self: flex-end;
+  }
+
+  .productos-grid.pretty {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .card.product {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .product-img {
+    min-height: 190px;
+  }
+
+  .product-img img {
+    max-height: 172px;
+  }
+}
+
+@media (max-width: 480px) {
+  .productos-landing {
+    padding: calc(var(--header-h) + 14px) 14px 88px;
+  }
+
+  .Tienda-Productos {
+    padding-inline: 14px;
+  }
+
+  .pl-thumb {
+    width: 50px;
+    height: 50px;
+  }
+
+  .tienda-title h4 {
+    font-size: 1.65rem;
+  }
+
+  .producto-modal {
+    width: calc(100vw - 16px);
+    border-radius: 22px;
+  }
+
+  .producto-modal__content {
+    padding: 18px 16px 20px;
+  }
+}

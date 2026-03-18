@@ -47,7 +47,7 @@ const ExpandableButtons = ({
     Compras: <ArchiveRestore size={20} />,
     Servicios: <Dumbbell size={20} />,
     Ventas: <ShoppingBag size={20} />,
-    Configuracion: <Settings size={20} />,
+    Configuración: <Settings size={20} />,
   };
 
   const setExpanded = (value) => {

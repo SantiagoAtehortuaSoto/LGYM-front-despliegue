@@ -7,7 +7,7 @@ export const comprasLinksAd = [
 
 export const ServiciosLInksAd = [
   { title: "Servicios", url: "/admin/serviciosAdmin" },
-  { title: "Membresias", url: "/admin/membresiasAdmin" },
+  { title: "Membresías", url: "/admin/membresiasAdmin" },
   { title: "Prog. empleados", url: "/admin/programarCita" },
   { title: "Asistencias", url: "/admin/asistencias" },
   { title: "Empleados", url: "/admin/empleados" },
@@ -16,7 +16,7 @@ export const ServiciosLInksAd = [
 export const ventasLinksAd = [
   { title: "Ventas pend.", url: "/admin/ventas" },
   { title: "Ventas Comp.", url: "/admin/ventas/completadas" },
-  // { title: "Ventas Membresias", url: "/admin/ventasMembresias" },  
+  // { title: "Ventas Membresías", url: "/admin/ventasMembresias" },  
   { title: "Seguimiento Dep.", url: "/admin/seguimiento" },
   { title: "Gestion Clientes", url: "/admin/clientes" },
   // { title: "Agendar Citas", url: "/admin/asignarCita" },
@@ -43,7 +43,7 @@ export const configLinksEmp = [
   },
 ];
 
-// Enlaces especificos para empleados (sin configuracion ni gestion de empleados)
+// Enlaces especificos para empleados (sin configuración ni gestion de empleados)
 export const comprasLinksEmp = [
   {
     title: "Productos",
@@ -79,7 +79,7 @@ export const serviciosLinksEmp = [
     moduloKey: "servicios",
   },
   {
-    title: "Membresias",
+    title: "Membresías",
     url: "/empleados/membresias",
     permisoId: 10,
     moduloKey: "membresias",
@@ -118,10 +118,10 @@ export const VentasLinksEmp = [
     moduloKey: "ventas",
   },
   // {
-  //   title: "Ventas Membresias",
+  //   title: "Ventas Membresías",
   //   url: "/empleados/ventasMembresias",
   //   permisoId: 17,
-  //   moduloKey: "ventas membresias",
+  //   moduloKey: "ventas membresías",
   // },
   {
     title: "Seguimiento Deportivo",
@@ -139,8 +139,8 @@ export const VentasLinksEmp = [
 
 // Enlaces para clientes (modulos relevantes para clientes)
 export const membresiasLinksCliente = [
-  { title: "Ver Membresias", url: "/cliente/serviciosUsuario" },
-  { title: "Mi Membresia", url: "/cliente/serviciosUsuario" },
+  { title: "Ver Membresías", url: "/cliente/serviciosUsuario" },
+  { title: "Mi Membresía", url: "/cliente/serviciosUsuario" },
 ];
 
 export const citasLinksCliente = [

@@ -106,14 +106,6 @@ const toTimeCalcValue = (value) => {
   return `${hh}:${mm}:${ss || "00"}`;
 };
 
-const toMinutesFromTimeValue = (value) => {
-  const normalized = toTimeCalcValue(value);
-  if (!normalized) return null;
-  const [hours, minutes] = normalized.split(":").map(Number);
-  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return null;
-  return hours * 60 + minutes;
-};
-
 /* ======================================================
    Modal base reutilizable
 ====================================================== */
@@ -604,23 +596,6 @@ export const ModalFormularioAsistencia = ({
       ) {
         newErrors.hora_entrada_empleado = "La hora de entrada debe ser anterior";
         newErrors.hora_salida_empleado = "La hora de salida debe ser posterior";
-      } else if (
-        formData.hora_entrada_empleado &&
-        formData.hora_salida_empleado
-      ) {
-        const minutosEntrada = toMinutesFromTimeValue(formData.hora_entrada_empleado);
-        const minutosSalida = toMinutesFromTimeValue(formData.hora_salida_empleado);
-        const duracionMinutos =
-          minutosEntrada !== null && minutosSalida !== null
-            ? minutosSalida - minutosEntrada
-            : null;
-
-        if (duracionMinutos !== null && duracionMinutos > 120) {
-          newErrors.hora_entrada_empleado =
-            "La asistencia del empleado no puede durar más de 2 horas";
-          newErrors.hora_salida_empleado =
-            "La hora de salida no puede superar 2 horas desde la entrada";
-        }
       }
     }
 
@@ -1218,7 +1193,7 @@ export const ModalEliminarAsistencia = ({
           format: (value) => getEstadoLabel(value, tipo),
         },
       ]}
-      warningMessage="Esta accion no se puede deshacer. La asistencia sera eliminada permanentemente."
+      warningMessage="Esta acción no se puede deshacer. La asistencia sera eliminada permanentemente."
     />
   );
 };

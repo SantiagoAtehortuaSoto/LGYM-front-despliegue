@@ -89,7 +89,7 @@ const ServiciosUsuario = () => {
 
   const [modalOpen, setModalOpen] = React.useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = React.useState(false);
-  const [selectedType, setSelectedType] = React.useState("Basica");
+  const [selectedType, setSelectedType] = React.useState("Básica");
   const [membershipData, setMembershipData] = React.useState(() => {
     const saved = localStorage.getItem("membershipData");
     return saved
@@ -97,10 +97,10 @@ const ServiciosUsuario = () => {
       : {
           serviciosDisponibles: 3,
           serviciosActivos: 1,
-          tipoMembresia: "Basica",
-          descripcion: MEMBERSHIP_DETAILS["Basica"]?.longDescription || "",
-          duracion: MEMBERSHIP_DETAILS["Basica"]?.duracion || "",
-          precio: MEMBERSHIP_DETAILS["Basica"]?.precio || "",
+          tipoMembresia: "Básica",
+          descripcion: MEMBERSHIP_DETAILS["Básica"]?.longDescription || "",
+          duracion: MEMBERSHIP_DETAILS["Básica"]?.duracion || "",
+          precio: MEMBERSHIP_DETAILS["Básica"]?.precio || "",
         };
   });
   const [usuarioId, setUsuarioId] = useState(null);
@@ -222,15 +222,15 @@ const ServiciosUsuario = () => {
     if (n.includes("premium")) return "Premium";
     if (n.includes("general")) return "General";
     if (n.includes("elite")) return "Elite";
-    if (n.includes("basica") || n.includes("básica")) return "Basica";
-    return nombre || "Basica";
+    if (n.includes("basica") || n.includes("básica")) return "Básica";
+    return nombre || "Básica";
   };
 
   const getMembershipColor = (type) => {
     const t = normalizarTipoMembresia(type);
     if (t === "Premium") return "#C9A227";
     if (t === "General") return "#0F5132";
-    if (t === "Basica") return "#1E3A8A";
+    if (t === "Básica") return "#1E3A8A";
     if (t === "Elite") return "#C9A227";
     return "#1E3A8A";
   };
@@ -519,7 +519,7 @@ const ServiciosUsuario = () => {
 
   // Solo GET de beneficiarios propios; se elimina alta desde aquí.
 
-  // Fetch estado de membresia
+  // Fetch estado de membresía
   const cargarEstadoMembresia = useCallback(async () => {
     try {
       const user = getCurrentUser();
@@ -797,7 +797,7 @@ const ServiciosUsuario = () => {
       }
       const nombre =
         nombreResuelto ||
-        (idMembresia ? `Membresia ${idMembresia}` : "Membresía");
+        (idMembresia ? `Membresía ${idMembresia}` : "Membresía");
 
       const estadoUI = mapEstadoUI(estadoNorm);
 
@@ -997,7 +997,7 @@ const ServiciosUsuario = () => {
             );
             if (encontrado) memObj = encontrado;
           } catch (lookupErr) {
-            console.warn("[ServiciosUsuario] No se pudo resolver detalle de membresia por id:", lookupErr);
+            console.warn("[ServiciosUsuario] No se pudo resolver detalle de membresía por id:", lookupErr);
           }
         }
         const estadoObj =
@@ -1103,7 +1103,7 @@ const ServiciosUsuario = () => {
             nombre:
               memObj.nombre_membresia ||
               memObj.nombre ||
-              (idMembresia ? `Membresia ${idMembresia}` : prev.nombre),
+              (idMembresia ? `Membresía ${idMembresia}` : prev.nombre),
             fecha:
               fechaAsignacionBeneficiario ||
               prev.fecha ||
@@ -1143,7 +1143,7 @@ const ServiciosUsuario = () => {
         return true;
       }
 
-      // Si existe un registro propio sin membresia pero marcado como cancelado/inactivo,
+      // Si existe un registro propio sin membresía pero marcado como cancelado/inactivo,
       // se considera estado final y evita fallback a ventas antiguas.
       const registroPropioCerrado = listaArray
         .map((benef) => ({
@@ -1224,7 +1224,7 @@ const ServiciosUsuario = () => {
     }
 
     if (!idBeneficiarioRegistro) {
-      toast.error("No se encontro el registro de beneficiario para cancelar la membresia.");
+      toast.error("No se encontro el registro de beneficiario para cancelar la membresía.");
       return;
     }
 
@@ -1248,15 +1248,15 @@ const ServiciosUsuario = () => {
         })
       );
 
-      toast.success("Membresia cancelada correctamente");
+      toast.success("Membresía cancelada correctamente");
       setCancelModalOpen(false);
       await resolverMembresiaActual();
     } catch (err) {
-      console.error("[ServiciosUsuario] Error al cancelar membresia:", err);
+      console.error("[ServiciosUsuario] Error al cancelar membresía:", err);
       const msg =
         err?.response?.data?.message ||
         err?.message ||
-        "No se pudo cancelar la membresia";
+        "No se pudo cancelar la membresía";
       toast.error(msg);
     } finally {
       setCancelandoMembresia(false);
@@ -1288,7 +1288,7 @@ const ServiciosUsuario = () => {
         loading: false,
         status: estadoUI.status,
         estadoTexto: estadoUI.label,
-        nombre: detalle.nombreMembresia || detalle.nombre || prev.nombre || "Membresia",
+        nombre: detalle.nombreMembresia || detalle.nombre || prev.nombre || "Membresía",
         fecha: detalle.fecha || prev.fecha || "",
         fecha_asignacion:
           detalle.fecha_asignacion ||
@@ -1443,7 +1443,7 @@ const ServiciosUsuario = () => {
     }
     const labelEstado = membresiaEstado.estadoTexto || "";
     const tipoActivo = membresiaEstado.status !== "none"
-      ? normalizarTipoMembresia(membresiaEstado.nombre || "Membresia")
+      ? normalizarTipoMembresia(membresiaEstado.nombre || "Membresía")
       : normalizarTipoMembresia(membershipData.tipoMembresia);
     const accent = getMembershipColor(tipoActivo);
     const accentBg = softenColor(accent, 0.18);
@@ -1486,7 +1486,7 @@ const ServiciosUsuario = () => {
 
   const tipoMostrado =
     membresiaEstado.status !== "none"
-      ? normalizarTipoMembresia(membresiaEstado.nombre || "Membresia")
+      ? normalizarTipoMembresia(membresiaEstado.nombre || "Membresía")
       : normalizarTipoMembresia(membershipData.tipoMembresia);
   const getAccentTierClass = (tipo) => {
     const t = normalizarTipoMembresia(tipo).toLowerCase();
@@ -1504,15 +1504,15 @@ const ServiciosUsuario = () => {
 
   const descripcionMembresia = (() => {
     if (membresiaEstado.status === "active") {
-      return `Tu membresia actual es ${membresiaEstado.nombre || "Membresia"}, disfruta de todos sus beneficios.`;
+      return `Tu membresía actual es ${membresiaEstado.nombre || "Membresia"}, disfruta de todos sus beneficios.`;
     }
     if (membresiaEstado.status === "completed") {
-      return "Tu membresia se encuentra completada. Gracias por tu preferencia.";
+      return "Tu membresía se encuentra completada. Gracias por tu preferencia.";
     }
     if (membresiaEstado.status === "pending") {
-      return "Tu membresia se activara en cuanto se confirme el pago.";
+      return "Tu membresía se activara en cuanto se confirme el pago.";
     }
-    return "Aun no tienes una membresia activa. Elige la que mejor se adapte a ti.";
+    return "Aún no tienes una membresía activa. Elige la que mejor se adapte a ti.";
   })();
 
   const formatFechaMembresia = (value) => {
@@ -1684,7 +1684,7 @@ const ServiciosUsuario = () => {
                     ))}
                   {serviciosDisponibles.length === 0 && (
                     <li className="servicios-usuario__list-item">
-                      <strong>No hay servicios asociados a tu membresia.</strong>
+                      <strong>No hay servicios asociados a tu membresía.</strong>
                     </li>
                   )}
                 </ul>
@@ -1767,7 +1767,7 @@ const ServiciosUsuario = () => {
             ) : (
               <>
                 <span className={`servicios-usuario__badge ${accentClass}`}>
-                  {membresiaEstado.nombre?.toString().toUpperCase() || "MEMBRESÍA"}
+                  {membresiaEstado.nombre?.toString().toUpperCase() || "MEMBRESIA"}
                 </span>
                 <div className="servicios-usuario__membership-grid">
                   <div>
@@ -1808,7 +1808,7 @@ const ServiciosUsuario = () => {
                       onClick={openCancelModal}
                     >
                       <X size={14} color="#ffffff" />
-                      {cancelandoMembresia ? "Cancelando..." : "Cancelar Membresia"}
+                      {cancelandoMembresia ? "Cancelando..." : "Cancelar Membresía"}
                     </button>
                   )}
                 </div>
@@ -1891,7 +1891,7 @@ const ServiciosUsuario = () => {
                       {p.price}
                     </div>
 
-                    {/* Header con título e icono */}
+                    {/* Header con título e ícono */}
                     <div className="servicios-usuario__plan-header">
                       <div className="servicios-usuario__plan-icon">
                         <IconStar size={24} color="white" />
@@ -1949,7 +1949,7 @@ const ServiciosUsuario = () => {
 
       {cancelModalOpen && (
         <Modal
-          title="Cancelar Membresia"
+          title="Cancelar Membresía"
           onClose={closeCancelModal}
           size="md"
           className="servicios-usuario__cancel- modal"
@@ -1974,7 +1974,7 @@ const ServiciosUsuario = () => {
                 disabled={cancelandoMembresia}
               >
                 <X size={14} color="#ffffff" />
-                {cancelandoMembresia ? "Cancelando..." : "Confirmar cancelacion"}
+                {cancelandoMembresia ? "Cancelando..." : "Confirmar cancelación"}
               </button>
             </div>
           }
@@ -1982,16 +1982,16 @@ const ServiciosUsuario = () => {
           <div className="servicios-usuario__cancel-body">
             <div className="servicios-usuario__cancel-highlight">
               <span className="servicios-usuario__cancel-highlight-label">
-                Accion permanente
+                Acción permanente
               </span>
               <p className="servicios-usuario__cancel-text">
-                Vas a cancelar y eliminar tu membresia activa de tu registro.
+                Vas a cancelar y eliminar tu membresía activa de tu registro.
               </p>
             </div>
             <div className="servicios-usuario__cancel-note">
               <span className="servicios-usuario__cancel-note-dot" />
               <span>
-                Si confirmas, perderas el acceso, tu y tus beneficiarios asociados a esta membresia inmediatamente.
+                Si confirmas, perderas el acceso, tu y tus beneficiarios asociados a esta membresía inmediatamente.
               </span>
             </div>
           </div>
@@ -2023,7 +2023,7 @@ const ServiciosUsuario = () => {
                       className="servicios-usuario__detail-input"
                       value={
                         membresiaEstado.nombre ||
-                        (membresiaEstado.status === "none" ? membershipData.tipoMembresia : "Membresia")
+                        (membresiaEstado.status === "none" ? membershipData.tipoMembresia : "Membresía")
                       }
                       readOnly
                       disabled

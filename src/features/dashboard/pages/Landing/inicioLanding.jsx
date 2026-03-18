@@ -34,7 +34,7 @@ const IconHome = Home;
 const IconHeartHandshake = HeartHandshake;
 const IconEyeSearch = Eye;
 const IconTreadmill = DumbbellIcon; // Using Dumbbell as fallback for Treadmill
-/* Importacion de pagina */
+/* Importacion de página */
 const InicioLanding = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [openModal, setOpenModal] = useState(false);

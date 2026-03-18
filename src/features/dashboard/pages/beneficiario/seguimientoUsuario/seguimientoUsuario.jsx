@@ -750,7 +750,7 @@ const SeguimientoUsuario = () => {
               type="button"
               onClick={limpiarFiltros}
               className="seguimiento-user-clear-btn"
-              title="Limpiar busqueda y periodo"
+              title="Limpiar búsqueda y periodo"
             >
               Limpiar
             </button>

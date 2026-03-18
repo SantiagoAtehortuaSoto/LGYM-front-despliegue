@@ -47,6 +47,16 @@ html {
     opacity: 0;
     transform: translateY(10px);
     transition: all 0.3s ease;
+    margin-inline: auto;
+}
+
+.form-contenedor {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .login-formulario .register {
@@ -55,6 +65,7 @@ html {
     align-items: center;
     width: 100%;
     max-width: 850px;
+    margin: 0 auto;
 }
 
 /* ===== Registro (modo expandido) ===== */
@@ -65,6 +76,7 @@ html {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    margin-inline: auto;
 }
 
 /* ===== Logo y títulos ===== */
@@ -109,7 +121,7 @@ html {
     color: #f87171;
 }
 
-/* ===== Inputs con icono ===== */
+/* ===== Inputs con ícono ===== */
 .input-icono {
     position: relative;
     width: 100%;
@@ -175,6 +187,7 @@ html {
 .campo {
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 /* ===== Ajuste SOLO para los inputs del LOGIN ===== */
@@ -296,9 +309,11 @@ html {
 .mensaje-error,
 .mensaje-ok,
 .mensaje-info {
+    display: block;
     margin-top: 6px;
     font-size: 0.8rem;
     line-height: 1.3;
+    overflow-wrap: anywhere;
 }
 
 .mensaje-error {
@@ -495,9 +510,22 @@ textarea.input-valid {
 }
 
 @media (max-width: 700px) {
+    .contenedor-login {
+        align-items: center;
+        padding: 24px 14px;
+    }
+
+    .contenedor-login.registro-activo {
+        align-items: flex-start;
+    }
+
+    .login-formulario {
+        padding: 1.4rem 1rem;
+    }
+
     .registro-activo .login-formulario {
-        max-width: 95%;
-        padding: 1.8rem;
+        max-width: 100%;
+        padding: 1.5rem 1rem 2rem;
     }
 
     .grid-registro {
@@ -514,6 +542,26 @@ textarea.input-valid {
 
     .subtitulo {
         font-size: 0.85rem;
+    }
+
+    .grupo-label {
+        align-items: flex-start;
+    }
+
+    .form-contenedor,
+    .login-formulario .register {
+        align-items: center;
+    }
+
+    .registro-activo .form-contenedor,
+    .registro-activo .login-formulario .register {
+        align-items: stretch;
+    }
+
+    .campo input,
+    .campo select,
+    .campo textarea {
+        font-size: 16px;
     }
 }
 
@@ -578,7 +626,7 @@ textarea.input-valid {
     width: 100%;
 }
 
-/* alineación de label + icono */
+/* alineación de label + ícono */
 .verificar-form .grupo-label {
     justify-content: flex-start;
 }

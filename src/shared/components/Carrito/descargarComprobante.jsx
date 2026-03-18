@@ -166,7 +166,7 @@ export const DescargarComprobante = ({
     const idUsuario = resolveUserId(user);
 
     if (!idUsuario) {
-      toast.error("No se pudo identificar tu usuario. Vuelve a iniciar sesion.");
+      toast.error("No se pudo identificar tu usuario. Vuelve a iniciar sesión.");
       return;
     }
 

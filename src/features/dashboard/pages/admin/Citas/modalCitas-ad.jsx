@@ -13,7 +13,7 @@ import "../../../../../shared/styles/restructured/components/modal-seguimiento.c
 import {
   formatEmployeeShiftLabel,
   getEmployeeScheduleWindow,
-  validateAppointmentAgainstEmployeeSchedule,
+  validateAppointmentScheduling,
 } from "../../../../../shared/utils/employeeSchedule";
 
 const Motion = motion;
@@ -152,6 +152,7 @@ const ModalCitasAd = ({
   empleados: empleadosIniciales = [],
   clientes: clientesIniciales = [],
   actividades: actividadesIniciales = [],
+  agendaItems = [],
 }) => {
   const [loading, setLoading] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -331,15 +332,26 @@ const ModalCitasAd = ({
         nextErrors.id_estado = "Debe seleccionar un estado.";
       }
 
-      const scheduleValidation = validateAppointmentAgainstEmployeeSchedule({
+      const scheduleValidation = validateAppointmentScheduling({
         agendaFecha: data.agenda_fecha,
         horaInicio: data.hora_inicio,
         horaFin: data.hora_fin,
         empleado: empleadoSeleccionado,
+        agendaItems,
+        currentAppointmentId:
+          data.id_agenda ?? initialData?.id_agenda ?? initialData?.id ?? null,
+        employeeId: data.id_empleado,
+        isEditing: Boolean(
+          data.id_agenda ?? initialData?.id_agenda ?? initialData?.id,
+        ),
       });
 
       if (!scheduleValidation.valid) {
-        if (scheduleValidation.message.includes("domingos")) {
+        if (
+          scheduleValidation.message.includes("domingos") ||
+          scheduleValidation.message.includes("fecha u hora pasada") ||
+          scheduleValidation.message.includes("ya comenzó")
+        ) {
           nextErrors.agenda_fecha = scheduleValidation.message;
         } else {
           nextErrors.hora_fin = scheduleValidation.message;
@@ -348,7 +360,7 @@ const ModalCitasAd = ({
 
       return nextErrors;
     },
-    [empleados, lockCliente, shouldHideEstado],
+    [agendaItems, empleados, initialData?.id, initialData?.id_agenda, lockCliente, shouldHideEstado],
   );
 
   const handleChange = useCallback(
@@ -657,95 +669,13 @@ const ModalCitasAd = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.35 }}
           >
-            <h3 className="modal-section-title">Informacion Basica</h3>
+            <h3 className="modal-section-title">Información Básica</h3>
 
           <div className="modal-grid-two-cols">
-            <div className="modal-field-group modal-field-group--compact">
-              <label className="modal-field-label">
-                Fecha <span className="modal-required-asterisk">*</span>
-              </label>
-                        <input
-                          type="date"
-                          name="agenda_fecha"
-                          value={formData.agenda_fecha}
-                          onChange={handleChange}
-                          min={getTomorrowISO()}
-                          disabled={disabled || loading}
-                          required
-                          className={`modal-field-input ${
-                  errors.agenda_fecha ? "modal-field-input--error" : ""
-                }`}
-              />
-              {errors.agenda_fecha ? (
-                <p className="modal-field-error-text">{errors.agenda_fecha}</p>
-              ) : null}
-            </div>
-
-            <div className="modal-field-group modal-field-group--compact">
-              <label className="modal-field-label">
-                Hora Inicio <span className="modal-required-asterisk">*</span>
-              </label>
-              <input
-                type="time"
-                name="hora_inicio"
-                value={formData.hora_inicio || ""}
-                onChange={handleChange}
-                disabled={disabled || loading}
-                required
-                className={`modal-field-input ${
-                  errors.hora_inicio ? "modal-field-input--error" : ""
-                }`}
-                step="60"
-                min={
-                  selectedEmpleado && selectedSchedule?.available
-                    ? selectedSchedule.startTime
-                    : undefined
-                }
-                max={
-                  selectedEmpleado && selectedSchedule?.available
-                    ? selectedSchedule.endTime
-                    : undefined
-                }
-                title={scheduleMessage || undefined}
-              />
-              {errors.hora_inicio ? (
-                <p className="modal-field-error-text">{errors.hora_inicio}</p>
-              ) : null}
-            </div>
-
-            <div className="modal-field-group modal-field-group--compact">
-              <label className="modal-field-label">
-                Hora Fin <span className="modal-required-asterisk">*</span>
-              </label>
-              <input
-                type="time"
-                name="hora_fin"
-                value={formData.hora_fin || ""}
-                onChange={handleChange}
-                disabled={disabled || loading}
-                required
-                className={`modal-field-input ${
-                  errors.hora_fin ? "modal-field-input--error" : ""
-                }`}
-                step="60"
-                min={
-                  selectedEmpleado && selectedSchedule?.available
-                    ? selectedSchedule.startTime
-                    : undefined
-                }
-                max={
-                  selectedEmpleado && selectedSchedule?.available
-                    ? selectedSchedule.endTime
-                    : undefined
-                }
-                title={scheduleMessage || undefined}
-              />
-              {errors.hora_fin ? (
-                <p className="modal-field-error-text">{errors.hora_fin}</p>
-              ) : null}
-            </div>
-
-            <div className="modal-field-group modal-field-group--compact">
+            <div
+              className="modal-field-group modal-field-group--compact"
+              style={{ gridColumn: "1 / -1" }}
+            >
               <label className="modal-field-label">
                 Entrenador <span className="modal-required-asterisk">*</span>
               </label>
@@ -851,6 +781,91 @@ const ModalCitasAd = ({
               ) : null}
             </div>
 
+            <div className="modal-field-group modal-field-group--compact">
+              <label className="modal-field-label">
+                Fecha <span className="modal-required-asterisk">*</span>
+              </label>
+              <input
+                type="date"
+                name="agenda_fecha"
+                value={formData.agenda_fecha}
+                onChange={handleChange}
+                min={getTomorrowISO()}
+                disabled={disabled || loading}
+                required
+                className={`modal-field-input ${
+                  errors.agenda_fecha ? "modal-field-input--error" : ""
+                }`}
+              />
+              {errors.agenda_fecha ? (
+                <p className="modal-field-error-text">{errors.agenda_fecha}</p>
+              ) : null}
+            </div>
+
+            <div className="modal-field-group modal-field-group--compact">
+              <label className="modal-field-label">
+                Hora Inicio <span className="modal-required-asterisk">*</span>
+              </label>
+              <input
+                type="time"
+                name="hora_inicio"
+                value={formData.hora_inicio || ""}
+                onChange={handleChange}
+                disabled={disabled || loading}
+                required
+                className={`modal-field-input ${
+                  errors.hora_inicio ? "modal-field-input--error" : ""
+                }`}
+                step="60"
+                min={
+                  selectedEmpleado && selectedSchedule?.available
+                    ? selectedSchedule.startTime
+                    : undefined
+                }
+                max={
+                  selectedEmpleado && selectedSchedule?.available
+                    ? selectedSchedule.endTime
+                    : undefined
+                }
+                title={scheduleMessage || undefined}
+              />
+              {errors.hora_inicio ? (
+                <p className="modal-field-error-text">{errors.hora_inicio}</p>
+              ) : null}
+            </div>
+
+            <div className="modal-field-group modal-field-group--compact">
+              <label className="modal-field-label">
+                Hora Fin <span className="modal-required-asterisk">*</span>
+              </label>
+              <input
+                type="time"
+                name="hora_fin"
+                value={formData.hora_fin || ""}
+                onChange={handleChange}
+                disabled={disabled || loading}
+                required
+                className={`modal-field-input ${
+                  errors.hora_fin ? "modal-field-input--error" : ""
+                }`}
+                step="60"
+                min={
+                  selectedEmpleado && selectedSchedule?.available
+                    ? selectedSchedule.startTime
+                    : undefined
+                }
+                max={
+                  selectedEmpleado && selectedSchedule?.available
+                    ? selectedSchedule.endTime
+                    : undefined
+                }
+                title={scheduleMessage || undefined}
+              />
+              {errors.hora_fin ? (
+                <p className="modal-field-error-text">{errors.hora_fin}</p>
+              ) : null}
+            </div>
+
             <div
               className="modal-field-group modal-field-group--compact"
               style={{ gridColumn: "1 / -1" }}
@@ -869,111 +884,113 @@ const ModalCitasAd = ({
               </p>
             </div>
 
-            <div className="modal-field-group modal-field-group--compact">
-              <label className="modal-field-label">
-                Cliente <span className="modal-required-asterisk">*</span>
-              </label>
-              {disabled || lockCliente ? (
-                <input
-                  type="text"
-                  className="modal-field-input"
-                  value={clienteLabel}
-                  disabled
-                />
-              ) : (
-                <div className="modal-seguimiento__user-selector">
-                  {selectedCliente ? (
-                    <div className="modal-seguimiento__selected-user">
-                      <div className="modal-seguimiento__selected-user-info">
-                        <div className="modal-seguimiento__selected-user-name">
-                          {selectedCliente.id_usuario} -{" "}
-                          {buildNombreCompleto(selectedCliente) ||
-                            `Cliente ${selectedCliente.id_usuario}`}
+            {!lockCliente ? (
+              <div className="modal-field-group modal-field-group--compact">
+                <label className="modal-field-label">
+                  Cliente <span className="modal-required-asterisk">*</span>
+                </label>
+                {disabled ? (
+                  <input
+                    type="text"
+                    className="modal-field-input"
+                    value={clienteLabel}
+                    disabled
+                  />
+                ) : (
+                  <div className="modal-seguimiento__user-selector">
+                    {selectedCliente ? (
+                      <div className="modal-seguimiento__selected-user">
+                        <div className="modal-seguimiento__selected-user-info">
+                          <div className="modal-seguimiento__selected-user-name">
+                            {selectedCliente.id_usuario} -{" "}
+                            {buildNombreCompleto(selectedCliente) ||
+                              `Cliente ${selectedCliente.id_usuario}`}
+                          </div>
+                          <div className="modal-seguimiento__selected-user-email">
+                            {getDocumentoUsuario(selectedCliente)
+                              ? `Documento: ${getDocumentoUsuario(selectedCliente)}`
+                              : selectedCliente.email || "Sin correo"}
+                          </div>
                         </div>
-                        <div className="modal-seguimiento__selected-user-email">
-                          {getDocumentoUsuario(selectedCliente)
-                            ? `Documento: ${getDocumentoUsuario(selectedCliente)}`
-                            : selectedCliente.email || "Sin correo"}
+                        <button
+                          type="button"
+                          onClick={handleLimpiarClienteSeleccionado}
+                          className="modal-seguimiento__clear-user-btn"
+                          title="Quitar cliente seleccionado"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <div
+                          className={`modal-seguimiento__search-box${
+                            errors.id_cliente
+                              ? " modal-seguimiento__search-box--error"
+                              : ""
+                          }`}
+                        >
+                          <Search
+                            size={16}
+                            className="modal-seguimiento__search-icon"
+                          />
+                          <input
+                            type="text"
+                            value={busquedaCliente}
+                            onFocus={() => setMostrarDropdownCliente(true)}
+                            onChange={(e) => {
+                              setBusquedaCliente(e.target.value);
+                              setMostrarDropdownCliente(true);
+                            }}
+                            onBlur={() =>
+                              setTimeout(() => setMostrarDropdownCliente(false), 120)
+                            }
+                            placeholder="Buscar cliente por nombre o documento..."
+                            className="modal-seguimiento__search-input"
+                          />
                         </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={handleLimpiarClienteSeleccionado}
-                        className="modal-seguimiento__clear-user-btn"
-                        title="Quitar cliente seleccionado"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      <div
-                        className={`modal-seguimiento__search-box${
-                          errors.id_cliente
-                            ? " modal-seguimiento__search-box--error"
-                            : ""
-                        }`}
-                      >
-                        <Search
-                          size={16}
-                          className="modal-seguimiento__search-icon"
-                        />
-                        <input
-                          type="text"
-                          value={busquedaCliente}
-                          onFocus={() => setMostrarDropdownCliente(true)}
-                          onChange={(e) => {
-                            setBusquedaCliente(e.target.value);
-                            setMostrarDropdownCliente(true);
-                          }}
-                          onBlur={() =>
-                            setTimeout(() => setMostrarDropdownCliente(false), 120)
-                          }
-                          placeholder="Buscar cliente por nombre o documento..."
-                          className="modal-seguimiento__search-input"
-                        />
-                      </div>
-                      {mostrarDropdownCliente && (
-                        <div className="modal-seguimiento__search-dropdown">
-                          {clientesFiltrados.length > 0 ? (
-                            clientesFiltrados.map((cliente) => (
-                              <div
-                                key={cliente.id_usuario}
-                                onMouseDown={(e) => {
-                                  e.preventDefault();
-                                  handleSeleccionarCliente(cliente);
-                                }}
-                                className="modal-seguimiento__search-option"
-                              >
-                                <div className="modal-seguimiento__search-option-name">
-                                  {cliente.id_usuario} -{" "}
-                                  {buildNombreCompleto(cliente) ||
-                                    `Cliente ${cliente.id_usuario}`}
+                        {mostrarDropdownCliente && (
+                          <div className="modal-seguimiento__search-dropdown">
+                            {clientesFiltrados.length > 0 ? (
+                              clientesFiltrados.map((cliente) => (
+                                <div
+                                  key={cliente.id_usuario}
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    handleSeleccionarCliente(cliente);
+                                  }}
+                                  className="modal-seguimiento__search-option"
+                                >
+                                  <div className="modal-seguimiento__search-option-name">
+                                    {cliente.id_usuario} -{" "}
+                                    {buildNombreCompleto(cliente) ||
+                                      `Cliente ${cliente.id_usuario}`}
+                                  </div>
+                                  <div className="modal-seguimiento__search-option-email">
+                                    {getDocumentoUsuario(cliente)
+                                      ? `Documento: ${getDocumentoUsuario(cliente)}`
+                                      : cliente.email || "Sin correo"}
+                                  </div>
                                 </div>
-                                <div className="modal-seguimiento__search-option-email">
-                                  {getDocumentoUsuario(cliente)
-                                    ? `Documento: ${getDocumentoUsuario(cliente)}`
-                                    : cliente.email || "Sin correo"}
-                                </div>
+                              ))
+                            ) : (
+                              <div className="modal-seguimiento__search-message">
+                                {busquedaCliente.trim()
+                                  ? "No se encontraron clientes"
+                                  : "No hay clientes para mostrar"}
                               </div>
-                            ))
-                          ) : (
-                            <div className="modal-seguimiento__search-message">
-                              {busquedaCliente.trim()
-                                ? "No se encontraron clientes"
-                                : "No hay clientes para mostrar"}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
-              {errors.id_cliente ? (
-                <p className="modal-field-error-text">{errors.id_cliente}</p>
-              ) : null}
-            </div>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
+                {errors.id_cliente ? (
+                  <p className="modal-field-error-text">{errors.id_cliente}</p>
+                ) : null}
+              </div>
+            ) : null}
 
             <div className="modal-field-group modal-field-group--compact">
               <label className="modal-field-label">
@@ -1041,7 +1058,7 @@ const ModalCitasAd = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.35 }}
         >
-          <h3 className="modal-section-title">Informacion Adicional</h3>
+          <h3 className="modal-section-title">Información Adicional</h3>
           <div className="modal-field-group modal-field-group--compact">
             <label className="modal-field-label">Observaciones</label>
             <textarea
@@ -1073,7 +1090,7 @@ const ModalCitasAd = ({
             { key: "entrenador", label: "Entrenador" },
             { key: "cliente", label: "Cliente" },
           ]}
-          warningMessage="Esta accion eliminara la agenda seleccionada y no se puede deshacer."
+          warningMessage="Esta acción eliminara la agenda seleccionada y no se puede deshacer."
         />
       ) : null}
     </>
@@ -1118,6 +1135,7 @@ ModalCitasAd.propTypes = {
       nombre: PropTypes.string.isRequired,
     }),
   ),
+  agendaItems: PropTypes.array,
 };
 
 export default memo(ModalCitasAd);

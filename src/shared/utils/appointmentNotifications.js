@@ -65,7 +65,7 @@ export function addAppointmentNotification(notification = {}) {
     id:
       notification.id ||
       `notif-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    title: notification.title || "Nueva notificacion",
+    title: notification.title || "Nueva notificación",
     message: notification.message || "",
     route: notification.route || "/cliente/agendarCita",
     citaId: notification.citaId ?? null,

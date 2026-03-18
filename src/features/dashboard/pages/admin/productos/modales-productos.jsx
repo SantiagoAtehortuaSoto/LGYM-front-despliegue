@@ -451,10 +451,10 @@ export const ModalFormularioProducto = ({
                     value={formData.stock}
                     onChange={handleChange}
                     onKeyDown={handleNumericKeyDown}
-                    placeholder="Stock disponible (minimo 1)"
+                    placeholder="Stock disponible (mínimo 1)"
                     min="1"
                     step="1"
-                    title="El stock minimo permitido es 1"
+                    title="El stock mínimo permitido es 1"
                     className={`modal-field-input ${errors.stock ? "modal-productos__input--error" : ""}`}
                   />
                   {errors.stock && <p className="modal-productos__error-text">{errors.stock}</p>}

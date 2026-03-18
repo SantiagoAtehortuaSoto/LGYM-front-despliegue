@@ -52,7 +52,7 @@ const STATUS_TO_TONE = {
 const INFO_BY_TONE = {
   danger: "Este cambio puede afectar procesos activos.\nRevisa antes de confirmar.",
   success: "El estado quedara actualizado.\nEstara disponible para los demas modulos.",
-  info: "Verifica la informacion.\nConfirma el cambio solo si es correcto.",
+  info: "Verifica la información.\nConfirma el cambio solo si es correcto.",
   warning: "Este estado requiere seguimiento.\nValida el flujo antes de continuar.",
 };
 
@@ -96,8 +96,8 @@ const ConfirmModal = ({
   isOpen,
   onClose = () => {},
   onConfirm,
-  title = "Confirmar accion",
-  message = "Esta accion aplicara un cambio en el sistema.",
+  title = "Confirmar acción",
+  message = "Esta acción aplicara un cambio en el sistema.",
   confirmText = "Confirmar",
   cancelText = "Cancelar",
   type = "default",

@@ -1,4 +1,4 @@
-// ConfiguracionUsuario.jsx
+// ConfiguraciónUsuario.jsx
 import { useEffect, useState } from "react";
 import { IconNut } from "@tabler/icons-react";
 import {
@@ -211,7 +211,7 @@ export default function ConfiguracionUsuario() {
         }));
       } catch (e) {
         console.error(e);
-        setError(e.message || "Error al cargar configuracion");
+        setError(e.message || "Error al cargar configuración");
       } finally {
         setInitialLoading(false);
       }
@@ -254,7 +254,7 @@ export default function ConfiguracionUsuario() {
       setFieldErrors({});
     } catch (e) {
       console.error(e);
-      setError(e.message || "Error al actualizar configuracion");
+      setError(e.message || "Error al actualizar configuración");
     } finally {
       setLoading(false);
     }
@@ -265,7 +265,7 @@ export default function ConfiguracionUsuario() {
       <div className="config-page">
         <div className="config-card">
           <div className="config-loader" />
-          <p className="config-loader-text">Cargando tu configuracion...</p>
+          <p className="config-loader-text">Cargando tu configuración...</p>
         </div>
       </div>
     );
@@ -277,7 +277,7 @@ export default function ConfiguracionUsuario() {
         <header className="config-title-row">
           <IconNut size={38} color="#e41000" />
           <div className="config-title-stack">
-            <h1 className="config-title">Configuracion de cuenta</h1>
+            <h1 className="config-title">Configuración de cuenta</h1>
             <p className="config-subtitle">
               Actualiza tus datos personales, contacto, emergencias y seguridad.
             </p>
@@ -290,7 +290,7 @@ export default function ConfiguracionUsuario() {
         <form className="config-form" onSubmit={handleSubmit} noValidate>
           <div className="config-section">
             <div className="section-header">
-              <h2 className="config-section-title">Informacion personal</h2>
+              <h2 className="config-section-title">Información personal</h2>
               <span className="section-chip">Perfil</span>
             </div>
             <div className="config-grid">
@@ -343,7 +343,7 @@ export default function ConfiguracionUsuario() {
                 ) : null}
               </div>
               <div className="form-group">
-                <label htmlFor="documento">Numero de documento</label>
+                <label htmlFor="documento">Número de documento</label>
                 <input
                   id="documento"
                   name="documento"
@@ -402,7 +402,7 @@ export default function ConfiguracionUsuario() {
 
             <div className="config-grid">
               <div className="form-group">
-                <label htmlFor="email">Correo electronico</label>
+                <label htmlFor="email">Correo electrónico</label>
                 <input
                   id="email"
                   name="email"
@@ -418,7 +418,7 @@ export default function ConfiguracionUsuario() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="telefono">Telefono</label>
+                <label htmlFor="telefono">Teléfono</label>
                 <input
                   id="telefono"
                   name="telefono"
@@ -454,14 +454,14 @@ export default function ConfiguracionUsuario() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="c_emergencia">Telefono de contacto</label>
+                <label htmlFor="c_emergencia">Teléfono de contacto</label>
                 <input
                   id="c_emergencia"
                   name="c_emergencia"
                   type="tel"
                   value={form.c_emergencia}
                   onChange={handleChange}
-                  placeholder="Telefono de emergencia"
+                  placeholder="Teléfono de emergencia"
                   inputMode="numeric"
                   maxLength={PHONE_LENGTH}
                   className={fieldErrors.c_emergencia ? "input-error" : ""}
@@ -506,7 +506,7 @@ export default function ConfiguracionUsuario() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Nueva contrasena</label>
+              <label htmlFor="password">Nueva contraseña</label>
               <div className="password-field">
                 <input
                   id="password"
@@ -522,7 +522,7 @@ export default function ConfiguracionUsuario() {
                   className="toggle-visibility"
                   onClick={() => setShowPassword((prev) => !prev)}
                   aria-label={
-                    showPassword ? "Ocultar contrasena" : "Mostrar contrasena"
+                    showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
                   }
                 >
                   {showPassword ? (
@@ -593,12 +593,12 @@ export default function ConfiguracionUsuario() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="confirmPassword">Confirmar contrasena</label>
+              <label htmlFor="confirmPassword">Confirmar contraseña</label>
               <input
                 id="confirmPassword"
                 name="confirmPassword"
                 type={showPassword ? "text" : "password"}
-                placeholder="Repite la contrasena para confirmar"
+                placeholder="Repite la contraseña para confirmar"
                 value={form.confirmPassword}
                 onChange={handleChange}
                 className={fieldErrors.confirmPassword ? "input-error" : ""}

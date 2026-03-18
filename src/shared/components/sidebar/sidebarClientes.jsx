@@ -218,11 +218,11 @@ function SidebarClientes({ isOpen = true }) {
       <div className="sidebar-content">
         <ExpandableButtons
           isSidebarOpen={isOpen}
-          nombreBoton={"Membresias"}
+          nombreBoton={"Membresías"}
           links={membresiasLinksCliente}
-          isExpanded={openSection === "Membresias"}
+          isExpanded={openSection === "Membresías"}
           onToggle={(nextExpanded) =>
-            handleSectionToggle("Membresias", nextExpanded)
+            handleSectionToggle("Membresías", nextExpanded)
           }
         />
         {canSeeCitas && (

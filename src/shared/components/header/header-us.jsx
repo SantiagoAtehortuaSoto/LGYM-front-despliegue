@@ -541,7 +541,7 @@ const HeaderUsuario = ({ onMenuClick, isSidebarOpen }) => {
     const computedAvatarToneClass = colorFromString(computedName || email || "user");
     return {
       displayName: computedName,
-      subtitle: membershipLabel ? `${membershipLabel} - ${roleLabel}` : `sin membresia - ${roleLabel}`,
+      subtitle: membershipLabel ? `${membershipLabel} - ${roleLabel}` : `sin membresía - ${roleLabel}`,
       initial: computedInitial,
       avatarToneClass: computedAvatarToneClass,
     };
@@ -600,7 +600,7 @@ const HeaderUsuario = ({ onMenuClick, isSidebarOpen }) => {
                 role="menuitem"
               >
                 <IconSettings size={20} />
-                <span>Configuracion</span>
+                <span>Configuración</span>
               </Link>
 
               <div

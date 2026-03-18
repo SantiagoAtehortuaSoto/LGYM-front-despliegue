@@ -21,9 +21,9 @@ export const DeleteModal = ({
   size = "md",
   fields = [
     { key: "nombre", label: "Nombre" },
-    { key: "descripcion", label: "Descripcion" },
+    { key: "descripcion", label: "Descripción" },
   ],
-  warningMessage = "Esta accion no se puede deshacer.",
+  warningMessage = "Esta acción no se puede deshacer.",
 }) => {
   const modalRef = useRef(null);
 

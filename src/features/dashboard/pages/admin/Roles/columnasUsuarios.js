@@ -59,7 +59,7 @@ export const columnasUsuarios = [
         </button>
         <button 
           onClick={() => onDelete(row)} 
-          className="boton-accion peligro"
+          className="boton-acción peligro"
           title="Eliminar"
         >
           <Trash2 size={18} />

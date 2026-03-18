@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 import { DescargarComprobante } from "./descargarComprobante";
 import { useCarrito } from "../../components/Carrito/carritoContext";
@@ -11,7 +11,6 @@ const CarritoCompras = ({ onClose }) => {
     borrarProducto,
     actualizarCantidadProducto,
     vaciarCarrito,
-    total,
   } =
     useCarrito();
   const [cantidadDrafts, setCantidadDrafts] = useState({});
@@ -53,9 +52,54 @@ const CarritoCompras = ({ onClose }) => {
       minimumFractionDigits: 0,
     }).format(valor);
 
-  const subtotal = items.reduce(
-    (acc, item) => acc + item.precio * item.cantidad,
-    0
+  const esMembresia = (item) =>
+    String(
+      item?.tipo ??
+        item?.tipo_venta ??
+        item?.tipoVenta ??
+        "",
+    )
+      .trim()
+      .toLowerCase()
+      .includes("membres");
+
+  const getCantidadVista = (item) => {
+    if (esMembresia(item)) {
+      return Math.max(1, Number(item?.cantidad) || 1);
+    }
+
+    const draftValue = String(cantidadDrafts[item.id] ?? "").trim();
+    if (!draftValue) return 0;
+
+    const cantidad = Number.parseInt(draftValue, 10);
+    if (!Number.isFinite(cantidad) || cantidad <= 0) return 0;
+
+    const stockDisponible = getStockDisponible(item);
+    return stockDisponible !== null ? Math.min(cantidad, stockDisponible) : cantidad;
+  };
+
+  const itemsVista = useMemo(
+    () =>
+      items.map((item) => {
+        const cantidadVista = getCantidadVista(item);
+        const precioUnitario = Number(item?.precio) || 0;
+
+        return {
+          ...item,
+          cantidadVista,
+          subtotalVista: precioUnitario * cantidadVista,
+        };
+      }),
+    [items, cantidadDrafts]
+  );
+
+  const subtotal = useMemo(
+    () =>
+      itemsVista.reduce(
+        (acc, item) => acc + (Number(item?.subtotalVista) || 0),
+        0
+      ),
+    [itemsVista]
   );
 
   useEffect(() => {
@@ -106,7 +150,7 @@ const CarritoCompras = ({ onClose }) => {
 
     const totalDisponible = Math.max(1, Number(stockDisponible) || 1);
     setAvisoLimiteStock(
-      `La cantidad en el pedido de ${item?.nombre || "este producto"} se ajusto a ${totalDisponible} unidad(es), que es el maximo disponible.`
+      `La cantidad en el pedido de ${item?.nombre || "este producto"} se ajusto a ${totalDisponible} unidad(es), que es el máximo disponible.`
     );
   };
 
@@ -142,7 +186,7 @@ const CarritoCompras = ({ onClose }) => {
       [item.id]: valorFinal,
     }));
     if (valorFinal === "0") {
-      setErrorCantidad(item.id, "La cantidad minima es 1.");
+      setErrorCantidad(item.id, "La cantidad mínima es 1.");
       return;
     }
 
@@ -216,7 +260,7 @@ const CarritoCompras = ({ onClose }) => {
 
       const cantidad = Number.parseInt(valor, 10);
       if (!Number.isFinite(cantidad) || cantidad <= 0) {
-        nextErrors[item.id] = "La cantidad minima es 1.";
+        nextErrors[item.id] = "La cantidad mínima es 1.";
         nextDrafts[item.id] = draftValue;
         return item;
       }
@@ -292,11 +336,13 @@ const CarritoCompras = ({ onClose }) => {
               <p className="carrito-empty-state__title">Tu carrito esta vacio</p>
             </div>
           ) : (
-            items.map((item) => {
+            itemsVista.map((item) => {
               const bloquearSuma = alcanzoMaximoStock(item);
               const cantidadError = cantidadErrores[item.id] || "";
               const cantidadDraft =
                 cantidadDrafts[item.id] ?? String(item.cantidad);
+              const ocultarCantidad = esMembresia(item);
+              const cantidadVista = item.cantidadVista;
 
               return (
                 <div className="carrito-item" key={item.id}>
@@ -308,7 +354,7 @@ const CarritoCompras = ({ onClose }) => {
                   <div className="carrito-detalles">
                     <p className="carrito-nombre">{item.nombre}</p>
                     <p className="carrito-precio">
-                      {formatoCOP(item.precio * item.cantidad)}
+                      {formatoCOP(item.precio * cantidadVista)}
                     </p>
                     <button
                       type="button"
@@ -318,56 +364,58 @@ const CarritoCompras = ({ onClose }) => {
                       Eliminar
                     </button>
                   </div>
-                  <div className="carrito-cantidad-wrap">
-                    <div className="carrito-cantidad">
-                      <button
-                        type="button"
-                        onClick={() => handleDisminuirCantidad(item)}
-                      >
-                        -
-                      </button>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        autoComplete="off"
-                        value={cantidadDraft}
-                        onFocus={(e) => e.target.select()}
-                        onChange={(e) =>
-                          handleCantidadInputChange(item, e.target.value)
-                        }
-                        onBlur={() => handleCantidadInputBlur(item)}
-                        className={`carrito-cantidad__input ${
-                          cantidadError ? "carrito-cantidad__input--error" : ""
-                        }`}
-                        aria-label={`Cantidad de ${item.nombre}`}
-                        aria-invalid={Boolean(cantidadError)}
-                      />
-                      <button
-                        type="button"
-                        className={`carrito-cantidad__btn-sumar ${
-                          bloquearSuma ? "carrito-cantidad__btn-sumar--bloqueado" : ""
-                        }`}
-                        onClick={() => {
-                          if (bloquearSuma) return;
-                          handleAumentarCantidad(item);
-                        }}
-                        aria-disabled={bloquearSuma}
-                        title={
-                          bloquearSuma
-                            ? "No puede agregar mas unidades"
-                            : "Agregar una unidad"
-                        }
-                      >
-                        +
-                      </button>
+                  {!ocultarCantidad ? (
+                    <div className="carrito-cantidad-wrap">
+                      <div className="carrito-cantidad">
+                        <button
+                          type="button"
+                          onClick={() => handleDisminuirCantidad(item)}
+                        >
+                          -
+                        </button>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          autoComplete="off"
+                          value={cantidadDraft}
+                          onFocus={(e) => e.target.select()}
+                          onChange={(e) =>
+                            handleCantidadInputChange(item, e.target.value)
+                          }
+                          onBlur={() => handleCantidadInputBlur(item)}
+                          className={`carrito-cantidad__input ${
+                            cantidadError ? "carrito-cantidad__input--error" : ""
+                          }`}
+                          aria-label={`Cantidad de ${item.nombre}`}
+                          aria-invalid={Boolean(cantidadError)}
+                        />
+                        <button
+                          type="button"
+                          className={`carrito-cantidad__btn-sumar ${
+                            bloquearSuma ? "carrito-cantidad__btn-sumar--bloqueado" : ""
+                          }`}
+                          onClick={() => {
+                            if (bloquearSuma) return;
+                            handleAumentarCantidad(item);
+                          }}
+                          aria-disabled={bloquearSuma}
+                          title={
+                            bloquearSuma
+                              ? "No puede agregar mas unidades"
+                              : "Agregar una unidad"
+                          }
+                        >
+                          +
+                        </button>
+                      </div>
+                      {cantidadError && (
+                        <p className="carrito-cantidad__error" role="alert">
+                          {cantidadError}
+                        </p>
+                      )}
                     </div>
-                    {cantidadError && (
-                      <p className="carrito-cantidad__error" role="alert">
-                        {cantidadError}
-                      </p>
-                    )}
-                  </div>
+                  ) : null}
                 </div>
               );
             })
@@ -382,7 +430,7 @@ const CarritoCompras = ({ onClose }) => {
           </div>
           <div className="resumen-total">
             <span>Total</span>
-            <span>{formatoCOP(total)}</span>
+            <span>{formatoCOP(subtotal)}</span>
           </div>
 
           {avisoStock && (
@@ -399,7 +447,7 @@ const CarritoCompras = ({ onClose }) => {
               !
             </span>
             <p className="carrito-comprobante-aviso__text">
-              Esta orden tiene plazo maximo de 3 dias.
+              Esta orden tiene plazo máximo de 3 días.
             </p>
           </div>
 
@@ -428,7 +476,7 @@ const CarritoCompras = ({ onClose }) => {
           <DescargarComprobante
             items={items}
             subtotal={subtotal}
-            total={total}
+            total={subtotal}
             bloquearPorStock={bloquearAccionesPorStock}
             resolveItemsParaOrden={resolverItemsParaOrden}
           />

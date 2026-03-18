@@ -325,6 +325,7 @@ const Acceder = () => {
 
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+  const formRef = useRef(null);
 
   // Email live check
   const [emailChecking, setEmailChecking] = useState(false);
@@ -587,6 +588,7 @@ const Acceder = () => {
           documentoChecking ||
           documentoExists === true
         ) {
+          focusFirstErrorField(all);
           // Se eliminan los toasts redundantes ya que el feedback se muestra en el formulario ("en el medio")
           setLoading(false);
           return;
@@ -646,6 +648,7 @@ const Acceder = () => {
         setTouched((t) => ({ ...t, email: true, password: true }));
 
         if (emailErr || passErr) {
+          focusFirstErrorField({ email: emailErr, password: passErr });
           // Se elimina toast redundante
           setLoading(false);
           return;
@@ -661,7 +664,7 @@ const Acceder = () => {
         }
 
         toastSuccess(
-          "Inicio de sesion exitoso. Tus credenciales fueron validadas y ya ingresaste a tu cuenta."
+          "Inicio de sesión exitoso. Tus credenciales fueron validadas y ya ingresaste a tu cuenta."
         );
 
         const role = normalizeRole(extractRawRole(user));
@@ -708,7 +711,7 @@ const Acceder = () => {
             ? ` Detalle: ${String(error.message).trim()}`
             : "";
         toastError(
-          `Inicio de sesion fallido. No fue posible ingresar con los datos enviados y tu sesion no se abrio.${detalle}`
+          `Inicio de sesión fallido. No fue posible ingresar con los datos enviados y tu sesión no se abrio.${detalle}`
         );
       } else {
         toastError(error.message || "Ocurrió un error inesperado");
@@ -757,45 +760,47 @@ const Acceder = () => {
     };
   }, []);
 
-  const hasMissingRequiredFields = useMemo(() => {
-    if (modo !== "registro") return false;
-    return REGISTRO_REQUIRED_FIELDS.some((name) => {
-      const value = formData[name];
-      return String(value ?? "").trim() === "";
-    });
-  }, [formData, modo]);
-
-  const disableByClientErrors = useMemo(() => {
-    if (modo !== "registro") return false;
-    return REGISTRO_REQUIRED_FIELDS.some((name) =>
-      Boolean(fieldError(name, formData[name]))
-    );
-  }, [formData, modo, fieldError]);
-
   const isRegisterSubmitDisabled = useMemo(() => {
     if (modo !== "registro") return false;
-    return (
-      hasMissingRequiredFields ||
-      disableByClientErrors ||
-      emailChecking ||
-      emailExists === true ||
-      documentoChecking ||
-      documentoExists === true
-    );
-  }, [
-    modo,
-    hasMissingRequiredFields,
-    disableByClientErrors,
-    emailChecking,
-    emailExists,
-    documentoChecking,
-    documentoExists,
-  ]);
+    return loading;
+  }, [loading, modo]);
 
   const showError = (name) => {
     const err = errors[name];
     return (touched[name] || modo === "registro") && err;
   };
+
+  const focusFirstErrorField = useCallback((nextErrors = {}) => {
+    if (!nextErrors || typeof window === "undefined") return;
+
+    const orderedFields = [
+      ...REGISTRO_REQUIRED_FIELDS,
+      "email",
+      "password",
+      "tipo_documento",
+      "genero",
+    ];
+
+    const firstFieldName = orderedFields.find((fieldName) => nextErrors[fieldName]);
+    if (!firstFieldName) return;
+
+    window.requestAnimationFrame(() => {
+      const formElement = formRef.current;
+      if (!formElement) return;
+
+      const field = formElement.querySelector(`[name="${firstFieldName}"]`);
+      if (!field) return;
+
+      field.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+
+      if (typeof field.focus === "function") {
+        field.focus({ preventScroll: true });
+      }
+    });
+  }, []);
 
   useEffect(() => {
     clearTimeout(emailDebounceRef.current);
@@ -833,7 +838,12 @@ const Acceder = () => {
                 : "Completa tus datos para unirte a Nueva Era Fitness"}
             </p>
 
-            <form className="register" onSubmit={handleSubmit} noValidate>
+            <form
+              className="register"
+              onSubmit={handleSubmit}
+              noValidate
+              ref={formRef}
+            >
               {modo === "registro" ? (
                 <div className="grid-registro">
                   {/* FILA 1: Email | Documento | Tipo doc */}
@@ -1136,7 +1146,7 @@ const Acceder = () => {
                         placeholder="********"
                         minLength={8}
                         pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).+"
-                        title="Minimo 8 caracteres, con mayuscula, minuscula, numero y caracter especial"
+                        title="Mínimo 8 caracteres, con mayuscula, minuscula, número y caracter especial"
                         value={formData.password}
                         onChange={handleChange}
                         onBlur={handleBlur}

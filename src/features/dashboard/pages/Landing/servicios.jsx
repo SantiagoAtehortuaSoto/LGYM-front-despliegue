@@ -312,7 +312,7 @@ function Servicios() {
 
           {!loading && !err && planes.length === 0 && (
             <p role="status" className="no-services">
-              NO HAY MEMBRESIAS DISPONIBLES
+              NO HAY MEMBRESÍAS DISPONIBLES
             </p>
           )}
 

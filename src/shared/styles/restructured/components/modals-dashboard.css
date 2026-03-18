@@ -428,6 +428,7 @@
 
 .modal-field-group {
   margin-bottom: 15px;
+  min-width: 0;
 }
 
 .modal-field-group--compact {
@@ -455,11 +456,16 @@
 }
 
 .modal-field-input {
+  display: block;
   width: 100%;
+  min-width: 0;
+  min-height: 44px;
   padding: 10px 12px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  box-sizing: border-box;
   font-size: 14px;
+  line-height: 1.4;
   background-color: #fff;
 }
 
@@ -477,8 +483,9 @@
 }
 
 .modal-field-input--textarea {
-  resize: vertical;
   min-height: 100px;
+  height: auto;
+  resize: vertical;
 }
 
 .modal-field-input--soft {
@@ -503,13 +510,25 @@
 
 .modal-grid-two-cols {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: 1rem;
+}
+
+.modal-grid-two-cols > * {
+  min-width: 0;
 }
 
 .modal-select-wrapper {
   position: relative;
   width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .modal-grid-two-cols {
+    grid-template-columns: 1fr;
+  }
 }
 
 .modal-warning-list {
@@ -2160,10 +2179,10 @@ textarea.campo-control:focus {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-areas:
-    "codigo nombre"
+    "código nombre"
     "precio duracion"
     "estado beneficios"
-    "descripcion beneficios";
+    "descripción beneficios";
   gap: 1.5rem;
 }
 
@@ -2732,7 +2751,7 @@ select.campo-control:focus {
   padding: 20px;
 }
 
-/*.icono-grande-eliminar svg {
+/*.ícono-grande-eliminar svg {
     color: var(--color-danger);
 }*/
 
@@ -3074,7 +3093,7 @@ select.campo-control:focus {
   outline: none;
 }
 
-/* La "X" (puede ser texto o icono SVG) */
+/* La "X" (puede ser texto o ícono SVG) */
 .close-x {
   display: inline-block;
   font-size: 20px;
@@ -4257,7 +4276,7 @@ select[name="id_cliente"] {
     border-bottom: 1px solid #fecaca;
 }
 
-/* Icono de la membresía */
+/* Ícono de la membresía */
 .membresia-icon {
     width: 48px;
     height: 48px;

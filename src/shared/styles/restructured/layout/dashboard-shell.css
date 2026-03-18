@@ -553,9 +553,9 @@
     display: flex;
     /* La clave para la alineación */
     align-items: flex-start;
-    /* Alinea el contenido y el icono arriba */
+    /* Alinea el contenido y el ícono arriba */
     gap: 16px;
-    /* Espacio horizontal entre el icono y el texto */
+    /* Espacio horizontal entre el ícono y el texto */
 }
 
 /* 2. Estilo para el Ícono de Advertencia (AlertTriangle) */

@@ -7,9 +7,9 @@ import { obtenerUsuarios } from '../../../hooks/Usuarios_API/API_Usuarios';
 import "../../../../../shared/styles/restructured/components/modal-ventas-membresias.css";
 
 const membershipOptions = [
-  'Basica Mensual',
+  'Básica Mensual',
   'Premium Mensual',
-  'Basica Anual',
+  'Básica Anual',
   'Premium Anual',
   'Estudiante Trimestral'
 ];
@@ -572,7 +572,7 @@ export const ModalEliminarVenta = ({ venta, onClose, onDelete, isOpen = true }) 
       onClose={onClose}
       onConfirm={handleConfirm}
       item={venta}
-      title="Eliminar Membresia"
+      title="Eliminar Membresía"
       fields={[
         {
           key: 'cliente',
@@ -581,11 +581,11 @@ export const ModalEliminarVenta = ({ venta, onClose, onDelete, isOpen = true }) 
         },
         {
           key: 'membresia',
-          label: 'Membresia',
+          label: 'Membresía',
           format: (value) => <strong>{value}</strong>
         }
       ]}
-      warningMessage="Esta accion no se puede deshacer. Se eliminara permanentemente la membresia del sistema."
+      warningMessage="Esta acción no se puede deshacer. Se eliminara permanentemente la membresía del sistema."
     />
   );
 };

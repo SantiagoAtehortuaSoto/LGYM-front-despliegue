@@ -1,6 +1,7 @@
 // src/shared/components/NavegadorLanding.jsx
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 /* Importación de imagenes */
 import Logo from "../../assets/LGYM_logo.png";
 function readUser() {
@@ -80,6 +81,7 @@ function normalizeRole(raw) {
 const NavegadorLanding = () => {
   const [user, setUser] = useState(readUser());
   const [open, setOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -92,8 +94,45 @@ const NavegadorLanding = () => {
     };
   }, []);
 
-  const goDashboard = () => {
+  useEffect(() => {
+    if (typeof document === "undefined" || typeof window === "undefined") {
+      return undefined;
+    }
+
+    const isMobileViewport = window.innerWidth <= 768;
+    if (!mobileMenuOpen || !isMobileViewport) {
+      document.body.style.overflow = "";
+      return undefined;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow || "";
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const closeMenus = () => {
     setOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const goDashboard = () => {
+    closeMenus();
     const rawRole = extractRawRole(user);
     const rol = normalizeRole(rawRole);
     if (rol === "admin") {
@@ -106,7 +145,7 @@ const NavegadorLanding = () => {
   };
 
   const handleLogout = () => {
-    setOpen(false);
+    closeMenus();
     doLogout();
     navigate("/acceder"); // o "/" si prefieres
   };
@@ -122,29 +161,39 @@ const NavegadorLanding = () => {
   return (
     <nav className="navegacion-landing">
       {/* Logo a la izquierda */}
-      <Link to="/" className="logo-container">
+      <Link to="/" className="logo-container" onClick={closeMenus}>
         <img src={Logo} alt="Logo" className="logo-landing" />
       </Link>
 
+      <button
+        type="button"
+        className={`landing-menu-toggle${mobileMenuOpen ? " is-open" : ""}`}
+        onClick={() => setMobileMenuOpen((value) => !value)}
+        aria-label={mobileMenuOpen ? "Cerrar menú de navegación" : "Abrir menú de navegación"}
+        aria-expanded={mobileMenuOpen}
+      >
+        {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+      </button>
+
       {/* Links de navegación */}
-      <ul className="nav-links">
+      <ul className={`nav-links${mobileMenuOpen ? " nav-links--open" : ""}`}>
         <li>
-          <Link to="/">Inicio</Link>
+          <Link to="/" onClick={closeMenus}>Inicio</Link>
         </li>
         <li>
-          <Link to="/productos">Productos</Link>
+          <Link to="/productos" onClick={closeMenus}>Productos</Link>
         </li>
         <li>
-          <Link to="/servicios">Servicios</Link>
+          <Link to="/servicios" onClick={closeMenus}>Servicios</Link>
         </li>
         <li>
-          <Link to="/contactos">Contacto</Link>
+          <Link to="/contactos" onClick={closeMenus}>Contacto</Link>
         </li>
 
         {/* Bloque derecho: Acceder o Usuario + menú */}
         {!user ? (
           <li>
-            <Link to="/acceder" className="btn-acceder">
+            <Link to="/acceder" className="btn-acceder" onClick={closeMenus}>
               Acceder
             </Link>
           </li>
@@ -182,6 +231,14 @@ const NavegadorLanding = () => {
           </li>
         )}{" "}
       </ul>
+
+      {mobileMenuOpen ? (
+        <div
+          className="landing-nav-backdrop is-visible"
+          onClick={closeMenus}
+          aria-hidden="true"
+        />
+      ) : null}
     </nav>
   );
 };

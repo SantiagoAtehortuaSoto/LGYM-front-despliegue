@@ -173,7 +173,7 @@ function Productos() {
   const notifyPermissionDenied = (action) => {
     toast.error(
       PRODUCTO_PERMISSION_MESSAGES[action] ||
-        "No tienes permisos para realizar esta accion."
+        "No tienes permisos para realizar esta acción."
     );
   };
 

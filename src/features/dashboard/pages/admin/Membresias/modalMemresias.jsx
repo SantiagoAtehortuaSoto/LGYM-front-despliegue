@@ -273,14 +273,14 @@ export const ModalFormularioMembresia = ({
     if (!TIENE_ALGUNA_LETRA.test(v)) return "Debe tener al menos una letra";
 
     if (existeNombre(existentes, v, membresia?.id ?? null))
-      return "Ya existe una membresía con ese nombre";
+      return "Ya existe una membresia con ese nombre";
 
     return "";
   };
 
   const validarDescripcion = (v) =>
     !v.trim()
-      ? "La descripción es obligatoria"
+      ? "La descripcion es obligatoria"
       : v.length < 10
       ? "Debe tener mínimo 10 caracteres"
       : "";
@@ -414,8 +414,8 @@ export const ModalFormularioMembresia = ({
       if (resultado === false) {
         throw new Error(
           membresia?.id
-            ? "No se pudo actualizar la membresía"
-            : "No se pudo crear la membresía"
+            ? "No se pudo actualizar la membresia"
+            : "No se pudo crear la membresia"
         );
       }
       toast.success(
@@ -428,7 +428,7 @@ export const ModalFormularioMembresia = ({
       toast.error(
         error?.response?.data?.message ||
           error?.message ||
-          "No se pudo guardar la membresía"
+          "No se pudo guardar la membresia"
       );
     }
   };
@@ -492,7 +492,7 @@ export const ModalFormularioMembresia = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.35 }}
         >
-          <h2 className="modal-membresias__section-title">Informacion Basica</h2>
+          <h2 className="modal-membresias__section-title">Información Básica</h2>
 
           <div className="modal-membresias__field">
             <label className="modal-membresias__label">Nombre {requiredMark}</label>
@@ -565,10 +565,10 @@ export const ModalFormularioMembresia = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.35 }}
         >
-          <h2 className="modal-membresias__section-title">Informacion Adicional</h2>
+          <h2 className="modal-membresias__section-title">Información Adicional</h2>
 
           <div className="modal-membresias__field">
-            <label className="modal-membresias__label">Descripcion {requiredMark}</label>
+            <label className="modal-membresias__label">Descripción {requiredMark}</label>
             <textarea
               name="descripcion"
               value={formData.descripcion}
@@ -612,7 +612,7 @@ export const ModalFormularioMembresia = ({
                 {errorSrv && <p className="modal-membresias__error-text">{errorSrv}</p>}
                 {!cargandoSrv && !errorSrv && !serviciosVisibles.length && (
                   <p className="modal-membresias__muted-text">
-                    No se encontraron servicios con esa busqueda
+                    No se encontraron servicios con esa búsqueda
                   </p>
                 )}
               </div>
@@ -847,7 +847,7 @@ export const ModalVerMembresia = ({ isOpen, onClose, membresia }) => {
               <label className="modal-membresias__label">Descripción</label>
               <textarea
                 className="modal-membresias__input modal-membresias__textarea modal-membresias__textarea--readonly"
-                value={membresia.descripcion || "Sin descripción"}
+                value={membresia.descripcion || "Sin descripcion"}
                 readOnly
                 disabled
                 rows={4}

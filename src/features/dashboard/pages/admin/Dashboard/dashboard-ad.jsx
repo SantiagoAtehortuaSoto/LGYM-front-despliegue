@@ -1090,7 +1090,7 @@ const Dashboard = () => {
       if (!Number.isFinite(id)) return;
 
       const name =
-        membership?.nombre ?? membership?.nombre_membresia ?? `Membresia ${id}`;
+        membership?.nombre ?? membership?.nombre_membresia ?? `Membresía ${id}`;
       map.set(id, name);
     });
     return map;
@@ -1237,7 +1237,7 @@ const Dashboard = () => {
           sale?.nombre_membresia,
           sale?.membresia,
           sale?.nombre,
-          hasValidId ? `Membresia ${numericId}` : "Membresia"
+          hasValidId ? `Membresía ${numericId}` : "Membresía"
         );
 
         const name = hasValidId
@@ -1267,7 +1267,7 @@ const Dashboard = () => {
     }
 
     const fallbackNames = Array.from(membershipNameById.values()).slice(0, 3);
-    const defaults = fallbackNames.length ? fallbackNames : ["Basica", "General", "Premium"];
+    const defaults = fallbackNames.length ? fallbackNames : ["Básica", "General", "Premium"];
 
     return defaults.map((name, index) => ({
       name,
@@ -1656,7 +1656,7 @@ const Dashboard = () => {
         </article>
 
         <article className="admin-home-card">
-          <h3>Membresias del mes</h3>
+          <h3>Membresías del mes</h3>
           <div className="admin-home-memberships">
             {membershipsChartData.map((membership) => (
               <div key={membership.name} className="admin-home-membership-row">

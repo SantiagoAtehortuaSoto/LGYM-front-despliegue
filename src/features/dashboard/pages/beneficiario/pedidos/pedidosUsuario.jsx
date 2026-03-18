@@ -350,7 +350,7 @@ const PedidosUsuario = () => {
 
   const descargarPedido = useCallback(async (pedido) => {
     if (!pedido) {
-      toast.warn("No hay informacion del pedido para descargar.");
+      toast.warn("No hay información del pedido para descargar.");
       return;
     }
 
@@ -406,7 +406,7 @@ const PedidosUsuario = () => {
         Cell: ({ row }) => (
           <button
             type="button"
-            className="boton-accion boton-ver"
+            className="boton-acción boton-ver"
             onClick={(e) => {
               e.stopPropagation();
               descargarPedido(row);

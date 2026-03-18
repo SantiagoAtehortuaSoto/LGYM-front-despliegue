@@ -95,7 +95,7 @@ const OlvidarContrasena = () => {
       return;
     }
 
-    // Ya no llamamos a verifyCode: el backend valida el código en /reset-password
+    // Ya no llamamos a verifyCode: el backend válida el código en /reset-password
     setStep(NEWPASS);
     toast.success("Código ingresado. Ahora crea tu nueva contraseña.");
   };

@@ -375,7 +375,7 @@ const ComprobanteDocumento = ({ items, subtotal, total }) => {
           <View style={styles.claimBody}>
             <Text style={styles.claimTitle}>Plazo de reclamo</Text>
             <Text style={styles.claimText}>
-              Esta orden tiene un plazo maximo de reclamo de 3 dias calendario
+              Esta orden tiene un plazo máximo de reclamo de 3 días calendario
               a partir de su fecha de emision.
             </Text>
           </View>

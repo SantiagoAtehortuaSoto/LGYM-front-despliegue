@@ -5,7 +5,9 @@ import { toast } from "react-hot-toast";
 import Modal from "../../../../../shared/components/Modal/Modal";
 import { ConfirmModal } from "../../../../../shared/components/ConfirmModal/confirmModal";
 import { getProveedores } from "../../../hooks/Proveedores_API/API_proveedores";
+import { getCurrentUser } from "../../../hooks/Acceder_API/authService";
 import { DeleteModal } from "../../../../../shared/components/deleteModal/deleteModal";
+import { ModalVerVenta } from "../../admin/Ventas/modalVentas";
 import "../../../../../shared/styles/restructured/components/modal-pedidos.css";
 
 /* ======================================================
@@ -516,62 +518,75 @@ export const ModalEliminarPedido = ({ isOpen, onClose, onConfirm, pedido }) => {
 /* ======================================================
    Modal Ver Pedido
 ====================================================== */
-export const ModalVerPedido = ({
-  isOpen,
-  onClose,
-  pedido,
-  estadosDisponibles,
-  onEdit,
-}) => {
-  if (!isOpen || !pedido) return null;
+const PEDIDO_ESTADO_COLOR_MAP = {
+  PENDIENTE: "#f59e0b",
+  EN_PROCESO: "#3b82f6",
+  COMPLETADO: "#10b981",
+  CANCELADO: "#ef4444",
+};
 
-  const obtenerEstado = () => {
-    if (pedido.estado) return pedido.estado;
-    const mapaEstados = {
-      3: "Pendiente",
-      4: "En Proceso",
-      5: "Completado",
-      6: "Cancelado",
-    };
-    return mapaEstados[pedido.id_estado] || "Pendiente";
-  };
+const normalizarEstadoPedidoClave = (estado = "") => {
+  const normalizado = String(estado || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, "_");
 
-  const obtenerEstadoClase = (estado) => {
-    const normalizado = String(estado || "").toLowerCase().trim();
-    if (normalizado.includes("pend")) return "modal-pedidos__estado-btn--pendiente";
-    if (normalizado.includes("proceso")) return "modal-pedidos__estado-btn--proceso";
-    if (normalizado.includes("complet")) return "modal-pedidos__estado-btn--completado";
-    if (normalizado.includes("cancel")) return "modal-pedidos__estado-btn--cancelado";
-    return "modal-pedidos__estado-btn--default";
-  };
+  if (normalizado.includes("PROCES")) return "EN_PROCESO";
+  if (normalizado.includes("COMPLET")) return "COMPLETADO";
+  if (normalizado.includes("CANCEL")) return "CANCELADO";
+  return "PENDIENTE";
+};
 
-  const formatearMoneda = (valor) => {
-    if (valor === null || valor === undefined || valor === "") return "";
-    const numero = Number(valor);
-    if (Number.isNaN(numero)) return String(valor);
-    return new Intl.NumberFormat("es-CO", {
-      minimumFractionDigits: 0,
-    }).format(numero);
-  };
+const inferirTipoDetallePedido = (detalle = {}) => {
+  const candidatos = [
+    detalle?.tipo_venta,
+    detalle?.tipoVenta,
+    detalle?.tipo,
+    detalle?.categoria,
+    detalle?.origen,
+    detalle?.nombre_membresia ? "MEMBRESIA" : "",
+    detalle?.nombre_servicio ? "SERVICIO" : "",
+    detalle?.membresia ? "MEMBRESIA" : "",
+    detalle?.servicio ? "SERVICIO" : "",
+    detalle?.id_membresia ? "MEMBRESIA" : "",
+    detalle?.id_servicio ? "SERVICIO" : "",
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase();
 
-  const normalizarFecha = (valor) => {
-    if (!valor) return "";
-    // Check if it's already in YYYY-MM-DD format
-    if (valor.length === 10 && valor[4] === "-" && valor[7] === "-")
-      return valor;
-    const fecha = new Date(valor);
-    if (Number.isNaN(fecha.getTime())) return valor;
-    return fecha.toISOString().split("T")[0];
-  };
+  if (candidatos.includes("MEMB")) return "MEMBRESIA";
+  if (candidatos.includes("SERV")) return "SERVICIO";
+  return "PRODUCTO";
+};
 
-  const estadoActual = obtenerEstado();
-  const estadoClase = obtenerEstadoClase(estadoActual);
-  const fechaPedido = normalizarFecha(pedido.fecha_pedido);
-  const fechaEntrega = normalizarFecha(
-    pedido.plazo_maximo ?? pedido.fecha_entrega
-  );
+const toSafeNumber = (value) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
 
-  const detallesPedido = Array.isArray(pedido.items)
+const resolverNombreDetallePedido = (detalle = {}, index = 0) =>
+  detalle?.nombre ||
+  detalle?.nombre_producto ||
+  detalle?.nombre_membresia ||
+  detalle?.nombre_servicio ||
+  detalle?.id_productos_producto?.nombre_producto ||
+  detalle?.id_productos_producto?.nombre ||
+  detalle?.producto?.nombre_producto ||
+  detalle?.producto?.nombre ||
+  detalle?.servicio?.nombre_servicio ||
+  detalle?.servicio?.nombre ||
+  detalle?.membresia?.nombre_membresia ||
+  detalle?.membresia?.nombre ||
+  `Item ${index + 1}`;
+
+const adaptarPedidoAVentaModal = (pedido = {}) => {
+  const usuarioActual = getCurrentUser() || {};
+  const detallesBase = Array.isArray(pedido.items)
     ? pedido.items
     : Array.isArray(pedido.detalles_pedidos)
     ? pedido.detalles_pedidos
@@ -579,209 +594,99 @@ export const ModalVerPedido = ({
     ? pedido.detalles
     : [];
 
+  const detallesVenta = detallesBase.map((detalle, index) => {
+    const cantidad = Math.max(
+      1,
+      toSafeNumber(detalle?.cantidad ?? detalle?.cantidad_total ?? detalle?.qty ?? 1)
+    );
+    const subtotal = toSafeNumber(
+      detalle?.subtotal ?? detalle?.total ?? detalle?.total_producto
+    );
+    const valorUnitarioDirecto = toSafeNumber(
+      detalle?.valor_unitario ??
+        detalle?.precio_unitario ??
+        detalle?.precio ??
+        detalle?.valor ??
+        detalle?.valorUnitario
+    );
+    const valor_unitario =
+      valorUnitarioDirecto > 0
+        ? valorUnitarioDirecto
+        : subtotal > 0
+        ? subtotal / cantidad
+        : 0;
+
+    return {
+      ...detalle,
+      nombre: resolverNombreDetallePedido(detalle, index),
+      cantidad,
+      tipo_venta: inferirTipoDetallePedido(detalle),
+      valor_unitario,
+      valor_unitario_detalle: valor_unitario,
+      subtotal: subtotal || valor_unitario * cantidad,
+    };
+  });
+
+  const totalCalculado =
+    toSafeNumber(
+      pedido?.totalNumber ??
+        pedido?.precio_total ??
+        pedido?.precioTotal ??
+        pedido?.valor_total_venta ??
+        pedido?.monto
+    ) ||
+    detallesVenta.reduce(
+      (acc, detalle) => acc + toSafeNumber(detalle.valor_unitario) * toSafeNumber(detalle.cantidad),
+      0
+    );
+
+  const documentoUsuario =
+    pedido?.usuario_documento ||
+    pedido?.documento_usuario ||
+    pedido?.documento ||
+    usuarioActual?.documento ||
+    usuarioActual?.numero_documento ||
+    usuarioActual?.num_documento ||
+    usuarioActual?.document ||
+    "Documento no disponible";
+
+  return {
+    ...pedido,
+    id: pedido?.numero_pedido || pedido?.id,
+    fecha_venta: pedido?.fecha_pedido ?? pedido?.fechaCompra ?? pedido?.fecha_entrega,
+    plazo_maximo:
+      pedido?.plazo_maximo ??
+      pedido?.fecha_entrega ??
+      pedido?.fecha_pedido ??
+      pedido?.fechaCompra,
+    estado_venta: pedido?.estado ?? pedido?.id_estado ?? "Pendiente",
+    usuario_documento: documentoUsuario,
+    documento_usuario: documentoUsuario,
+    valor_total_venta: totalCalculado,
+    monto: totalCalculado,
+    detalles: detallesVenta,
+    detalles_venta: detallesVenta,
+  };
+};
+
+export const ModalVerPedido = ({
+  isOpen,
+  onClose,
+  pedido,
+}) => {
+  if (!isOpen || !pedido) return null;
+  const ventaAdaptada = adaptarPedidoAVentaModal(pedido);
+  const colorEstado =
+    PEDIDO_ESTADO_COLOR_MAP[
+      normalizarEstadoPedidoClave(ventaAdaptada.estado_venta)
+    ] || "#10b981";
+
   return (
-    <Modal
-      title={`Detalles del Pedido #${pedido.numero_pedido || pedido.id}`}
+    <ModalVerVenta
+      venta={ventaAdaptada}
       onClose={onClose}
-      size="lg"
-      className="venta-redesigned"
-      footer={
-        <button className="boton boton-primario" onClick={onClose}>
-          Cerrar
-        </button>
-      }
-    >
-      <div className="cuerpo-modal p-0">
-        <div className="modal-body-content--spacious">
-          <motion.div
-            className="general-tab-layout"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            {/* Left Column: Order Details */}
-            <div className="general-form-column">
-              <motion.div
-                className="modal-form-card"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1, duration: 0.4 }}
-              >
-                <h3 className="modal-section-title">Información del pedido</h3>
-
-                <motion.div
-                  className="modal-field-group"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.3 }}
-                >
-                  <label className="modal-field-label">N° de pedido</label>
-                  <input
-                    type="text"
-                    className="modal-field-input"
-                    value={pedido.numero_pedido || "Sin número"}
-                    readOnly
-                    disabled
-                  />
-                </motion.div>
-
-                <motion.div
-                  className="modal-field-group"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.3 }}
-                >
-                  <label className="modal-field-label">Fecha de pedido</label>
-                  <input
-                    type="text"
-                    className="modal-field-input"
-                    value={
-                      fechaPedido
-                        ? new Date(fechaPedido).toLocaleDateString("es-ES", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })
-                        : "Sin fecha"
-                    }
-                    readOnly
-                    disabled
-                  />
-                </motion.div>
-
-                <motion.div
-                  className="modal-field-group"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.3 }}
-                >
-                  <label className="modal-field-label">Plazo máximo</label>
-                  <input
-                    type="text"
-                    className="modal-field-input"
-                    value={
-                      fechaEntrega
-                        ? new Date(fechaEntrega).toLocaleDateString("es-ES", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })
-                        : "Sin fecha"
-                    }
-                    readOnly
-                    disabled
-                  />
-                </motion.div>
-
-                <motion.div
-                  className="modal-field-group"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.3 }}
-                >
-                  <label className="modal-field-label">Estado</label>
-                  <button
-                    className={`boton modal-pedidos__estado-btn ${estadoClase}`}
-                    disabled
-                  >
-                    {estadoActual}
-                  </button>
-                </motion.div>
-              </motion.div>
-            </div>
-
-            {/* Right Column: Products List */}
-            <div className="general-summary-column">
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2, duration: 0.4 }}
-              >
-                <h3 className="modal-section-title">
-                  Productos del pedido ({detallesPedido.length})
-                </h3>
-
-                {detallesPedido.length > 0 ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.4 }}
-                  >
-                    {/* Tabla de productos */}
-                    <div className="modal-pedidos__view-table-wrap">
-                      <table className="modal-pedidos__view-table">
-                        <thead>
-                          <tr className="modal-pedidos__view-head-row">
-                            <th className="modal-pedidos__view-th-product">
-                              Producto
-                            </th>
-                            <th className="modal-pedidos__view-th-qty">
-                              Cant.
-                            </th>
-
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {detallesPedido.map((d, i) => {
-                            const nombre =
-                              d.nombre ||
-                              d.nombre_producto ||
-                              d.id_productos_producto?.nombre_producto ||
-                              d.id_productos_producto?.nombre ||
-                              `Producto ${d.id_productos}`;
-                            const cantidad = parseFloat(d.cantidad) || 0;
-
-                            return (
-                              <motion.tr
-                                key={
-                                  d.id_detalle_pedidos ||
-                                  `${d.id_productos}-${i}`
-                                }
-                                className={`modal-pedidos__view-row ${
-                                  i % 2 === 0
-                                    ? "modal-pedidos__view-row--even"
-                                    : "modal-pedidos__view-row--odd"
-                                }`}
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{
-                                  delay: 0.4 + i * 0.1,
-                                  duration: 0.3,
-                                }}
-                              >
-                                <td className="modal-pedidos__view-td-product">
-                                  <div className="modal-pedidos__view-product-name">
-                                    {nombre}
-                                  </div>
-                                </td>
-                                <td className="modal-pedidos__view-td-qty">
-                                  {cantidad}
-                                </td>
-
-                              </motion.tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    className="venta-empty-state"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3, duration: 0.4 }}
-                  >
-                    <p>Sin productos en el pedido</p>
-                  </motion.div>
-                )}
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </Modal>
+      colorEstado={colorEstado}
+    />
   );
 };
 
@@ -838,7 +743,7 @@ export const ModalCambiarEstadoPedido = ({
   const detallePedido = (
     <div className="modal-pedidos__status-details">
       <div>
-        <strong>Pedido:</strong> {pedido.numero_pedido || "Sin numero"}
+        <strong>Pedido:</strong> {pedido.numero_pedido || "Sin número"}
       </div>
       <div>
         <strong>Producto:</strong> {pedido.producto || "Sin producto"}

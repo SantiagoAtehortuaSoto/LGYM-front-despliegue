@@ -526,7 +526,7 @@ const BaseUserModal = ({
           const currentUserId = user.id_usuario || user.id;
           // Comparar como strings o números para seguridad
           if (String(currentUserId) === String(formData.id_usuario)) {
-            toast.error("no puedo alterar al usuario que ha iniciado sesion");
+            toast.error("no puedo alterar al usuario que ha iniciado sesión");
             return;
           }
         }
@@ -678,7 +678,7 @@ const BaseUserModal = ({
           transition={{ delay: 0.1, duration: 0.35 }}
         >
           <h3 className="modal-usuarios__section-title">
-            Informacion Basica
+            Información Básica
           </h3>
 
           <div className="modal-usuarios__grid">
@@ -742,7 +742,7 @@ const BaseUserModal = ({
             </div>
 
             <div className="modal-usuarios__field">
-              <label className="modal-usuarios__label">Numero de Documento</label>
+              <label className="modal-usuarios__label">Número de Documento</label>
               <input
                 type="text"
                 name="documento"
@@ -846,7 +846,7 @@ const BaseUserModal = ({
             </div>
 
             <div className="modal-usuarios__field">
-              <label className="modal-usuarios__label">Telefono</label>
+              <label className="modal-usuarios__label">Teléfono</label>
               <input
                 type="text"
                 name="telefono"
@@ -856,7 +856,7 @@ const BaseUserModal = ({
                   handleChange({ target: { name: "telefono", value } });
                 }}
                 disabled={disabled}
-                placeholder="Numero de telefono (10 digitos)"
+                placeholder="Número de teléfono (10 digitos)"
                 required
                 pattern="\d{10}"
                 title="Por favor ingrese exactamente 10 digitos"
@@ -884,7 +884,7 @@ const BaseUserModal = ({
             </div>
 
             <div className="modal-usuarios__field">
-              <label className="modal-usuarios__label">Telefono C. de Emergencia</label>
+              <label className="modal-usuarios__label">Teléfono C. de Emergencia</label>
               <input
                 type="text"
                 name="c_emergencia"
@@ -894,7 +894,7 @@ const BaseUserModal = ({
                   handleChange({ target: { name: "c_emergencia", value } });
                 }}
                 disabled={disabled}
-                placeholder="Telefono de emergencia (10 digitos)"
+                placeholder="Teléfono de emergencia (10 digitos)"
                 required
                 pattern="\d{10}"
                 title="Por favor ingrese exactamente 10 digitos"
@@ -912,7 +912,7 @@ const BaseUserModal = ({
             {!formData.id_usuario && (
               <>
                 <div className="modal-usuarios__field">
-                  <label className="modal-usuarios__label">Contrasena</label>
+                  <label className="modal-usuarios__label">Contraseña</label>
                   <input
                     type="password"
                     name="password"
@@ -922,8 +922,8 @@ const BaseUserModal = ({
                     required
                     minLength="8"
                     pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).+"
-                    title="Minimo 8 caracteres, con mayuscula, minuscula, numero y caracter especial"
-                    placeholder="Minimo 8 caracteres"
+                    title="Mínimo 8 caracteres, con mayuscula, minuscula, número y caracter especial"
+                    placeholder="Mínimo 8 caracteres"
                     className={`modal-usuarios__input ${
                       errors.password ? "modal-usuarios__input--error" : ""
                     }`}
@@ -935,7 +935,7 @@ const BaseUserModal = ({
                   ) : null}
                 </div>
                 <div className="modal-usuarios__field">
-                  <label className="modal-usuarios__label">Confirmar Contrasena</label>
+                  <label className="modal-usuarios__label">Confirmar Contraseña</label>
                   <input
                     type="password"
                     name="confirmPassword"
@@ -944,7 +944,7 @@ const BaseUserModal = ({
                     disabled={disabled}
                     required
                     minLength="8"
-                    placeholder="Repita la contrasena"
+                    placeholder="Repita la contraseña"
                     className={`modal-usuarios__input ${
                       errors.confirmPassword
                         ? "modal-usuarios__input--error"
@@ -997,7 +997,7 @@ const BaseUserModal = ({
           transition={{ delay: 0.3, duration: 0.35 }}
         >
           <h3 className="modal-usuarios__section-title">
-            Informacion Adicional
+            Información Adicional
           </h3>
           <div className="modal-usuarios__field">
             <label className="modal-usuarios__label">Enfermedades o Condiciones Especiales</label>
@@ -1022,7 +1022,7 @@ const BaseUserModal = ({
 
         {shouldShowClientSummary && (
           <div className="modal-usuarios__card">
-            <h3 className="modal-usuarios__section-title">Membresia del cliente</h3>
+            <h3 className="modal-usuarios__section-title">Membresía del cliente</h3>
             <p className="modal-usuarios__summary-text">{membershipName}</p>
           </div>
         )}
@@ -1081,11 +1081,11 @@ const BaseUserModal = ({
 
         {shouldShowEmployeeSummary && (
           <div className="modal-usuarios__card">
-            <h3 className="modal-usuarios__section-title">Informacion de empleado</h3>
+            <h3 className="modal-usuarios__section-title">Información de empleado</h3>
             {employeeDetails ? (
               <div className="modal-usuarios__grid">
                 <div className="modal-usuarios__field">
-                  <label className="modal-usuarios__label">Direccion</label>
+                  <label className="modal-usuarios__label">Dirección</label>
                   <input
                     type="text"
                     value={employeeDetails.direccion_empleado || "No disponible"}

@@ -629,7 +629,7 @@ export const ModalEliminarServicio = ({
         },
         { key: "id_servicio", label: "ID" },
       ]}
-      warningMessage="Esta accion no se puede deshacer. Se eliminara permanentemente el servicio."
+      warningMessage="Esta acción no se puede deshacer. Se eliminara permanentemente el servicio."
     />
   );
 };

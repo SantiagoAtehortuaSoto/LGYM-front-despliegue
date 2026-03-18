@@ -7,7 +7,7 @@ const planesAPI = {
 export default function Paquetes() {
   const [planes, setPlanes] = useState([
     {
-      name: "Basico",
+      name: "Básico",
       price: 10,
       perks: ["Perk 1", "Perk 2", "Perk 3"],
     },
@@ -39,7 +39,7 @@ export default function Paquetes() {
       } else {
         setPlanes([
           {
-            name: "Basico",
+            name: "Básico",
             price: 10,
             perks: ["Perk 1", "Perk 2", "Perk 3"],
           },

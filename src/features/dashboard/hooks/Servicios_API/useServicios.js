@@ -15,7 +15,7 @@ import {
 } from "../../../../shared/utils/statusChangeMessages";
 
 /**
- * Hook personalizado para manejar la logica CRUD de servicios.
+ * Hook personalizado para manejar la lógica CRUD de servicios.
  */
 export const useServicios = (searchValue = "") => {
   const [servicios, setServicios] = useState([]);
@@ -239,7 +239,7 @@ export const useServicios = (searchValue = "") => {
         )
       ) {
         toast.error(
-          "No se puede eliminar este servicio porque esta asociado con una o mas membresias."
+          "No se puede eliminar este servicio porque esta asociado con una o mas membresías."
         );
         return;
       }

@@ -1,6 +1,6 @@
 import { buildUrl } from "../apiConfig";
 
-// src/shared/services/membresias.js
+// src/shared/services/membresías.js
 
 const BASE_URL = buildUrl("/membresias");
 const DEFAULT_TIMEOUT_MS = 15000;

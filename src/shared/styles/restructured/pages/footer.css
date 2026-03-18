@@ -65,8 +65,8 @@
   margin: 8px 0;
   color: #fff;
   display: flex;
-  align-items: center;      /* icono alineado con texto */
-  gap: 10px;                /* espacio icono-texto */
+  align-items: center;      /* ícono alineado con texto */
+  gap: 10px;                /* espacio ícono-texto */
   line-height: 1.45;
   font-size: 13px;
 }

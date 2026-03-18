@@ -189,7 +189,7 @@
 .avatar-inicial--tone-11 { background: #475569; }
 .avatar-inicial--tone-12 { background: #1f2937; }
 
-/* Si usas icono en vez de inicial, opcional */
+/* Si usas ícono en vez de inicial, opcional */
 .avatar-inicial svg {
   display: block;
 }

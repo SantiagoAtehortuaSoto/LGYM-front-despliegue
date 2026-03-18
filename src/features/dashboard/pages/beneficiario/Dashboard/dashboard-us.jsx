@@ -483,7 +483,7 @@ const DashboardUs = () => {
       (b) => b?.id_membresia_membresia || b?.membresia || b?.nombre_membresia,
     );
     const memObj = item?.id_membresia_membresia || item?.membresia || {};
-    return memObj?.nombre_membresia || memObj?.nombre || item?.nombre_membresia || "Sin membresia";
+    return memObj?.nombre_membresia || memObj?.nombre || item?.nombre_membresia || "Sin membresía";
   }, [beneficiarios]);
 
   const membershipStatus = useMemo(() => {
@@ -699,10 +699,10 @@ const DashboardUs = () => {
             </div>
           </section>
 
-          {/* Membresia */}
+          {/* Membresía */}
           <section className="dashboard-us__card">
             <h3 className="dashboard-us__section-title">
-              <IconStar size={16} color="#e50914" /> Mi Membresia
+              <IconStar size={16} color="#e50914" /> Mi Membresía
             </h3>
             <p className="dashboard-us__membership-name">{membershipName}</p>
             <p className="dashboard-us__small-text">Estado: {membershipStatus}</p>

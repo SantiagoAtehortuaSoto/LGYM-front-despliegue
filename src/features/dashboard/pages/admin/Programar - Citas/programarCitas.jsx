@@ -288,7 +288,7 @@ const ProgramarCita = () => {
     });
 
     return [
-      { value: "all", label: "Todos los entrenadores" },
+      { value: "all", label: "" },
       ...Array.from(uniqueOptions.values()).sort((a, b) =>
         a.label.localeCompare(b.label, "es", { sensitivity: "base" }),
       ),
@@ -297,7 +297,7 @@ const ProgramarCita = () => {
 
   const estadoFilterOptions = useMemo(
     () => [
-      { value: "all", label: "Todos los estados" },
+      { value: "all", label: "" },
       ...OPCIONES_ESTADO_FLUJO.map((estado) => ({
         value: String(estado.value),
         label: estado.label,
@@ -874,6 +874,7 @@ const ProgramarCita = () => {
         empleados={empleados}
         clientes={clientes}
         actividades={actividadesServicio}
+        agendaItems={agenda}
       />
     </div>
   );

@@ -60,10 +60,10 @@ function Sidebar({ isOpen = true }) {
         />
         <ExpandableButtons
           isSidebarOpen={isOpen}
-          nombreBoton={"Configuracion"}
+          nombreBoton={"Configuración"}
           links={configLinksAd}
-          isExpanded={openSection === "Configuracion"}
-          onToggle={(nextExpanded) => handleSectionToggle("Configuracion", nextExpanded)}
+          isExpanded={openSection === "Configuración"}
+          onToggle={(nextExpanded) => handleSectionToggle("Configuración", nextExpanded)}
         />
       </div>
     </div>

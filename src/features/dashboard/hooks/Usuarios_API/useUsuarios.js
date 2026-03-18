@@ -1100,7 +1100,7 @@ export function useUsuarios() {
     );
   }, [usuariosEmpleados]);
 
-  // Alias de compatibilidad para pantallas que aun consumen nombres legacy
+  // Alias de compatibilidad para pantallas que aún consumen nombres legacy
   const usuariosRol6 = usuariosRol33;
   const usuariosSin1y6 = usuariosSin1y33;
 

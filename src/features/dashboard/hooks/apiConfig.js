@@ -14,7 +14,7 @@ const sanitizePublicUrl = (value, label) => {
 
   if (typeof console !== "undefined") {
     console.warn(
-      `[SECURITY] Ignorando ${label} porque no usa un esquema http(s) o una ruta relativa valida.`
+      `[SECURITY] Ignorando ${label} porque no usa un esquema http(s) o una ruta relativa válida.`
     );
   }
 

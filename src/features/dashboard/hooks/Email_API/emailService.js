@@ -207,7 +207,7 @@ const postCorreoConFallback = async (endpoint, body) => {
 
   throw (
     ultimoError ||
-    new Error("No se encontro un endpoint valido para envio de correo")
+    new Error("No se encontro un endpoint válido para envio de correo")
   );
 };
 
@@ -218,8 +218,8 @@ const crearContenidoCorreo = (pedido, proveedor, productos, opciones = {}) => {
     ? "ACTUALIZACION DE ORDEN DE COMPRA"
     : "ORDEN DE COMPRA";
   const mensajeIntro = isUpdate
-    ? "Se ha actualizado el pedido con la siguiente informacion:"
-    : "Se ha generado un pedido con la siguiente informacion:";
+    ? "Se ha actualizado el pedido con la siguiente información:"
+    : "Se ha generado un pedido con la siguiente información:";
 
   return `
     <!DOCTYPE html>

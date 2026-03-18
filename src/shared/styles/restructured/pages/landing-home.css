@@ -307,7 +307,7 @@ body {
   background-color: #fff;
 }
 
-/* Titulo de beneficios*/
+/* Título de beneficios*/
 .Beneficios h2 {
   font-size: 28px;
   font-family: var(--font-heading);
@@ -384,7 +384,7 @@ body {
   line-height: 1.5;
 }
 
-/* Bloque de icono */
+/* Bloque de ícono */
 .Beneficios-img .icon-beneficios {
   position: absolute;
   left: 0;
@@ -575,7 +575,7 @@ body {
   color: #555;
 }
 
-/* Círculo para icono */
+/* Círculo para ícono */
 .circulo {
   width: 70px;
   height: 70px;
@@ -940,5 +940,152 @@ body {
   .landing-experience-modal .contenedor-botones,
   .landing-experience-modal__cta {
     width: 100%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .inicio-contenido {
+    margin-top: 150px;
+    padding: 32px 24px;
+  }
+
+  .contenido-experiencia {
+    gap: 32px;
+  }
+
+  .hero__packages {
+    height: auto;
+    gap: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .inicio-contenido {
+    margin-top: 120px;
+    padding: 24px 18px 32px;
+  }
+
+  .inicio-contenido h1 {
+    font-size: clamp(2.2rem, 8vw, 3rem);
+  }
+
+  .inicio-contenido p {
+    font-size: 1rem;
+    max-width: 34rem;
+  }
+
+  .botones {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .btn-rojo,
+  .btn-transparente {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .contenido,
+  .servicios,
+  .Beneficios,
+  .entrenadores,
+  .mision-vision {
+    padding-inline: 18px;
+  }
+
+  .contenido-experiencia {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .imagen-texto,
+  .texto-experiencia {
+    width: 100%;
+  }
+
+  .imagen-experiencia {
+    max-width: 100%;
+  }
+
+  .icono-item {
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .servicios {
+    padding: 42px 18px;
+  }
+
+  .servicio-card {
+    min-width: 0;
+    width: 100%;
+    padding: 24px 18px;
+  }
+
+  .Beneficios,
+  .entrenadores,
+  .mision-vision {
+    padding-top: 44px;
+    padding-bottom: 44px;
+  }
+
+  .entrenadores-contenedor {
+    gap: 18px;
+  }
+
+  .entrenador-card {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .mision-vision-contenedor {
+    gap: 18px;
+  }
+
+  .hero {
+    min-height: 100svh;
+    height: auto;
+    padding: 96px 18px 56px;
+  }
+
+  .hero__content {
+    margin-top: 0;
+    padding-inline: 0;
+    max-width: 100%;
+  }
+
+  .hero__packages {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .inicio-contenido {
+    margin-top: 104px;
+    padding: 18px 14px 28px;
+  }
+
+  .texto-experiencia h2,
+  .Beneficios h2,
+  .entrenadores h2,
+  .mision-vision h2 {
+    font-size: 1.75rem;
+  }
+
+  .icono-item {
+    flex-direction: column;
+  }
+
+  .Beneficios-img svg {
+    top: 14px;
+    left: 14px;
+  }
+
+  .texto-beneficios,
+  .texto-mision-vision {
+    padding-inline: 14px;
   }
 }

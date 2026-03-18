@@ -718,7 +718,7 @@ export default function Empleados() {
         String(currentUserId) === String(empleado.id_usuario)
       ) {
         toast.error(
-          "el usuario a editar o eliminar esta con su sesion iniciada y no puedes hacer esto"
+          "el usuario a editar o eliminar esta con su sesión iniciada y no puedes hacer esto"
         );
         return;
       }
@@ -752,7 +752,7 @@ export default function Empleados() {
       String(currentUserId) === String(empleado.id_usuario)
     ) {
       toast.error(
-        "el usuario a editar o eliminar esta con su sesion iniciada y no puedes hacer esto"
+        "el usuario a editar o eliminar esta con su sesión iniciada y no puedes hacer esto"
       );
       return;
     }
@@ -780,7 +780,7 @@ export default function Empleados() {
         String(currentUserId) === String(empleado.id_usuario)
       ) {
         toast.error(
-          "el usuario a editar o eliminar esta con su sesion iniciada y no puedes hacer esto"
+          "el usuario a editar o eliminar esta con su sesión iniciada y no puedes hacer esto"
         );
         return;
       }

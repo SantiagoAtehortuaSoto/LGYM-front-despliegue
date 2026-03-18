@@ -273,7 +273,7 @@ const mapDetalleToBackend = (detalle) => {
     (detalle.tipo_venta || detalle.tipoVenta || "").toString().toUpperCase();
 
   const base = {
-    tipo_venta: tipo, // PRODUCTO | MEMBRESIA | SERVICIO
+    tipo_venta: tipo, // PRODUCTO | MEMBRESÍA | SERVICIO
     cantidad: Number(detalle.cantidad) || 0,
     perdidas_o_ganancias:
       Number(

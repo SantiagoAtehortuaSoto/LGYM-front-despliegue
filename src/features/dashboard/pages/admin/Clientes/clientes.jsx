@@ -79,7 +79,7 @@ const columnasClientesTabla = [
   { field: "id_usuario", header: "ID" },
   { field: "nombre_usuario", header: "Nombre" },
   { field: "email", header: "Correo" },
-  { field: "telefono", header: "Telefono" },
+  { field: "telefono", header: "Teléfono" },
   {
     field: "id_estado",
     header: "Estado",
@@ -283,7 +283,7 @@ export default function Clientes() {
         membresia?.nombre_membresia ??
         membresia?.nombre ??
         cliente?.nombre_membresia ??
-        `Membresia ${idMembresia}`;
+        `Membresía ${idMembresia}`;
 
       return {
         ...cliente,
@@ -304,7 +304,7 @@ export default function Clientes() {
         !nuevoCliente.password
       ) {
         throw new Error(
-          "Nombre, correo electronico y contrasena son campos requeridos"
+          "Nombre, correo electrónico y contraseña son campos requeridos"
         );
       }
 
@@ -375,7 +375,7 @@ export default function Clientes() {
         String(currentUserId) === String(cliente.id_usuario)
       ) {
         toast.error(
-          "el usuario a editar o eliminar esta con su sesion iniciada y no puedes hacer esto"
+          "el usuario a editar o eliminar esta con su sesión iniciada y no puedes hacer esto"
         );
         return;
       }
@@ -434,7 +434,7 @@ export default function Clientes() {
     const currentUserId = usuarioActual?.id_usuario || usuarioActual?.id;
     if (usuarioActual && String(currentUserId) === String(cliente.id_usuario)) {
       toast.error(
-        "el usuario a editar o eliminar esta con su sesion iniciada y no puedes hacer esto"
+        "el usuario a editar o eliminar esta con su sesión iniciada y no puedes hacer esto"
       );
       return;
     }
@@ -462,7 +462,7 @@ export default function Clientes() {
         String(currentUserId) === String(cliente.id_usuario)
       ) {
         toast.error(
-          "el usuario a editar o eliminar esta con su sesion iniciada y no puedes hacer esto"
+          "el usuario a editar o eliminar esta con su sesión iniciada y no puedes hacer esto"
         );
         return;
       }
@@ -648,7 +648,7 @@ export default function Clientes() {
             {
               key: "email",
               label: "Correo",
-              format: (value) => value || "Sin correo electronico",
+              format: (value) => value || "Sin correo electrónico",
             },
             {
               key: "documento",
@@ -657,11 +657,11 @@ export default function Clientes() {
             },
             {
               key: "telefono",
-              label: "Telefono",
+              label: "Teléfono",
               format: (value) => value || "No especificado",
             },
           ]}
-          warningMessage="Esta accion no se puede deshacer. El cliente sera eliminado permanentemente del sistema junto con todo su historial."
+          warningMessage="Esta acción no se puede deshacer. El cliente sera eliminado permanentemente del sistema junto con todo su historial."
         />
       )}
     </div>

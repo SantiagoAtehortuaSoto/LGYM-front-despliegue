@@ -1,6 +1,6 @@
 import { buildUrl } from "../apiConfig";
 
-// src/shared/services/membresias.api.js
+// src/shared/services/membresías.api.js
 
 const URL_MEMBRESIA = buildUrl("/membresias");
 const URL_DETALLES_MEMBRESIA = buildUrl("/detalles_membresias");

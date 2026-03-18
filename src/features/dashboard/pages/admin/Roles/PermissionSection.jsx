@@ -15,7 +15,7 @@ const MODULOS_DEF = [
     categoria: "Servicios",
     modulos: [
       { modulo: "Servicios", label: "Servicios" },
-      { modulo: "Membresias", label: "Membresias" },
+      { modulo: "Membresías", label: "Membresías" },
       { modulo: "Asistencia", label: "Asistencia" },
       { modulo: "Asignar Citas", label: "Asignar Citas" },
       { modulo: "Empleados", label: "Empleados" },
@@ -25,13 +25,13 @@ const MODULOS_DEF = [
     categoria: "Ventas",
     modulos: [
       { modulo: "Ventas", label: "Ventas" },
-      // { modulo: "Ventas Membresias", label: "Ventas Membresias" },
+      // { modulo: "Ventas Membresías", label: "Ventas Membresías" },
       { modulo: "Seguimiento deportivo", label: "Seguimiento deportivo" },
       { modulo: "Clientes", label: "Clientes" },
     ],
   },
   {
-    categoria: "Configuracion",
+    categoria: "Configuración",
     modulos: [
       { modulo: "Usuarios", label: "Usuarios" },
       { modulo: "Roles", label: "Roles" },

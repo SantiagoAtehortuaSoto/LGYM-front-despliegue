@@ -13,7 +13,7 @@ import VentasMembresias from "./features/dashboard/pages/admin/VentasMembresías
 import NotFound from "./features/dashboard/pages/404/NotFound.jsx";
 import ScrollToTop from "./shared/components/ScrollToTop/ScrollToTop.jsx";
 
-/*Importacion de configuracion*/
+/*Importacion de configuración*/
 import ConfiguracionUsuario from "./shared/components/Configuraciones/Configuraciones.jsx";
 
 /* Layouts */
@@ -71,6 +71,7 @@ function App() {
         <Toaster
           toastOptions={{ duration: 3500 }}
           containerStyle={{ zIndex: 12050 }}
+          limit={3}
         />
         <Routes>
             {/* públicas */}
@@ -98,7 +99,7 @@ function App() {
               <Route element={<RequireRole allowed={["admin"]} />}>
                 <Route path="/admin" element={<AdminDashboard />}>
                   <Route path="dashboard" element={<DashboardAdmin />} />
-                  {/* Configuracion */}
+                  {/* Configuración */}
                   <Route
                     path="configuracion"
                     element={<ConfiguracionUsuario />}
@@ -145,7 +146,7 @@ function App() {
                     path="dashboardEmpleado"
                     element={<DashboardAdmin />}
                   />
-                  {/* Configuracion (alias legado) */}
+                  {/* Configuración (alias legado) */}
                   <Route path="usuarios" element={<Usuarios />} />
                   <Route path="roles" element={<Roles />} />
                   {/* Compras */}

@@ -53,7 +53,7 @@ const sumarDiasISO = (baseDate, dias = 30) => {
   return toISODate(d);
 };
 
-// Cache simple de membresias para evitar pedirlas varias veces
+// Cache simple de membresías para evitar pedirlas varias veces
 let MEM_CACHE = { fetchedAt: 0, data: null };
 const MEM_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos
 
@@ -69,7 +69,7 @@ async function fetchMembresias(token) {
   });
   const data = await parseJSON(res);
   if (!res.ok) {
-    const msg = data?.msg || data?.message || "No se pudieron obtener membresias";
+    const msg = data?.msg || data?.message || "No se pudieron obtener membresías";
     const err = new Error(msg);
     err.status = res.status;
     err.data = data;
@@ -169,10 +169,10 @@ export const mapCarritoToPayload = async (items = [], { token } = {}) => {
       const detalle = JSON.stringify(item);
       throw new Error(
         esMembresia
-          ? `La membresia no tiene un id_membresia valido. Item: ${detalle}`
+          ? `La membresía no tiene un id_membresia válido. Item: ${detalle}`
           : esServicio
-          ? `El servicio no tiene un id_servicio valido. Item: ${detalle}`
-          : `El producto no tiene un id_producto valido. Item: ${detalle}`
+          ? `El servicio no tiene un id_servicio válido. Item: ${detalle}`
+          : `El producto no tiene un id_producto válido. Item: ${detalle}`
       );
     }
 

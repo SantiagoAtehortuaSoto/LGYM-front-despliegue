@@ -835,7 +835,7 @@ const DataTable = ({
                           <>
                             {onView && (
                               <button
-                                className={`boton-accion boton-ver ${canViewRow ? "" : "boton-accion--disabled"}`.trim()}
+                                className={`boton-acción boton-ver ${canViewRow ? "" : "boton-accion--disabled"}`.trim()}
                                 onClick={() =>
                                   canViewRow ? onView(row) : undefined
                                 }
