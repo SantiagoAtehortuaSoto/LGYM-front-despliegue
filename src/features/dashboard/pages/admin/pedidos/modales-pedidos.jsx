@@ -980,14 +980,14 @@ export const ModalFormularioPedido = ({
         title={modalTitle}
         onClose={onClose}
         size="lg"
-        className="venta-redesigned"
+        className="modal-pedidos-redesigned"
         footer={
           disabled ? (
             <button className="boton boton-primario" onClick={onClose}>
               Cerrar
             </button>
           ) : (
-            <>
+            <div className="modal-pedidos__footer-actions">
               <button className="boton boton-secundario" onClick={onClose}>
                 Cancelar
               </button>
@@ -998,7 +998,7 @@ export const ModalFormularioPedido = ({
               >
                 Guardar pedido
               </button>
-            </>
+            </div>
           )
         }
       >
@@ -1381,12 +1381,14 @@ export const ModalFormularioPedido = ({
                     >
                       {/* Header */}
                       <div className="modal-pedidos__search-header">
-                        <h3 className="modal-pedidos__search-title">
-                          Buscar y agregar productos
-                        </h3>
-                        <p className="modal-pedidos__search-subtitle">
-                          Busque productos existentes para agregarlos al pedido
-                        </p>
+                        <div className="modal-pedidos__search-copy">
+                          <h3 className="modal-pedidos__search-title">
+                            Buscar y agregar productos
+                          </h3>
+                          <p className="modal-pedidos__search-subtitle">
+                            Busque productos existentes para agregarlos al pedido
+                          </p>
+                        </div>
                       </div>
 
                       {/* Buscador */}
@@ -1528,7 +1530,7 @@ export const ModalFormularioPedido = ({
                                         });
                                       }}
                                       >
-                                      <div>
+                                      <div className="modal-pedidos__item-content">
                                         <div className="modal-pedidos__item-name">
                                           {item.nombre_producto || item.nombre}
                                         </div>
@@ -1788,7 +1790,7 @@ export const ModalVerPedido = ({
       title={`Detalles del Pedido #${pedido.numero_pedido || pedido.id}`}
       onClose={onClose}
       size="lg"
-      className="venta-redesigned"
+      className="modal-pedidos-redesigned"
       footer={
         <button className="boton boton-primario" onClick={onClose}>
           Cerrar

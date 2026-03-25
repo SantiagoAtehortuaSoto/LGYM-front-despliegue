@@ -705,7 +705,7 @@ export const ModalCrearVenta = ({
         )
       }
     >
-      <div className="cuerpo-modal p-0">
+      <div className="venta-redesigned__content">
         {/* Tabs */}
         <div
           data-ven-style="1"
@@ -1872,7 +1872,7 @@ export const ModalVerVenta = ({ venta, onClose, colorEstado = "#10b981" }) => {
         </button>
       }
     >
-      <div className="cuerpo-modal p-0">
+      <div className="venta-redesigned__content">
         <div
           className="modal-body-content modal-body-content--spacious"
         >
@@ -2001,11 +2001,13 @@ export const ModalVerVenta = ({ venta, onClose, colorEstado = "#10b981" }) => {
                     {/* Tabla de items */}
                     <div
                       data-ven-style="90"
+                      className="modal-ventas__details-table-wrap"
                     >
                       <table
                         data-ven-style="91"
+                        className="modal-ventas__details-table"
                       >
-                        <thead>
+                        <thead className="modal-ventas__details-head">
                           <tr data-ven-style="28">
                             <th
                               data-ven-style="92"
@@ -2039,10 +2041,12 @@ export const ModalVerVenta = ({ venta, onClose, colorEstado = "#10b981" }) => {
                                 delay: 0.4 + i * 0.1,
                                 duration: 0.3,
                               }}
-                              className={getVentaDetalleRowClass(i)}
+                              className={`${getVentaDetalleRowClass(i)} modal-ventas__details-row`}
                             >
                               <td
                                 data-ven-style="32"
+                                className="modal-ventas__details-cell modal-ventas__details-cell--item"
+                                data-label="Producto/Servicio"
                               >
                                 <div
                                   data-ven-style="95"
@@ -2066,11 +2070,15 @@ export const ModalVerVenta = ({ venta, onClose, colorEstado = "#10b981" }) => {
                               </td>
                               <td
                                 data-ven-style="96"
+                                className="modal-ventas__details-cell"
+                                data-label="Cant."
                               >
                                 {d.cantidad || 1}
                               </td>
                               <td
                                 data-ven-style="97"
+                                className="modal-ventas__details-cell"
+                                data-label="Precio Unit."
                               >
                                 {formatCOP(
                                   d.valor_unitario ||
@@ -2081,6 +2089,8 @@ export const ModalVerVenta = ({ venta, onClose, colorEstado = "#10b981" }) => {
                               </td>
                               <td
                                 data-ven-style="36"
+                                className="modal-ventas__details-cell modal-ventas__details-cell--subtotal"
+                                data-label="Subtotal"
                               >
                                 {formatCOP(
                                   (d.valor_unitario ||

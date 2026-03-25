@@ -436,7 +436,7 @@ function VentasMembresias() {
   );
 
   return (
-    <div className="contenido-pagina">
+    <div className="">
       <div className="encabezado-acciones">
         <div className="titulo-con-icono">
           <Store size={40} className="icono-titulo" color="red" />

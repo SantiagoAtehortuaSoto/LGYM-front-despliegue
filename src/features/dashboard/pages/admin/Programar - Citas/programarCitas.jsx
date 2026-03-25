@@ -706,7 +706,7 @@ const ProgramarCita = () => {
   const isExistingCita = Boolean(citaEditando?.id_agenda);
 
   return (
-    <div className="main-ad-column programar-citas-page">
+    <div className="main-ad-column">
       <div className="encabezado-acciones">
         <div className="titulo-con-icono">
           <CalendarDays size={40} className="icono-titulo" color="red" />

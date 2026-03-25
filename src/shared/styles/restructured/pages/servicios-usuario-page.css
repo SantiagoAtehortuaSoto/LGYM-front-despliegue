@@ -876,8 +876,13 @@
   }
 
   .servicios-usuario__cancel-footer {
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: stretch;
+  }
+
+  .servicios-usuario__cancel-footer .servicios-usuario__button {
+    width: 100%;
+    justify-content: center;
   }
 
   .servicios-usuario__cancel-modal .modal-core-title {

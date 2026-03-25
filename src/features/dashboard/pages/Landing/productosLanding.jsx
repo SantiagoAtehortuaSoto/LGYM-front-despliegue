@@ -356,6 +356,22 @@ const ProductosLanding = ({ isLoggedIn }) => {
     return () => window.removeEventListener("keydown", handleEscape);
   }, [productoModal, location.pathname, location.search]);
 
+  useEffect(() => {
+    if (!productoModal) return undefined;
+
+    const { body, documentElement } = document;
+    const previousBodyOverflow = body.style.overflow;
+    const previousHtmlOverflow = documentElement.style.overflow;
+
+    body.style.overflow = "hidden";
+    documentElement.style.overflow = "hidden";
+
+    return () => {
+      body.style.overflow = previousBodyOverflow;
+      documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, [productoModal]);
+
   const handleCompra = (producto, e) => {
     // Si no hay sesión, mandamos a login y terminamos
     if (!requireAuth()) return;
@@ -705,78 +721,87 @@ const ProductosLanding = ({ isLoggedIn }) => {
             aria-hidden="true"
           />
           <div
-            className="producto-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="producto-modal-title"
+            className="producto-modal-layer"
+            onClick={(event) => {
+              if (event.target === event.currentTarget) {
+                cerrarDetalleProducto();
+              }
+            }}
           >
-            <button
-              type="button"
-              className="producto-modal__close"
-              onClick={cerrarDetalleProducto}
-              aria-label="Cerrar detalle del producto"
+            <div
+              className="producto-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="producto-modal-title"
             >
-              <IconX size={20} />
-            </button>
+              <button
+                type="button"
+                className="producto-modal__close"
+                onClick={cerrarDetalleProducto}
+                aria-label="Cerrar detalle del producto"
+              >
+                <IconX size={20} />
+              </button>
 
-            <div className="producto-modal__media">
-              <SafeImg
-                src={productoModal.imagen}
-                alt={productoModal.nombre}
-                className="producto-modal__image"
-              />
-            </div>
-
-            <div className="producto-modal__content">
-              <span className="producto-modal__eyebrow">
-                {productoModal.categoria || "Producto"}
-              </span>
-              <h2 id="producto-modal-title" className="producto-modal__title">
-                {productoModal.nombre}
-              </h2>
-              <p className="producto-modal__description">
-                {productoModal.descripcion || "Sin descripción disponible."}
-              </p>
-
-              <div className="producto-modal__stats">
-                <div className="producto-modal__price">
-                  <span className="producto-modal__price-label">Precio</span>
-                  <strong>
-                    ${Number(productoModal.precio || 0).toLocaleString("es-CO")} COP
-                  </strong>
-                </div>
-                <div
-                  className={`producto-modal__stock producto-modal__stock--${
-                    getStockInfo(productoModal.stock).state
-                  }`}
-                >
-                  {getStockInfo(productoModal.stock).label}
-                </div>
+              <div className="producto-modal__media">
+                <SafeImg
+                  src={productoModal.imagen}
+                  alt={productoModal.nombre}
+                  className="producto-modal__image"
+                />
               </div>
 
-              <div className="producto-modal__actions">
-                <button
-                  type="button"
-                  className="producto-modal__share"
-                  onClick={() => compartirProducto(productoModal)}
-                >
-                  <IconShare size={18} />
-                  Compartir
-                </button>
-                <button
-                  type="button"
-                  className="producto-modal__cart"
-                  onClick={(e) => handleCompra(productoModal, e)}
-                  disabled={
-                    getStockNumber(productoModal.stock) !== null &&
-                    getStockNumber(productoModal.stock) <= 0
-                      ? true
-                      : estaEnLimiteStock(productoModal)
-                  }
-                >
-                  <IconShoppingCart size={18} />
-                  Agregar al carrito
-                </button>
+              <div className="producto-modal__content">
+                <span className="producto-modal__eyebrow">
+                  {productoModal.categoria || "Producto"}
+                </span>
+                <h2 id="producto-modal-title" className="producto-modal__title">
+                  {productoModal.nombre}
+                </h2>
+                <p className="producto-modal__description">
+                  {productoModal.descripcion || "Sin descripción disponible."}
+                </p>
+
+                <div className="producto-modal__stats">
+                  <div className="producto-modal__price">
+                    <span className="producto-modal__price-label">Precio</span>
+                    <strong>
+                      ${Number(productoModal.precio || 0).toLocaleString("es-CO")} COP
+                    </strong>
+                  </div>
+                  <div
+                    className={`producto-modal__stock producto-modal__stock--${
+                      getStockInfo(productoModal.stock).state
+                    }`}
+                  >
+                    {getStockInfo(productoModal.stock).label}
+                  </div>
+                </div>
+
+                <div className="producto-modal__actions">
+                  <button
+                    type="button"
+                    className="producto-modal__share"
+                    onClick={() => compartirProducto(productoModal)}
+                  >
+                    <IconShare size={18} />
+                    Compartir
+                  </button>
+                  <button
+                    type="button"
+                    className="producto-modal__cart"
+                    onClick={(e) => handleCompra(productoModal, e)}
+                    disabled={
+                      getStockNumber(productoModal.stock) !== null &&
+                      getStockNumber(productoModal.stock) <= 0
+                        ? true
+                        : estaEnLimiteStock(productoModal)
+                    }
+                  >
+                    <IconShoppingCart size={18} />
+                    Agregar al carrito
+                  </button>
+                </div>
               </div>
             </div>
           </div>

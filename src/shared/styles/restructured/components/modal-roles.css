@@ -169,6 +169,40 @@
   opacity: 0.7;
 }
 
+.modal-roles__module-content .modulos-permisos {
+  padding: 0;
+}
+
+.modal-roles__module-content .modulo-permisos {
+  margin-bottom: 0.75rem;
+}
+
+.modal-roles__module-content .modulo-permisos:last-child {
+  margin-bottom: 0;
+}
+
+.modal-roles__module-content .lista-permisos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.modal-roles__module-content .item-permiso {
+  min-width: 0;
+  gap: 0.35rem;
+}
+
+.modal-roles__module-content .checkbox-permiso {
+  margin-right: 0;
+  flex-shrink: 0;
+}
+
+.modal-roles__module-content .etiqueta-permiso {
+  white-space: nowrap;
+  line-height: 1.1;
+}
+
 .modal-roles__status-details {
   display: grid;
   gap: 0.45rem;
@@ -177,5 +211,37 @@
 @media (max-width: 768px) {
   .modal-roles__container {
     width: 96%;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-roles__module-content {
+    padding: 8px;
+  }
+
+  .modal-roles__module-content .modulo-permisos {
+    padding: 0.75rem 0.625rem;
+  }
+
+  .modal-roles__module-content .titulo-modulo {
+    margin-bottom: 0.75rem;
+  }
+
+  .modal-roles__module-content .lista-permisos {
+    gap: 0.25rem;
+  }
+
+  .modal-roles__module-content .item-permiso {
+    gap: 0.2rem;
+  }
+
+  .modal-roles__module-content .checkbox-permiso {
+    width: 13px;
+    height: 13px;
+  }
+
+  .modal-roles__module-content .etiqueta-permiso {
+    font-size: 11px;
+    letter-spacing: -0.01em;
   }
 }

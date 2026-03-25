@@ -652,13 +652,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   cursor: pointer;
 }
 
 .modal-pedidos__item-name {
   font-weight: 500;
   color: #111827;
-  margin-bottom: 4px;
+  margin-bottom: 0;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .modal-pedidos__item-add-btn {
@@ -670,6 +673,7 @@
   cursor: pointer;
   font-size: 12px;
   font-weight: 500;
+  flex-shrink: 0;
 }
 
 .modal-pedidos__selected-section {
@@ -959,6 +963,63 @@
 /*                    Alineacion visual de Pedidos con Ventas                 */
 /* -------------------------------------------------------------------------- */
 
+.modal-pedidos-redesigned {
+  width: min(96vw, 980px);
+}
+
+.modal-pedidos-redesigned .modal-core-header {
+  margin-bottom: 0;
+}
+
+.modal-pedidos-redesigned .modal-body-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+  min-height: 0;
+}
+
+.modal-pedidos-redesigned .modal-body-content--spacious {
+  min-height: auto;
+  padding: 1.5rem;
+}
+
+.modal-pedidos-redesigned .general-tab-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.modal-pedidos-redesigned .general-form-column,
+.modal-pedidos-redesigned .general-summary-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.modal-pedidos-redesigned .general-form-column {
+  order: 1;
+}
+
+.modal-pedidos-redesigned .general-summary-column {
+  order: 2;
+}
+
+.modal-pedidos-redesigned .modal-form-card,
+.modal-pedidos-redesigned .modal-pedidos__search-card,
+.modal-pedidos-redesigned .modal-pedidos__summary-card,
+.modal-pedidos-redesigned .modal-pedidos__selected-section {
+  margin-bottom: 0;
+}
+
+.modal-pedidos-redesigned .modal-pedidos__summary-card {
+  position: static;
+  top: auto;
+}
+
 .modal-pedidos__content-root {
   display: flex;
   flex-direction: column;
@@ -1007,6 +1068,13 @@
   text-align: left;
 }
 
+.modal-pedidos__search-copy {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+}
+
 .modal-pedidos__search-header::before {
   content: "+";
   width: 40px;
@@ -1028,6 +1096,7 @@
   font-size: 18px;
   font-weight: 600;
   color: #111827;
+  line-height: 1.25;
 }
 
 .modal-pedidos__search-subtitle {
@@ -1035,6 +1104,8 @@
   font-size: 14px;
   color: #6b7280;
   font-weight: 400;
+  line-height: 1.45;
+  max-width: 32rem;
 }
 
 .modal-pedidos__search-wrap {
@@ -1105,6 +1176,11 @@
   background-color: #f8fafc;
   border-color: #bfdbfe;
   box-shadow: 0 10px 24px rgba(59, 130, 246, 0.1);
+}
+
+.modal-pedidos__item-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .modal-pedidos__config-title-wrap strong,
@@ -1230,7 +1306,36 @@
   line-height: 1.5;
 }
 
+.modal-pedidos__footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.modal-pedidos__footer-actions .boton {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.modal-pedidos-redesigned .pie-modal {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 28%);
+}
+
 @media (max-width: 768px) {
+  .modal-pedidos__footer-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .modal-pedidos__footer-actions .boton {
+    width: 100%;
+    justify-content: center;
+  }
+
   .modal-pedidos__search-header {
     align-items: flex-start;
   }
@@ -1239,5 +1344,59 @@
     width: 36px;
     height: 36px;
     font-size: 20px;
+  }
+
+  .modal-pedidos__item-display {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modal-pedidos__item-add-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .modal-pedidos-redesigned .pie-modal {
+    position: static;
+    padding: 0.5rem 0 0;
+    margin-top: 0.25rem;
+    background: transparent;
+    border-top: none;
+  }
+
+  .modal-pedidos-redesigned .contenedor-botones {
+    padding-top: 0.25rem;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 640px) {
+  .modal-pedidos-redesigned {
+    width: min(calc(100vw - 16px), 980px);
+  }
+
+  .modal-pedidos-redesigned.modal-core-shell {
+    padding: 12px;
+    max-height: min(92vh, 860px);
+  }
+
+  .modal-pedidos-redesigned .modal-core-header {
+    margin: -12px -12px 0;
+    padding: 14px 48px 14px 16px;
+  }
+
+  .modal-pedidos-redesigned .modal-core-title {
+    font-size: 16px;
+  }
+
+  .modal-pedidos-redesigned .modal-body-content--spacious {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .modal-pedidos-redesigned .modal-form-card,
+  .modal-pedidos-redesigned .modal-pedidos__search-card,
+  .modal-pedidos-redesigned .modal-pedidos__summary-card {
+    padding: 16px;
   }
 }

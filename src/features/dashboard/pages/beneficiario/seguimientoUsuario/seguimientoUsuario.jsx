@@ -713,7 +713,7 @@ const SeguimientoUsuario = () => {
   };
 
   return (
-    <div className="contenido-pagina">
+    <div className="">
       <div className="encabezado-acciones">
         <div className="titulo-con-icono">
           <Users size={40} className="icono-titulo" color="red" />

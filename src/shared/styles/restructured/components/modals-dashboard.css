@@ -281,8 +281,10 @@
 .pie-modal {
   width: 100%;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   gap: 0.75rem;
+  flex-wrap: nowrap;
   background-color: white;
   border-radius: 0 0 8px 8px;
   position: sticky;
@@ -292,6 +294,8 @@
   margin-top: auto;
   flex-shrink: 0;
   border-top: 1px solid #e5e7eb;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 /* Estilos para pestaÃ±as */
@@ -1675,6 +1679,28 @@
   .pie-modal {
     width: 100%;
     padding: 1rem;
+    flex-direction: column-reverse;
+    align-items: stretch;
+    justify-content: stretch;
+    gap: 0.5rem;
+    overflow: visible;
+  }
+
+  .contenedor-botones {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    justify-content: stretch;
+    gap: 0.5rem;
+    overflow: visible;
+  }
+
+  .pie-modal > .boton,
+  .pie-modal > button,
+  .contenedor-botones > .boton,
+  .contenedor-botones > button {
+    width: 100%;
+    margin: 0;
+    justify-content: center;
   }
 
   #modal-form {
@@ -1747,7 +1773,16 @@
   align-items: center;
   justify-content: flex-end;
   gap: 0.75rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.pie-modal > .boton,
+.contenedor-botones > .boton {
+  margin: 0;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 /* Estilos para el campo de contraseÃ±a con toggle */
