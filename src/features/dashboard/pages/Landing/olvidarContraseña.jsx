@@ -6,6 +6,7 @@ import {
   forgotPassword,
   updatePasswordVerified,
 } from "../../hooks/Acceder_API/authService.jsx";
+import useSubmitGuard from "../../../../shared/hooks/useSubmitGuard";
 
 import { IconEye, IconEyeOff } from "@tabler/icons-react"; // 👈 ojitos
 
@@ -14,6 +15,7 @@ const CODE = "code";
 const NEWPASS = "newpass";
 
 const OlvidarContrasena = () => {
+  const { runGuardedSubmit } = useSubmitGuard();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(EMAIL);
@@ -65,21 +67,23 @@ const OlvidarContrasena = () => {
     if (emailError) {
       return;
     }
-    try {
-      setEnviando(true);
-      await forgotPassword(normalizedEmail);
-      toast.success(
-        "Si el correo existe, te enviamos un código para restablecer tu contraseña."
-      );
-      setEmail(normalizedEmail);
-      setVerificationCode("");
-      setStep(CODE);
-      setCooldown(60);
-    } catch (err) {
-      toast.error(err?.message || "No se pudo procesar la solicitud");
-    } finally {
-      setEnviando(false);
-    }
+    await runGuardedSubmit(async () => {
+      try {
+        setEnviando(true);
+        await forgotPassword(normalizedEmail);
+        toast.success(
+          "Si el correo existe, te enviamos un código para restablecer tu contraseña."
+        );
+        setEmail(normalizedEmail);
+        setVerificationCode("");
+        setStep(CODE);
+        setCooldown(60);
+      } catch (err) {
+        toast.error(err?.message || "No se pudo procesar la solicitud.");
+      } finally {
+        setEnviando(false);
+      }
+    });
   };
 
   // Paso 2: Validar código localmente y pasar a nueva contraseña
@@ -123,30 +127,32 @@ const OlvidarContrasena = () => {
       return;
     }
 
-    try {
-      setEnviando(true);
-      await updatePasswordVerified({
-        email: email.trim().toLowerCase(),
-        resetCode: verificationCode.trim(), // se envía como resetcode en authService
-        newPassword,
-      });
+    await runGuardedSubmit(async () => {
+      try {
+        setEnviando(true);
+        await updatePasswordVerified({
+          email: email.trim().toLowerCase(),
+          resetCode: verificationCode.trim(), // se envía como resetcode en authService
+          newPassword,
+        });
 
-      toast.success(
-        "Contraseña actualizada. Inicia sesión con tu nueva clave."
-      );
+        toast.success(
+          "Contraseña actualizada. Inicia sesión con tu nueva clave."
+        );
 
-      // Limpieza y redirección
-      setEmail("");
-      setVerificationCode("");
-      setNewPassword("");
-      setConfirmPassword("");
-      setStep(EMAIL);
-      navigate("/acceder");
-    } catch (err) {
-      toast.error(err?.message || "No se pudo actualizar la contraseña");
-    } finally {
-      setEnviando(false);
-    }
+        // Limpieza y redirección
+        setEmail("");
+        setVerificationCode("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setStep(EMAIL);
+        navigate("/acceder");
+      } catch (err) {
+        toast.error(err?.message || "No se pudo actualizar la contraseña.");
+      } finally {
+        setEnviando(false);
+      }
+    });
   };
 
   // Reenviar código en paso CODE
@@ -167,7 +173,7 @@ const OlvidarContrasena = () => {
       toast.success("Si el correo existe, reenviamos el código.");
       setCooldown(60);
     } catch (err) {
-      toast.error(err?.message || "No se pudo reenviar el código");
+      toast.error(err?.message || "No se pudo reenviar el código.");
     } finally {
       setEnviando(false);
     }

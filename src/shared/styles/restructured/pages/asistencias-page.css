@@ -1,6 +1,18 @@
 .asistencias-toggle-group {
   display: flex;
   gap: 8px;
+  width: 100%;
+  max-width: 340px;
+  justify-content: center;
+  align-self: center;
+  margin-inline: auto;
+}
+
+.asistencias-toggle-btn {
+  flex: 1 1 0;
+  justify-content: center;
+  text-align: center;
+  min-width: 0;
 }
 
 .asistencias-toggle-btn.is-active-clientes {
@@ -16,4 +28,10 @@
 .asistencias-error {
   color: #dc2626;
   margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .asistencias-toggle-group {
+    max-width: 100%;
+  }
 }

@@ -1,6 +1,3 @@
-// src/shared/utils/data/ejemploRoles.jsx
-
-// Array de columnas para DataTable de Roles
 export const columnasRoles = [
   { field: "id", header: "ID" },
   { field: "nombre", header: "Nombre rol" },

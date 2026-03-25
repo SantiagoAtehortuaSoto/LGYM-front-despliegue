@@ -8,6 +8,8 @@ import { getProveedores } from "../../../hooks/Proveedores_API/API_proveedores";
 import { getCurrentUser } from "../../../hooks/Acceder_API/authService";
 import { DeleteModal } from "../../../../../shared/components/deleteModal/deleteModal";
 import { ModalVerVenta } from "../../admin/Ventas/modalVentas";
+import { formatCurrencyCOP } from "../../../../../shared/utils/currency";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 import "../../../../../shared/styles/restructured/components/modal-pedidos.css";
 
 /* ======================================================
@@ -59,6 +61,7 @@ export const ModalFormularioPedido = ({
   pedido,
   title = "Nuevo Pedido",
 }) => {
+  const { runGuardedSubmit } = useSubmitGuard();
   const ESTADOS_VALIDOS = ["Pendiente", "En Proceso", "Completado", "Cancelado"];
   const formId = "modal-pedidos-form";
   const [formData, setFormData] = useState({
@@ -226,27 +229,29 @@ export const ModalFormularioPedido = ({
     e.preventDefault();
     if (!validar()) return;
 
-    try {
-      // Pasar todos los datos del formulario para manejarlos en el componente padre
-      const resultado = await Promise.resolve(onSubmit(formData));
-      if (resultado === false) {
-        throw new Error(
-          pedido
-            ? "No se pudo actualizar el pedido"
-            : "No se pudo crear el pedido"
+    await runGuardedSubmit(async () => {
+      try {
+        // Pasar todos los datos del formulario para manejarlos en el componente padre
+        const resultado = await Promise.resolve(onSubmit(formData));
+        if (resultado === false) {
+          throw new Error(
+            pedido
+              ? "No se pudo actualizar el pedido"
+              : "No se pudo crear el pedido"
+          );
+        }
+        toast.success(
+          pedido ? "Pedido actualizado exitosamente" : "Pedido creado exitosamente"
+        );
+        onClose();
+      } catch (error) {
+        toast.error(
+          error?.response?.data?.message ||
+            error?.message ||
+            "No se pudo guardar el pedido"
         );
       }
-      toast.success(
-        pedido ? "Pedido actualizado exitosamente" : "Pedido creado exitosamente"
-      );
-      onClose();
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          error?.message ||
-          "No se pudo guardar el pedido"
-      );
-    }
+    });
   };
 
   if (!isOpen) return null;
@@ -454,10 +459,7 @@ export const ModalEliminarPedido = ({ isOpen, onClose, onConfirm, pedido }) => {
   // Función para formatear el precio
   const formatPrice = (price) => {
     if (price === undefined || price === null) return "No especificado";
-    return `$${parseFloat(price).toLocaleString("es-CO", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    })}`;
+    return formatCurrencyCOP(price);
   };
 
   return (

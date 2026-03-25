@@ -146,6 +146,10 @@ function App() {
                     path="dashboardEmpleado"
                     element={<DashboardAdmin />}
                   />
+                  <Route
+                    path="configuracion"
+                    element={<ConfiguracionUsuario />}
+                  />
                   {/* Configuración (alias legado) */}
                   <Route path="usuarios" element={<Usuarios />} />
                   <Route path="roles" element={<Roles />} />

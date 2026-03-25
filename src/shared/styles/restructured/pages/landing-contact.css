@@ -41,7 +41,7 @@ body {
 }
 
 .info_contacto h2 {
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   color: #E41000; /* rojo elegante */
   margin-bottom: 20px;
   font-size: 28px;
@@ -100,7 +100,7 @@ body {
 }
 
 .form_contacto h2 {
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   margin-bottom: 20px;
   font-size: 28px;
   color: #f9f9f9;

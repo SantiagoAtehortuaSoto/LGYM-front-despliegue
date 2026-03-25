@@ -5,6 +5,7 @@ import {
   getUserConfig,
   updateUserConfig,
 } from "../../../features/dashboard/hooks/Configuraciones_API/Config_API.jsx";
+import useSubmitGuard from "../../hooks/useSubmitGuard";
 
 const DOCUMENTO_MIN_LENGTH = 6;
 const DOCUMENTO_MAX_LENGTH = 11;
@@ -47,6 +48,7 @@ const calcularEdad = (value) => {
 };
 
 export default function ConfiguracionUsuario() {
+  const { runGuardedSubmit } = useSubmitGuard();
   const [form, setForm] = useState({
     nombre_usuario: "",
     apellido_usuario: "",
@@ -211,7 +213,7 @@ export default function ConfiguracionUsuario() {
         }));
       } catch (e) {
         console.error(e);
-        setError(e.message || "Error al cargar configuración");
+        setError(e.message || "Error al cargar la configuración.");
       } finally {
         setInitialLoading(false);
       }
@@ -235,7 +237,6 @@ export default function ConfiguracionUsuario() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setMensaje("");
     setError("");
     const nextErrors = validateConfigForm(form);
@@ -243,21 +244,23 @@ export default function ConfiguracionUsuario() {
     setFieldErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
-      setLoading(false);
       return;
     }
 
-    try {
-      await updateUserConfig(null, { ...form, documento: documentoDigits });
-      setMensaje("Configuraciones actualizadas correctamente");
-      setForm((prev) => ({ ...prev, password: "", confirmPassword: "" }));
-      setFieldErrors({});
-    } catch (e) {
-      console.error(e);
-      setError(e.message || "Error al actualizar configuración");
-    } finally {
-      setLoading(false);
-    }
+    await runGuardedSubmit(async () => {
+      setLoading(true);
+      try {
+        await updateUserConfig(null, { ...form, documento: documentoDigits });
+        setMensaje("Configuración actualizada correctamente.");
+        setForm((prev) => ({ ...prev, password: "", confirmPassword: "" }));
+        setFieldErrors({});
+      } catch (e) {
+        console.error(e);
+        setError(e.message || "Error al actualizar la configuración.");
+      } finally {
+        setLoading(false);
+      }
+    });
   };
 
   if (initialLoading) {
@@ -377,7 +380,7 @@ export default function ConfiguracionUsuario() {
                 ) : null}
               </div>
               <div className="form-group">
-                <label htmlFor="genero">Genero</label>
+                <label htmlFor="genero">Género</label>
                 <input
                   id="genero"
                   name="genero"
@@ -482,7 +485,7 @@ export default function ConfiguracionUsuario() {
             </div>
             <div className="form-group">
               <label htmlFor="enfermedades">
-                Enfermedades o condiciones medicas relevantes
+                Enfermedades o condiciones médicas relevantes
               </label>
               <textarea
                 id="enfermedades"

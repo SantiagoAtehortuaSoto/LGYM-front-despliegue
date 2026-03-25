@@ -13,6 +13,7 @@ import { getToken } from "../../../hooks/Acceder_API/authService";
 import { SelectorEstado } from "../../../components/dataTables/badgesEstado";
 import { normalizePaginatedResponse } from "../../../../../shared/utils/pagination";
 import { exportRowsToWorkbook } from "../../../../../shared/utils/exportWorkbook";
+import { formatCurrencyCOP } from "../../../../../shared/utils/currency";
 
 const ESTADO_OPCIONES_UI = [
   { value: "Activo", label: "Activo", color: "#10b981", id_estado: 1 },
@@ -49,12 +50,7 @@ const getEstadoToneClass = (idEstado) => {
 };
 
 const formatearMoneda = (valor) =>
-  typeof valor === "number"
-    ? `COP $${valor.toLocaleString("es-CO", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`
-    : `COP $${valor || 0}`;
+  formatCurrencyCOP(typeof valor === "number" ? valor : valor || 0);
 
 const formatearFecha = (valor) => {
   const fecha = valor ? new Date(valor) : null;

@@ -200,7 +200,7 @@ export const DescargarComprobante = ({
         detalles: detallesPayload,
       });
 
-      toast.success("Orden guardada. La veras en la tabla de pedidos.");
+      toast.success("Orden guardada. La verás en la tabla de pedidos.");
 
       try {
         await generarPDFLocal({
@@ -210,8 +210,8 @@ export const DescargarComprobante = ({
           plazoMaximo,
         });
       } catch (pdfError) {
-        console.error("La orden se guardo, pero fallo la generacion del PDF:", pdfError);
-        toast.error("La orden se guardo, pero no se pudo descargar el PDF.");
+        console.error("La orden se guardó, pero falló la generación del PDF:", pdfError);
+        toast.error("La orden se guardó, pero no se pudo descargar el PDF.");
       }
 
       if (typeof vaciarCarrito === "function") {
@@ -230,7 +230,7 @@ export const DescargarComprobante = ({
           : error?.data?.msg || error?.data?.message || "";
 
       toast.error(
-        backendMsg || error?.message || "No se pudo guardar la orden. Intentalo de nuevo."
+        backendMsg || error?.message || "No se pudo guardar la orden. Inténtalo de nuevo."
       );
     } finally {
       setCargando(false);

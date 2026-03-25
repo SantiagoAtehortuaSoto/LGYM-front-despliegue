@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import Modal from '../../../../../shared/components/Modal/Modal';
 import { DeleteModal } from '../../../../../shared/components/deleteModal/deleteModal';
 import { obtenerUsuarios } from '../../../hooks/Usuarios_API/API_Usuarios';
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 import "../../../../../shared/styles/restructured/components/modal-ventas-membresias.css";
 
 const membershipOptions = [
@@ -48,6 +49,7 @@ const BaseMembresiaModal = ({
   isOpen = true,
 }) => {
   const modalRef = useRef(null);
+  const { runGuardedSubmit } = useSubmitGuard();
 
   /* ---------- Estado del Formulario ---------- */
   const [formData, setFormData] = useState(() => buildInitialFormData(initialData));
@@ -206,29 +208,31 @@ const BaseMembresiaModal = ({
       monto: parseFloat(formData.monto) || 0,
     };
 
-    try {
-      const resultado = await onSave(membresiaParaGuardar);
-      if (resultado === false) {
-        throw new Error(
+    await runGuardedSubmit(async () => {
+      try {
+        const resultado = await onSave(membresiaParaGuardar);
+        if (resultado === false) {
+          throw new Error(
+            formData.id
+              ? "No se pudo actualizar la membresía"
+              : "No se pudo crear la membresía"
+          );
+        }
+        toast.success(
           formData.id
-            ? "No se pudo actualizar la membresía"
-            : "No se pudo crear la membresía"
+            ? "Membresía actualizada exitosamente"
+            : "Membresía creada exitosamente"
+        );
+        onClose();
+      } catch (error) {
+        console.error("Error guardando membresía:", error);
+        toast.error(
+          error?.response?.data?.message ||
+            error?.message ||
+            "No se pudo guardar la membresía"
         );
       }
-      toast.success(
-        formData.id
-          ? "Membresía actualizada exitosamente"
-          : "Membresía creada exitosamente"
-      );
-      onClose();
-    } catch (error) {
-      console.error("Error guardando membresía:", error);
-      toast.error(
-        error?.response?.data?.message ||
-          error?.message ||
-          "No se pudo guardar la membresía"
-      );
-    }
+    });
   };
 
   if (!isOpen) return null;

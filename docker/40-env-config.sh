@@ -54,6 +54,19 @@ location /api/ {
   proxy_set_header X-Forwarded-Proto \$scheme;
   proxy_set_header Authorization \$http_authorization;
   proxy_set_header ngrok-skip-browser-warning "true";
+  proxy_hide_header Access-Control-Allow-Origin;
+  proxy_hide_header Access-Control-Allow-Headers;
+  proxy_hide_header Access-Control-Allow-Methods;
+  proxy_hide_header Access-Control-Allow-Credentials;
+  proxy_hide_header Access-Control-Expose-Headers;
+  proxy_hide_header Access-Control-Max-Age;
+  proxy_hide_header ETag;
+  proxy_hide_header Server;
+  proxy_hide_header X-Powered-By;
+  proxy_hide_header X-Render-Origin-Server;
+  add_header Cache-Control "no-store, max-age=0, must-revalidate" always;
+  add_header Pragma "no-cache" always;
+  expires off;
 }
 EOF
 else

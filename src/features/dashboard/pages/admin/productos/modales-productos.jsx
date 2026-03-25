@@ -8,6 +8,8 @@ import Modal from "../../../../../shared/components/Modal/Modal";
 import { ConfirmModal } from "../../../../../shared/components/ConfirmModal/confirmModal";
 import { DeleteModal } from "../../../../../shared/components/deleteModal/deleteModal";
 import { validarProducto } from "../../../hooks/validaciones/validaciones";
+import { formatCurrencyCOP } from "../../../../../shared/utils/currency";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 import "../../../../../shared/styles/restructured/components/modal-productos.css";
 
 const useLockBodyScroll = (isOpen) => {
@@ -175,6 +177,7 @@ export const ModalFormularioProducto = ({
   title = "Nuevo Producto",
 }) => {
   useLockBodyScroll(isOpen);
+  const { runGuardedSubmit } = useSubmitGuard();
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -240,52 +243,55 @@ export const ModalFormularioProducto = ({
   // FUNCIÓN DE ENVÍO: CREA EL OBJETO JSON CON LOS TIPOS CORRECTOS PARA LA API
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (procesando) return;
     if (validateForm()) {
-      setProcesando(true);
-      try {
-        // Mapear campos del formulario al formato esperado por la API
-        const dataToSubmit = {
-          nombre_producto: formData.nombre,
-          categoria: formData.categoria,
-          descripcion_producto: String(formData.descripcion || "")
-            .trim()
-            .slice(0, DESCRIPCION_PRODUCTO_MAX_LENGTH),
-          imagen_url: formData.imagen_url || null,
-          precio_venta_producto: formData.precioVenta
-            ? parseFloat(formData.precioVenta)
-            : null,
-          stock: formData.stock ? parseInt(formData.stock) : null,
-          id_estados: formData.estado === "Activo" ? 1 : 2,
-        };
+      await runGuardedSubmit(async () => {
+        setProcesando(true);
+        try {
+          // Mapear campos del formulario al formato esperado por la API
+          const dataToSubmit = {
+            nombre_producto: formData.nombre,
+            categoria: formData.categoria,
+            descripcion_producto: String(formData.descripcion || "")
+              .trim()
+              .slice(0, DESCRIPCION_PRODUCTO_MAX_LENGTH),
+            imagen_url: formData.imagen_url || null,
+            precio_venta_producto: formData.precioVenta
+              ? parseFloat(formData.precioVenta)
+              : null,
+            stock: formData.stock ? parseInt(formData.stock) : null,
+            id_estados: formData.estado === "Activo" ? 1 : 2,
+          };
 
-        // Si es edición, incluir el ID mapeado
-        if (estaEditando && formData.id) {
-          dataToSubmit.id_productos = formData.id;
-        }
+          // Si es edición, incluir el ID mapeado
+          if (estaEditando && formData.id) {
+            dataToSubmit.id_productos = formData.id;
+          }
 
-        const resultado = await onSubmit(dataToSubmit);
-        if (resultado === false) {
-          throw new Error(
+          const resultado = await onSubmit(dataToSubmit);
+          if (resultado === false) {
+            throw new Error(
+              producto && producto.id
+                ? "No se pudo actualizar el producto"
+                : "No se pudo crear el producto"
+            );
+          }
+          toast.success(
             producto && producto.id
-              ? "No se pudo actualizar el producto"
-              : "No se pudo crear el producto"
+              ? "Producto actualizado exitosamente"
+              : "Producto creado exitosamente"
           );
+        } catch (error) {
+          console.error("Error al guardar producto:", error);
+          toast.error(
+            error?.response?.data?.message ||
+              error?.message ||
+              "No se pudo guardar el producto"
+          );
+        } finally {
+          setProcesando(false);
         }
-        toast.success(
-          producto && producto.id
-            ? "Producto actualizado exitosamente"
-            : "Producto creado exitosamente"
-        );
-      } catch (error) {
-        console.error('Error al guardar producto:', error);
-        toast.error(
-          error?.response?.data?.message ||
-            error?.message ||
-            "No se pudo guardar el producto"
-        );
-      } finally {
-        setProcesando(false);
-      }
+      });
     }
   };
 
@@ -596,10 +602,7 @@ export const ModalEliminarProducto = ({
   // Función para formatear el precio
   const formatPrice = (price) => {
     if (price === undefined || price === null) return 'No especificado';
-    return `$${parseFloat(price).toLocaleString('es-CO', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    })}`;
+    return formatCurrencyCOP(price);
   };
 
   return (
@@ -661,10 +664,7 @@ export const ModalVerProducto = ({ isOpen, onClose, producto }) => {
 
   const formatearPrecio = (precio) => {
     if (precio === undefined || precio === null) return "No especificado";
-    return `$${parseFloat(precio).toLocaleString("es-CO", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
+    return formatCurrencyCOP(precio);
   };
 
   return (
@@ -864,10 +864,7 @@ export const ModalCambiarEstadoProducto = ({
     }
     const numero = Number(precio);
     if (Number.isNaN(numero)) return "No especificado";
-    return `$${numero.toLocaleString("es-CO", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
+    return formatCurrencyCOP(numero);
   };
 
   const detalleProducto = (

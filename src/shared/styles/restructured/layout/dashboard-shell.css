@@ -56,6 +56,7 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    min-width: 0;
     transition: all 0.3s ease-in-out;
     width: 100%;
     height: calc(100vh - var(--header-height));
@@ -232,7 +233,7 @@
         position: fixed;
         top: 0;
         left: 0;
-        height: 100vh;
+        height: 100dvh;
         background-color: #ffffff;
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
     }
@@ -436,6 +437,63 @@
     }
 }
 
+@media (max-width: 768px) {
+    .encabezado-acciones {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.9rem;
+    }
+
+    .encabezado-acciones > :first-child {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .encabezado-acciones .titulo-con-icono,
+    .encabezado-acciones h1.titulo-con-icono {
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        gap: 0.7rem;
+    }
+
+    .encabezado-acciones .titulo-con-icono h1,
+    .encabezado-acciones h1.titulo-con-icono {
+        margin: 0;
+        min-width: 0;
+        font-size: clamp(1.65rem, 6.8vw, 2.15rem);
+        line-height: 1.08;
+        text-wrap: balance;
+    }
+
+    .encabezado-acciones .titulo-con-icono .icono-titulo,
+    .encabezado-acciones h1.titulo-con-icono .icono-titulo {
+        flex: 0 0 auto;
+        width: 1.35rem;
+        height: 1.35rem;
+        margin-top: 0.2rem;
+    }
+
+    .acciones-derecha {
+        width: 100%;
+        margin-left: 0;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .acciones-derecha > * {
+        width: 100%;
+        margin: 0 !important;
+    }
+
+    .acciones-derecha .contenedor-busqueda {
+        width: 100%;
+        min-width: 0;
+        margin-left: 0;
+    }
+}
+
 .titulo-con-icono {
     display: flex;
     justify-content: center;
@@ -497,7 +555,7 @@
         top: 0;
         left: 0;
         width: min(86vw, 320px);
-        height: 100vh;
+        height: 100dvh;
         background-color: #ffffff;
         box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
         border-right: 1px solid #e5e7eb;
@@ -676,5 +734,22 @@
     left: 0;
     width: 100%;
     margin-left: 0;
+  }
+}
+
+@media (max-width: 992px) {
+  .main-ad {
+    min-height: 100dvh;
+  }
+
+  .main-ad-column {
+    min-height: 100dvh;
+    height: auto;
+    overflow-y: visible;
+  }
+
+  .content {
+    min-height: 0;
+    overflow-y: visible;
   }
 }

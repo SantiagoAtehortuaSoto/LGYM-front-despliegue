@@ -8,6 +8,8 @@ import { toast } from "react-hot-toast";
 import Modal from "../../../../../shared/components/Modal/Modal";
 import { obtenerServicios } from "../../../hooks/Servicios_API/Servicios_API.jsx";
 import { DeleteModal } from "../../../../../shared/components/deleteModal/deleteModal";
+import { formatCurrencyCOP } from "../../../../../shared/utils/currency";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 import "../../../../../shared/styles/restructured/components/modal-membresias.css";
 
 /* ============================================================
@@ -58,6 +60,7 @@ export const ModalFormularioMembresia = ({
   existentes = [],
   checkNombreUnico,
 }) => {
+  const { runGuardedSubmit } = useSubmitGuard();
   const [formData, setFormData] = useState({
     nombre: "",
     descripcion: "",
@@ -401,36 +404,38 @@ export const ModalFormularioMembresia = ({
     if (!(await validarTodo())) return;
 
     if (checkingNombre) return;
-    try {
-      const resultado = await Promise.resolve(
-        onSubmit({
-          ...formData,
-          id: membresia?.id || null,
-          fechaCreacion:
-            membresia?.fechaCreacion || new Date().toISOString().split("T")[0],
-          beneficios: formData.beneficios,
-        })
-      );
-      if (resultado === false) {
-        throw new Error(
+    await runGuardedSubmit(async () => {
+      try {
+        const resultado = await Promise.resolve(
+          onSubmit({
+            ...formData,
+            id: membresia?.id || null,
+            fechaCreacion:
+              membresia?.fechaCreacion || new Date().toISOString().split("T")[0],
+            beneficios: formData.beneficios,
+          })
+        );
+        if (resultado === false) {
+          throw new Error(
+            membresia?.id
+              ? "No se pudo actualizar la membresia"
+              : "No se pudo crear la membresia"
+          );
+        }
+        toast.success(
           membresia?.id
-            ? "No se pudo actualizar la membresia"
-            : "No se pudo crear la membresia"
+            ? "Membresía actualizada exitosamente"
+            : "Membresía creada exitosamente"
+        );
+        onClose();
+      } catch (error) {
+        toast.error(
+          error?.response?.data?.message ||
+            error?.message ||
+            "No se pudo guardar la membresia"
         );
       }
-      toast.success(
-        membresia?.id
-          ? "Membresía actualizada exitosamente"
-          : "Membresía creada exitosamente"
-      );
-      onClose();
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          error?.message ||
-          "No se pudo guardar la membresia"
-      );
-    }
+    });
   };
 
   if (!isOpen) return null;
@@ -645,10 +650,7 @@ export const ModalEliminarMembresia = ({
   const formatPrice = (p) =>
     p == null
       ? "No especificado"
-      : `$${parseFloat(p).toLocaleString("es-CO", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}`;
+      : formatCurrencyCOP(p);
 
   return (
     <DeleteModal
@@ -743,10 +745,7 @@ export const ModalVerMembresia = ({ isOpen, onClose, membresia }) => {
 
   const formatPrice = (price) => {
     if (price === undefined || price === null) return "No especificado";
-    return `$${parseFloat(price).toLocaleString("es-CO", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
+    return formatCurrencyCOP(price);
   };
 
   const serviciosAsociados = getServiciosAsociados();

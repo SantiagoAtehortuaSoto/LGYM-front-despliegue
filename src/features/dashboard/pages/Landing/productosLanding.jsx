@@ -819,7 +819,3 @@ const ProductosLanding = ({ isLoggedIn }) => {
 };
 
 export default ProductosLanding;
-
-
-
-

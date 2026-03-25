@@ -14,6 +14,7 @@ import {
 } from "../../../hooks/Seguimiento_API/API_seguimiento";
 import { DeleteModal } from "../../../../../shared/components/deleteModal/deleteModal";
 import Modal from "../../../../../shared/components/Modal/Modal";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 import "../../../../../shared/styles/restructured/components/modal-seguimiento.css";
 
 const hoyLocal = () => {
@@ -504,6 +505,7 @@ export const ModalFormularioSeguimiento = ({
   procesando = false,
 }) => {
   useLockBodyScroll(isOpen);
+  const { runGuardedSubmit, isSubmitting } = useSubmitGuard();
   const hoy = useMemo(() => hoyLocal(), []);
   const esEdicion = Boolean(registro?.id);
 
@@ -1215,6 +1217,7 @@ export const ModalFormularioSeguimiento = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (procesando || isSubmitting) return;
     if (!validar()) return;
 
     const fechaStr = (formData.fecha_registro || "").trim();
@@ -1275,33 +1278,35 @@ export const ModalFormularioSeguimiento = ({
       detalles: detallesNormalizados,
     };
 
-    try {
-      const resultado = await onSubmit(payload);
-      if (resultado === false) {
-        toast.error(
-          esEdicion
-            ? "No se pudo editar el seguimiento"
-            : "No se pudo crear el seguimiento"
-        );
-        return;
-      }
+    await runGuardedSubmit(async () => {
+      try {
+        const resultado = await onSubmit(payload);
+        if (resultado === false) {
+          toast.error(
+            esEdicion
+              ? "No se pudo editar el seguimiento"
+              : "No se pudo crear el seguimiento"
+          );
+          return;
+        }
 
-      toast.success(
-        esEdicion
-          ? "Seguimiento editado exitosamente"
-          : "Seguimiento creado exitosamente"
-      );
-      onClose();
-    } catch (error) {
-      const mensaje =
-        error?.response?.data?.message ||
-        error?.response?.data?.msg ||
-        error?.message ||
-        (esEdicion
-          ? "No se pudo editar el seguimiento"
-          : "No se pudo crear el seguimiento");
-      toast.error(mensaje);
-    }
+        toast.success(
+          esEdicion
+            ? "Seguimiento editado exitosamente"
+            : "Seguimiento creado exitosamente"
+        );
+        onClose();
+      } catch (error) {
+        const mensaje =
+          error?.response?.data?.message ||
+          error?.response?.data?.msg ||
+          error?.message ||
+          (esEdicion
+            ? "No se pudo editar el seguimiento"
+            : "No se pudo crear el seguimiento");
+        toast.error(mensaje);
+      }
+    });
   };
 
   return (
@@ -1766,7 +1771,7 @@ export const ModalFormularioSeguimiento = ({
             <button
               type="submit"
               className="boton boton-primario modal-seguimiento__btn-save"
-              disabled={procesando}
+              disabled={procesando || isSubmitting}
             >
               {esEdicion ? "Actualizar Seguimiento" : "Registrar Seguimiento"}
             </button>

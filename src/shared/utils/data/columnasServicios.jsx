@@ -1,3 +1,5 @@
+import { formatCurrencyCOP } from "../currency";
+
 export const columnasServicios = [
   {
     field: "id_servicio",
@@ -10,7 +12,7 @@ export const columnasServicios = [
   {
     field: "precio_servicio",
     header: "Precio",
-    format: (value) => `$${value.toLocaleString()}`,
+    format: (value) => formatCurrencyCOP(value),
   },
   {
     field: "tipo_servicio",

@@ -3,7 +3,7 @@ import { toast } from "./toastAdapter";
 
 const INSTALL_KEY = "__LGYM_FETCH_TRACKER_INSTALLED__";
 const MUTATION_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
-const GENERIC_REQUEST_ERROR = "Algo salio mal, intenta de nuevo o hubo un error";
+const GENERIC_REQUEST_ERROR = "Algo salió mal. Intenta de nuevo o revisa si hubo un error.";
 const TOAST_DEDUP_WINDOW_MS = 1800;
 const IGNORED_URL_SEGMENTS = new Set([
   "api",
@@ -24,11 +24,11 @@ const ENTITY_LABELS = {
   empleados: "empleado",
   login: "inicio de sesión",
   logout: "cierre de sesión",
-  membresias: "membresia",
+  membresias: "membresía",
   pedidos: "pedido",
   productos: "producto",
   proveedores: "proveedor",
-  relaciones: "relacion",
+  relaciones: "relación",
   roles: "rol",
   seguimientos: "seguimiento",
   servicios: "servicio",
@@ -182,35 +182,35 @@ const buildSuccessMessage = (requestInfo) => {
   const entity = resolveEntityLabel(requestInfo?.url);
 
   if (action.kind === "login") {
-    return "Inicio de sesión exitoso. Tus credenciales fueron validadas y tu sesión ya esta activa.";
+    return "Inicio de sesión exitoso. Tus credenciales fueron validadas y tu sesión ya está activa.";
   }
 
   if (action.kind === "logout") {
-    return "Cierre de sesión exitoso. Tu sesión se cerro correctamente.";
+    return "Cierre de sesión exitoso. Tu sesión se cerró correctamente.";
   }
 
   if (action.kind === "status") {
     return entity
-      ? `Cambio de estado exitoso en ${entity}. El nuevo estado ya quedo guardado.`
-      : "Cambio de estado exitoso. El nuevo estado ya quedo guardado.";
+      ? `Cambio de estado exitoso en ${entity}. El nuevo estado ya quedó guardado.`
+      : "Cambio de estado exitoso. El nuevo estado ya quedó guardado.";
   }
 
   if (action.kind === "create") {
     return entity
-      ? `Creacion de ${entity} completada. El registro se guardo correctamente.`
-      : "Creacion completada. El registro se guardo correctamente.";
+      ? `Creación de ${entity} completada. El registro se guardó correctamente.`
+      : "Creación completada. El registro se guardó correctamente.";
   }
 
   if (action.kind === "update") {
     return entity
-      ? `Actualizacion de ${entity} completada. Los cambios quedaron guardados.`
-      : "Actualizacion completada. Los cambios quedaron guardados.";
+      ? `Actualización de ${entity} completada. Los cambios quedaron guardados.`
+      : "Actualización completada. Los cambios quedaron guardados.";
   }
 
   if (action.kind === "delete") {
     return entity
-      ? `Eliminacion de ${entity} completada. El registro ya no aparece en el sistema.`
-      : "Eliminacion completada. El registro ya no aparece en el sistema.";
+      ? `Eliminación de ${entity} completada. El registro ya no aparece en el sistema.`
+      : "Eliminación completada. El registro ya no aparece en el sistema.";
   }
 
   return entity
@@ -223,39 +223,39 @@ const buildErrorPrefix = (requestInfo) => {
   const entity = resolveEntityLabel(requestInfo?.url);
 
   if (action.kind === "login") {
-    return "Inicio de sesión fallido. No se pudo validar tu correo o contraseña y tu sesión no se abrio";
+    return "Inicio de sesión fallido. No se pudo validar tu correo o contraseña y tu sesión no se abrió.";
   }
 
   if (action.kind === "logout") {
-    return "No se pudo cerrar la sesión. Tu sesión continua activa";
+    return "No se pudo cerrar la sesión. Tu sesión continúa activa.";
   }
 
   if (action.kind === "status") {
     return entity
-      ? `No se pudo cambiar el estado de ${entity}. El valor anterior se mantiene`
-      : "No se pudo cambiar el estado. El valor anterior se mantiene";
+      ? `No se pudo cambiar el estado de ${entity}. El valor anterior se mantiene.`
+      : "No se pudo cambiar el estado. El valor anterior se mantiene.";
   }
 
   if (action.kind === "create") {
     return entity
-      ? `No se pudo crear ${entity}. La acción no se completo y no se guardaron nuevos datos`
-      : "No se pudo completar la creacion. No se guardaron nuevos datos";
+      ? `No se pudo crear ${entity}. La acción no se completó y no se guardaron nuevos datos.`
+      : "No se pudo completar la creación. No se guardaron nuevos datos.";
   }
 
   if (action.kind === "update") {
     return entity
-      ? `No se pudo actualizar ${entity}. Los cambios no fueron aplicados`
-      : "No se pudo completar la actualizacion. Los cambios no fueron aplicados";
+      ? `No se pudo actualizar ${entity}. Los cambios no fueron aplicados.`
+      : "No se pudo completar la actualización. Los cambios no fueron aplicados.";
   }
 
   if (action.kind === "delete") {
     return entity
-      ? `No se pudo eliminar ${entity}. El registro se mantiene sin cambios`
-      : "No se pudo completar la eliminacion. El registro se mantiene sin cambios";
+      ? `No se pudo eliminar ${entity}. El registro se mantiene sin cambios.`
+      : "No se pudo completar la eliminación. El registro se mantiene sin cambios.";
   }
 
   if (!entity) return GENERIC_REQUEST_ERROR;
-  return `Algo salio mal al ${action.errorVerb} ${entity}, intenta de nuevo o hubo un error`;
+  return `Algo salió mal al ${action.errorVerb} ${entity}. Intenta de nuevo o revisa si hubo un error.`;
 };
 
 const buildErrorMessage = (errorLike, response = null, requestInfo = null) => {

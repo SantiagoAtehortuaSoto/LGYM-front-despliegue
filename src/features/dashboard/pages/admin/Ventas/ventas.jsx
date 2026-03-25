@@ -39,6 +39,7 @@ import {
   STATUS_CHANGE_SUCCESS_MESSAGE,
 } from "../../../../../shared/utils/statusChangeMessages";
 import { exportRowsToWorkbook } from "../../../../../shared/utils/exportWorkbook";
+import { formatCurrencyCOP } from "../../../../../shared/utils/currency";
 
 const ESTADO_OPCIONES_UI = [
   { value: "PENDIENTE", label: "Pendiente", color: "#f59e0b", id_estado: 3 },
@@ -252,12 +253,7 @@ const esEstadoVisibleEnGestion = (estado) => {
 };
 
 const formatearMoneda = (valor) =>
-  typeof valor === "number"
-    ? `COP $${valor.toLocaleString("es-CO", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`
-    : `COP $${valor || 0}`;
+  formatCurrencyCOP(typeof valor === "number" ? valor : valor || 0);
 
 const parseFechaVenta = (valor) => {
   if (valor === null || valor === undefined || valor === "") return null;

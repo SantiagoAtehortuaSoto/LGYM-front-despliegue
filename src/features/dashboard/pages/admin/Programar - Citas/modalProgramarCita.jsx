@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import Modal from "../../../../../shared/components/Modal/Modal";
 import { validateAppointmentScheduling } from "../../../../../shared/utils/employeeSchedule";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 import "../../../../../shared/styles/restructured/components/modal-programar-cita.css";
 
 const Motion = motion;
@@ -32,6 +33,7 @@ const ModalProgramarCita = ({
   setFormData,
   citas = [],
 }) => {
+  const { runGuardedSubmit } = useSubmitGuard();
   const [errors, setErrors] = useState({});
 
   // Reset form when modal opens/closes or mode changes
@@ -105,31 +107,33 @@ const ModalProgramarCita = ({
       return;
     }
 
-    try {
-      const resultado = await Promise.resolve(
-        onSubmit(formData, modoEdicion, citaEditando)
-      );
-      if (resultado === false) {
-        throw new Error(
+    await runGuardedSubmit(async () => {
+      try {
+        const resultado = await Promise.resolve(
+          onSubmit(formData, modoEdicion, citaEditando)
+        );
+        if (resultado === false) {
+          throw new Error(
+            modoEdicion
+              ? "No se pudo actualizar la cita"
+              : "No se pudo crear la cita"
+          );
+        }
+        toast.success(
           modoEdicion
-            ? "No se pudo actualizar la cita"
-            : "No se pudo crear la cita"
+            ? "Cita actualizada exitosamente"
+            : "Cita creada exitosamente"
+        );
+      } catch (error) {
+        toast.error(
+          error?.response?.data?.message ||
+            error?.message ||
+            (modoEdicion
+              ? "No se pudo actualizar la cita"
+              : "No se pudo crear la cita")
         );
       }
-      toast.success(
-        modoEdicion
-          ? "Cita actualizada exitosamente"
-          : "Cita creada exitosamente"
-      );
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          error?.message ||
-          (modoEdicion
-            ? "No se pudo actualizar la cita"
-            : "No se pudo crear la cita")
-      );
-    }
+    });
   };
 
   return (
@@ -190,7 +194,7 @@ const ModalProgramarCita = ({
               value={formData.fecha}
               onChange={handleChange}
               min={getTomorrowISO()}
-              required
+              
               className={`modal-programar-cita__input ${
                 errors.fecha ? "modal-programar-cita__input--error" : ""
                   }`}
@@ -209,7 +213,6 @@ const ModalProgramarCita = ({
                   type="time"
                   value={formData.horaInicio}
                   onChange={handleChange}
-                  required
                   className={`modal-programar-cita__input ${
                     errors.horaInicio
                       ? "modal-programar-cita__input--error"
@@ -232,7 +235,6 @@ const ModalProgramarCita = ({
                   type="time"
                   value={formData.horaFin}
                   onChange={handleChange}
-                  required
                   className={`modal-programar-cita__input ${
                     errors.horaFin ? "modal-programar-cita__input--error" : ""
                   }`}

@@ -20,6 +20,10 @@ import { getToken } from "../../../hooks/Acceder_API/authService";
 import { obtenerUsuarios, obtenerRolesUsuarios } from "../../../hooks/Usuarios_API/API_Usuarios";
 import { normalizePaginatedResponse } from "../../../../../shared/utils/pagination";
 import { isAttendanceAsistio } from "../../../../../shared/utils/attendanceStatus";
+import {
+  formatCurrencyCOP,
+  formatCurrencyCOPCompact,
+} from "../../../../../shared/utils/currency";
 
 const MONTHS = [
   "Enero",
@@ -64,17 +68,6 @@ const STATUS_BY_ID = {
 };
 
 const numberFormatter = new Intl.NumberFormat("es-CO");
-const moneyFormatter = new Intl.NumberFormat("es-CO", {
-  style: "currency",
-  currency: "COP",
-  maximumFractionDigits: 0,
-});
-const compactCurrencyFormatter = new Intl.NumberFormat("es-CO", {
-  style: "currency",
-  currency: "COP",
-  notation: "compact",
-  maximumFractionDigits: 1,
-});
 const saleDateFormatter = new Intl.DateTimeFormat("es-CO", {
   day: "2-digit",
   month: "short",
@@ -463,12 +456,12 @@ const formatCountDelta = (value) => {
 
 const formatMoneyCompact = (value) => {
   const safe = Number.isFinite(value) ? value : 0;
-  return compactCurrencyFormatter.format(safe);
+  return formatCurrencyCOPCompact(safe);
 };
 
 const formatMoney = (value) => {
   const safe = Number.isFinite(value) ? value : 0;
-  return moneyFormatter.format(safe);
+  return formatCurrencyCOP(safe);
 };
 
 const formatSaleDate = (value) => {

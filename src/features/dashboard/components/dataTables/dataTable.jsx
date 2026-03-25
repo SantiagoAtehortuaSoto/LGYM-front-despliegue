@@ -25,6 +25,7 @@ import {
   resolvePermisoIdFromPath,
   isAdmin,
 } from "../../hooks/Acceder_API/authService.jsx";
+import { formatCurrencyCOP } from "../../../../shared/utils/currency.js";
 
 export const DEFAULT_DATA_TABLE_PAGE_SIZE = 5;
 
@@ -51,6 +52,42 @@ const isDescriptionColumn = (column = {}) => {
   const field = getNormalizedField(column);
   const label = getNormalizedLabel(column);
   return field.includes("descripcion") || label.includes("descripcion");
+};
+
+const MONEY_FIELD_HINTS = [
+  "precio",
+  "costo",
+  "subtotal",
+  "salario",
+  "monto",
+  "valor",
+];
+
+const MONEY_LABEL_HINTS = [
+  "precio",
+  "costo",
+  "subtotal",
+  "salario",
+  "monto",
+  "valor",
+  "ingreso",
+  "ticket promedio",
+];
+
+const MONEY_TOTAL_HINTS = ["total", "total venta", "precio total", "valor total"];
+const NON_MONEY_HINTS = ["cantidad", "stock", "duracion", "dia", "dias", "hora", "minuto"];
+
+const includesAny = (source = "", terms = []) =>
+  terms.some((term) => source.includes(term));
+
+const isMoneyColumn = (column = {}) => {
+  const field = getNormalizedField(column);
+  const label = getNormalizedLabel(column);
+  const combined = `${field} ${label}`.trim();
+
+  if (!combined || includesAny(combined, NON_MONEY_HINTS)) return false;
+  if (includesAny(field, MONEY_FIELD_HINTS) || includesAny(label, MONEY_LABEL_HINTS)) return true;
+  return includesAny(combined, MONEY_TOTAL_HINTS);
 };
 
 const isIdColumn = (column = {}) => {
@@ -570,9 +607,13 @@ const DataTable = ({
         : row[column.accessor || column.field];
     if (typeof column.render === "function") return column.render(value, row);
     if (typeof column.Cell === "function") return column.Cell({ value, row });
+    if (typeof column.format === "function") return column.format(value, row);
 
     if (column.field === "id_estado") {
       return getStatusCell(row);
+    }
+    if (isMoneyColumn(column)) {
+      return formatCurrencyCOP(value);
     }
     return value;
   };
@@ -832,10 +873,10 @@ const DataTable = ({
                         const canDeleteRow = guardDelete(row);
 
                         return (
-                          <>
+                          <div className="celda-acciones-grupo">
                             {onView && (
                               <button
-                                className={`boton-acción boton-ver ${canViewRow ? "" : "boton-accion--disabled"}`.trim()}
+                                className={`boton-accion boton-ver ${canViewRow ? "" : "boton-accion--disabled"}`.trim()}
                                 onClick={() =>
                                   canViewRow ? onView(row) : undefined
                                 }
@@ -916,7 +957,7 @@ const DataTable = ({
                                 />
                               </button>
                             )}
-                          </>
+                          </div>
                         );
                       })()}
                     </td>

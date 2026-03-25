@@ -28,6 +28,7 @@ import {
   STATUS_CHANGE_SUCCESS_MESSAGE,
 } from "../../../../../shared/utils/statusChangeMessages";
 import useCrudPermissions from "../../../hooks/Acceder_API/useCrudPermissions";
+import { formatCurrencyCOP } from "../../../../../shared/utils/currency";
 
 // Definición de columnas para la tabla de membresías
 const columnasMembresias = [
@@ -37,7 +38,7 @@ const columnasMembresias = [
       {
         field: "precioVenta",
         header: "Precio Venta",
-        format: (value) => `$${Number(value || 0).toLocaleString()}`,
+        format: (value) => formatCurrencyCOP(value),
       },
       {
         field: "duracion_dias",

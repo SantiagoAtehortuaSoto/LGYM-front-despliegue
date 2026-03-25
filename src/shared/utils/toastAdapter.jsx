@@ -64,16 +64,16 @@ const enrichToastMessage = (type, rawMessage) => {
     const entity = entityRaw.trim();
 
     if (verb === "crear") {
-      return `Creacion de ${entity} completada. El registro se guardo correctamente.`;
+      return `Creación de ${entity} completada. El registro se guardó correctamente.`;
     }
     if (verb === "editar") {
-      return `Actualizacion de ${entity} completada. Los cambios quedaron guardados.`;
+      return `Actualización de ${entity} completada. Los cambios quedaron guardados.`;
     }
     if (verb === "borrar") {
-      return `Eliminacion de ${entity} completada. El registro ya no aparece en el sistema.`;
+      return `Eliminación de ${entity} completada. El registro ya no aparece en el sistema.`;
     }
     if (verb === "cambiar estado") {
-      return `Cambio de estado exitoso en ${entity}. El nuevo estado ya quedo guardado.`;
+      return `Cambio de estado exitoso en ${entity}. El nuevo estado ya quedó guardado.`;
     }
     return `${verb} de ${entity} completado.`;
   }
@@ -84,16 +84,16 @@ const enrichToastMessage = (type, rawMessage) => {
   if (legacySuccessNoEntity) {
     const [, verb] = legacySuccessNoEntity;
     if (verb === "crear") {
-      return "Creacion completada. El registro se guardo correctamente.";
+      return "Creación completada. El registro se guardó correctamente.";
     }
     if (verb === "editar") {
-      return "Actualizacion completada. Los cambios quedaron guardados.";
+      return "Actualización completada. Los cambios quedaron guardados.";
     }
     if (verb === "borrar") {
-      return "Eliminacion completada. El registro ya no aparece en el sistema.";
+      return "Eliminación completada. El registro ya no aparece en el sistema.";
     }
     if (verb === "cambiar estado") {
-      return "Cambio de estado exitoso. El nuevo estado ya quedo guardado.";
+      return "Cambio de estado exitoso. El nuevo estado ya quedó guardado.";
     }
     return `${verb} completado.`;
   }
@@ -109,7 +109,7 @@ const enrichToastMessage = (type, rawMessage) => {
     ) {
       return appendMessageDetail(
         original,
-        "La acción se completo y la información ya quedo guardada en el sistema."
+        "La acción se completó y la información ya quedó guardada en el sistema."
       );
     }
 
@@ -129,7 +129,7 @@ const enrichToastMessage = (type, rawMessage) => {
     ) {
       return appendMessageDetail(
         original,
-        "El registro ya no aparece en el listado despues de esta acción."
+        "El registro ya no aparece en el listado después de esta acción."
       );
     }
 
@@ -139,27 +139,27 @@ const enrichToastMessage = (type, rawMessage) => {
     ) {
       return appendMessageDetail(
         original,
-        "El item ya esta en tu carrito y puedes continuar con la compra."
+        "El ítem ya está en tu carrito y puedes continuar con la compra."
       );
     }
 
     if (/\bexportacion\s+lista\b/.test(normalized)) {
-      return "Exportacion completada. El archivo se genero correctamente y esta listo para descargar.";
+      return "Exportación completada. El archivo se generó correctamente y está listo para descargar.";
     }
 
     if (/\bcambio de estado exitoso\b/.test(normalized)) {
-      return "Cambio de estado aplicado correctamente. El nuevo estado ya quedo guardado.";
+      return "Cambio de estado aplicado correctamente. El nuevo estado ya quedó guardado.";
     }
 
     if (/\bdescargad[oa]\s+correctamente\b/.test(normalized)) {
-      return appendMessageDetail(original, "La descarga finalizo sin errores.");
+      return appendMessageDetail(original, "La descarga finalizó sin errores.");
     }
   }
 
   if (type === "error") {
     const legacyErrorCreate = normalized.match(/^algo salio mal al crear\s+(.+?)(\s+intenta|$)/);
     if (legacyErrorCreate) {
-      return `No se pudo crear ${legacyErrorCreate[1].trim()}. La acción no se completo y no se guardaron nuevos datos.`;
+      return `No se pudo crear ${legacyErrorCreate[1].trim()}. La acción no se completó y no se guardaron nuevos datos.`;
     }
 
     const legacyErrorUpdate = normalized.match(
@@ -186,7 +186,7 @@ const enrichToastMessage = (type, rawMessage) => {
     if (/\b(error al|no se pudo)\s+crear\b/.test(normalized)) {
       return appendMessageDetail(
         original,
-        "La acción fallo y no se guardo información nueva."
+        "La acción falló y no se guardó información nueva."
       );
     }
 
@@ -217,7 +217,7 @@ const enrichToastMessage = (type, rawMessage) => {
     if (/\b(error al|no se pudo)\s+guardar\b/.test(normalized)) {
       return appendMessageDetail(
         original,
-        "La información no se guardo por este error."
+        "La información no se guardó por este error."
       );
     }
 
@@ -246,7 +246,7 @@ const mapOptions = (options = {}) => {
 };
 
 const resolveErrorMessage = (input, fallback) => {
-  const fallbackText = fallback || "Ha ocurrido un error";
+  const fallbackText = fallback || "Ha ocurrido un error.";
   const message =
     typeof input === "string"
       ? input

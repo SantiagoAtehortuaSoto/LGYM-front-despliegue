@@ -3,7 +3,7 @@ import { Plus, WeightIcon, Zap } from "lucide-react";
 import DataTable from "../../../components/dataTables/dataTable";
 import BuscadorUniversal from "../../../components/BuscadorUniversal";
 import { ConfirmModal } from "../../../../../shared/components/ConfirmModal/confirmModal";
-import { columnasServicios } from "../../../../../shared/utils/data/serviciosEjemplos";
+import { columnasServicios } from "../../../../../shared/utils/data/columnasServicios";
 import { buscarUniversal } from "../../../../../shared/utils/búsquedaUniversal";
 import {
   ModalFormularioServicio,

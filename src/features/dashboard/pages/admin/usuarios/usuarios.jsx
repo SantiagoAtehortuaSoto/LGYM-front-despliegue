@@ -9,7 +9,7 @@ import BaseUserModal from "./modalUsuarios";
 import DataTable, {
   DEFAULT_DATA_TABLE_PAGE_SIZE,
 } from "../../../components/dataTables/dataTable";
-import { columnasUsuarios } from "../../../../../shared/utils/data/ejemploUsuarios";
+import { columnasUsuarios } from "../../../../../shared/utils/data/columnasUsuarios";
 import { DeleteModal } from "../../../../../shared/components/deleteModal/deleteModal";
 import {
   obtenerUsuarios,

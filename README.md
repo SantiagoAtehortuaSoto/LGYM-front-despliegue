@@ -46,7 +46,9 @@ docker run -d --name lgym-frontend -p 8080:8080 -e VITE_API_BASE_URL=http://loca
 
 La imagen sirve archivos estaticos con `nginx` no privilegiado y soporta fallback de rutas para `React Router`. La configuracion del frontend se inyecta en runtime mediante `env-config.js`, por lo que puedes reutilizar la misma imagen en distintos entornos cambiando solo variables publicas del contenedor.
 
-Importante: si usas `API_PROXY_TARGET`, el navegador consume `https://tu-frontend/api/...` y `nginx` reenvia esas peticiones al backend por detras. Esto reduce problemas de CORS y mitiga bloqueos de extensiones que interfieren con dominios externos como `ngrok`.
+Importante: si usas `API_PROXY_TARGET`, el navegador consume `https://tu-frontend/api/...` y `nginx` reenvia esas peticiones al backend por detras. Esto reduce problemas de CORS, evita exponer `Access-Control-Allow-Origin: *` en el dominio del frontend y mitiga bloqueos de extensiones que interfieren con dominios externos como `ngrok`.
+
+El proxy tambien limpia headers sensibles del upstream como `X-Powered-By` y cabeceras CORS innecesarias en respuestas same-origin, y marca `/api` como `no-store` para reducir hallazgos de cache en escaneos pasivos.
 
 ## Deploy en Render
 

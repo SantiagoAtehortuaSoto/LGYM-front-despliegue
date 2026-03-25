@@ -138,14 +138,14 @@ body {
 
 .texto-experiencia h2 {
   margin-top: 20px;
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   font-size: 2.2rem;
   font-weight: bold;
   color: #2c2c2e;
   margin-bottom: 20px;
 }
 .texto-experiencia p {
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   font-size: 1rem;
   font-weight: 400;
   color: #555;
@@ -177,14 +177,14 @@ body {
 }
 
 .icono-texto h3 {
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   font-size: 1.1rem;
   font-weight: bold;
   color: #2c2c2e;
   margin-bottom: 6px;
 }
 .icono-texto p {
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   font-size: 0.95rem;
   color: #666;
 }
@@ -221,7 +221,7 @@ body {
 
 /* ====== ¿Por qué elegirnos? ====== */
 .servicios {
-  padding: 50px 0;
+  padding: 50px var(--gutter);
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -254,7 +254,7 @@ body {
 
 /* Título */
 .servicio-card h3 {
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   margin-top: 15px;
   font-size: 20px;
   font-weight: bold;
@@ -262,7 +262,7 @@ body {
 
 .servicios h2 {
   text-align: center;
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   font-weight: bold;
   margin-bottom: 40px;
   color: #e41000;
@@ -270,7 +270,7 @@ body {
 
 /* Texto */
 .servicio-card p {
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   margin-top: 10px;
   font-size: 14px;
   line-height: 1.5;
@@ -310,7 +310,7 @@ body {
 /* Título de beneficios*/
 .Beneficios h2 {
   font-size: 28px;
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   font-weight: bold;
   margin-bottom: 40px;
   text-transform: uppercase;
@@ -369,7 +369,7 @@ body {
 }
 .texto-beneficios h3 {
   margin: 0;
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   font-size: 1.2rem;
   font-weight: bold;
   color: #000;
@@ -377,7 +377,7 @@ body {
 .Beneficios-img:hover .texto-beneficios h3 { color: #e41000; }
 
 .texto-beneficios p {
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   margin-top: 0.5rem;
   font-size: 1rem;
   color: #333;
@@ -421,7 +421,7 @@ body {
 /* Título */
 .entrenadores h2 {
   font-size: 28px;
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   font-weight: bold;
   margin-bottom: 40px;
   text-transform: uppercase;
@@ -478,7 +478,7 @@ body {
 
 /* Nombre entrenador */
 .texto-entrenador h3 {
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   font-size: 1.4rem;
   font-weight: 700;
   color: #e41000;
@@ -493,7 +493,7 @@ body {
   color: #555;
   margin: 0 auto;
   max-width: 220px;
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   transition: color 0.3s ease;
 }
 .entrenador-card:hover .texto-entrenador p { color: #111; }
@@ -507,7 +507,7 @@ body {
 
 .mision-vision h2 {
   font-size: 32px;
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   font-weight: bold;
   margin-bottom: 40px;
   text-transform: uppercase;
@@ -561,7 +561,7 @@ body {
 .texto-mision-vision { padding: 20px 16px; }
 
 .texto-mision-vision h3 {
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   font-size: 20px;
   text-transform: uppercase;
   font-weight: bold;
@@ -569,7 +569,7 @@ body {
   color: #111;
 }
 .texto-mision-vision p {
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   font-size: 15px;
   line-height: 1.6;
   color: #555;

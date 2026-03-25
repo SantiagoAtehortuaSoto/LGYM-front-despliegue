@@ -9,6 +9,7 @@ import {
   checkEmailExists,
 } from "../../../hooks/Acceder_API/authService.jsx";
 import Modal from "../../../../../shared/components/Modal/Modal";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 import "../../../../../shared/styles/restructured/components/modal-usuarios.css";
 import { EyeIcon, EyeOff } from "lucide-react";
 
@@ -117,6 +118,7 @@ const BaseUserModal = ({
   closeOnOverlayClick,
 }) => {
   const modalRef = useRef(null);
+  const { runGuardedSubmit } = useSubmitGuard();
   /* ---------- Hooks ---------- */
   const { roles: rolesData, loading: loadingRoles } = useRoles();
 
@@ -535,49 +537,51 @@ const BaseUserModal = ({
       }
     }
 
-    try {
-      const usuarioParaGuardar = {
-        nombre_usuario: formData.nombre_usuario,
-        apellido_usuario: formData.apellido_usuario,
-        tipo_documento: formData.tipo_documento,
-        documento: documentoDigits,
-        email: formData.email,
-        telefono: formData.telefono,
-        c_emergencia: formData.c_emergencia,
-        n_emergencia: formData.n_emergencia,
-        fecha_nacimiento: formData.fecha_nacimiento,
-        genero: formData.genero,
-        enfermedades: formData.enfermedades,
-        id_estado: formData.id_estado,
-        rol_id: formData.rol_id,
-        ...(formData.id_usuario && { id_usuario: formData.id_usuario }),
-        ...((!formData.id_usuario || String(formData.password || "").trim()) && {
-          password: formData.password,
-        }),
-      };
+    await runGuardedSubmit(async () => {
+      try {
+        const usuarioParaGuardar = {
+          nombre_usuario: formData.nombre_usuario,
+          apellido_usuario: formData.apellido_usuario,
+          tipo_documento: formData.tipo_documento,
+          documento: documentoDigits,
+          email: formData.email,
+          telefono: formData.telefono,
+          c_emergencia: formData.c_emergencia,
+          n_emergencia: formData.n_emergencia,
+          fecha_nacimiento: formData.fecha_nacimiento,
+          genero: formData.genero,
+          enfermedades: formData.enfermedades,
+          id_estado: formData.id_estado,
+          rol_id: formData.rol_id,
+          ...(formData.id_usuario && { id_usuario: formData.id_usuario }),
+          ...((!formData.id_usuario || String(formData.password || "").trim()) && {
+            password: formData.password,
+          }),
+        };
 
-      const resultado = await onSave(usuarioParaGuardar);
-      if (resultado === false) {
-        throw new Error(
+        const resultado = await onSave(usuarioParaGuardar);
+        if (resultado === false) {
+          throw new Error(
+            formData.id_usuario
+              ? "No se pudo actualizar el usuario"
+              : "No se pudo crear el usuario"
+          );
+        }
+        toast.success(
           formData.id_usuario
-            ? "No se pudo actualizar el usuario"
-            : "No se pudo crear el usuario"
+            ? "Usuario actualizado exitosamente"
+            : "Usuario creado exitosamente"
+        );
+        onClose();
+      } catch (error) {
+        console.error("Error al procesar el formulario:", error);
+        toast.error(
+          error?.response?.data?.message ||
+            error?.message ||
+            "No se pudo guardar el usuario"
         );
       }
-      toast.success(
-        formData.id_usuario
-          ? "Usuario actualizado exitosamente"
-          : "Usuario creado exitosamente"
-      );
-      onClose();
-    } catch (error) {
-      console.error("Error al procesar el formulario:", error);
-      toast.error(
-        error?.response?.data?.message ||
-          error?.message ||
-          "No se pudo guardar el usuario"
-      );
-    }
+    });
   };
 
   useEffect(() => {

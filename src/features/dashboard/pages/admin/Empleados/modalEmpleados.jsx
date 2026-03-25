@@ -14,6 +14,7 @@ import {
   isEmployeeShiftValue,
   normalizeEmployeeShift,
 } from "../../../../../shared/utils/employeeSchedule";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 import toast from "react-hot-toast";
 import "../../../../../shared/styles/restructured/components/modal-empleados.css";
 
@@ -241,6 +242,7 @@ export const ModalFormularioEmpleado = ({
   const formId = "modal-empleados-form";
   const isEditMode = Boolean(empleado?.id_usuario);
   useLockBodyScroll(isOpen);
+  const { runGuardedSubmit } = useSubmitGuard();
   const overlayPressStartedRef = useRef(false);
 
   // Estados para usuarios disponibles (sin empleado asignado)
@@ -586,40 +588,42 @@ export const ModalFormularioEmpleado = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (disabled) return;
+    if (disabled || procesando) return;
     if (validateForm()) {
-      setProcesando(true);
-      try {
-        const bodyBase = {
-          id_usuario: formData.id_usuario,
-          direccion_empleado: formData.direccion_empleado.trim(),
-          cargo: formData.cargo.trim(),
-          fecha_contratacion: formData.fecha_contratacion,
-          salario: Number(formData.salario),
-          horario_empleado: normalizeEmployeeShift(formData.horario_empleado),
-        };
-        const empleadoParaGuardar = isEditMode
-          ? {
-            id_empleado: formData.id_empleado,
-            ...bodyBase,
-          }
-          : {
-            id_empleado: formData.id_empleado,
+      await runGuardedSubmit(async () => {
+        setProcesando(true);
+        try {
+          const bodyBase = {
             id_usuario: formData.id_usuario,
-            __forceUpdateExisting: estadoRegistroUsuario.type === "exists",
-            ...bodyBase,
+            direccion_empleado: formData.direccion_empleado.trim(),
+            cargo: formData.cargo.trim(),
+            fecha_contratacion: formData.fecha_contratacion,
+            salario: Number(formData.salario),
+            horario_empleado: normalizeEmployeeShift(formData.horario_empleado),
           };
+          const empleadoParaGuardar = isEditMode
+            ? {
+                id_empleado: formData.id_empleado,
+                ...bodyBase,
+              }
+            : {
+                id_empleado: formData.id_empleado,
+                id_usuario: formData.id_usuario,
+                __forceUpdateExisting: estadoRegistroUsuario.type === "exists",
+                ...bodyBase,
+              };
 
-        const resultado = await onSubmit(empleadoParaGuardar);
-        if (resultado === false) {
-          return;
+          const resultado = await onSubmit(empleadoParaGuardar);
+          if (resultado === false) {
+            return;
+          }
+        } catch (error) {
+          console.error("Error al guardar empleado:", error);
+          toast.error(getApiErrorMessage(error, "Error al guardar empleado"));
+        } finally {
+          setProcesando(false);
         }
-      } catch (error) {
-        console.error("Error al guardar empleado:", error);
-        toast.error(getApiErrorMessage(error, "Error al guardar empleado"));
-      } finally {
-        setProcesando(false);
-      }
+      });
     }
   };
 

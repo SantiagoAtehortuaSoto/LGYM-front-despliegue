@@ -957,11 +957,16 @@ const PedidosPage = ({ view = "gestion" }) => {
   };
 
   return (
-    <div className="main-ad-column">
+    <div className="main-ad-column pedidos-admin-page">
       <div className="encabezado-acciones">
-        <div className="titulo-con-icono">
-          <ClipboardCheck size={40} className="icono-titulo" />
-          <h1>{isCompletados ? "Pedidos Completados" : "Gestión de Pedidos"}</h1>
+        <div className="titulo-con-icono pedidos-admin-title">
+          <ClipboardCheck
+            size={40}
+            className="icono-titulo pedidos-admin-title__icon"
+          />
+          <h1 className="pedidos-admin-title__text">
+            {isCompletados ? "Pedidos Completados" : "Gestión de Pedidos"}
+          </h1>
         </div>
         <div className="acciones-derecha">
           {!isCompletados && (

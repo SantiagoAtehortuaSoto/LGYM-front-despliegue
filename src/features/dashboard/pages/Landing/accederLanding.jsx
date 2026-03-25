@@ -9,6 +9,7 @@ import {
   resendVerification,
   logout,
 } from "../../hooks/Acceder_API/authService.jsx";
+import useSubmitGuard from "../../../../shared/hooks/useSubmitGuard";
 import Logo from "../../../../assets/LGYM_logo.png";
 import Loading from "../../../../shared/components/Loading/loading";
 
@@ -225,9 +226,9 @@ function normalizeRole(raw) {
 /* ===================== Helpers de validación ===================== */
 const validateEmailSyntax = (email) => {
   const e = String(email || "").trim();
-  if (!e) return "El email es obligatorio";
-  if (!EMAIL_RE.test(e)) return "Formato de email inválido";
-  if (e.length > 254) return "Email demasiado largo";
+  if (!e) return "El correo electrónico es obligatorio.";
+  if (!EMAIL_RE.test(e)) return "El formato del correo electrónico es inválido.";
+  if (e.length > 254) return "El correo electrónico es demasiado largo.";
   return "";
 };
 
@@ -301,6 +302,7 @@ const validateBirthdate = (isoDate) => {
 };
 
 const Acceder = () => {
+  const { runGuardedSubmit } = useSubmitGuard();
   const [mostrarClave, setMostrarClave] = useState(false);
   const [modo, setModo] = useState("login");
   const navigate = useNavigate();
@@ -570,9 +572,10 @@ const Acceder = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    await runGuardedSubmit(async () => {
+      setLoading(true);
 
-    try {
+      try {
       if (modo === "registro") {
         const all = validateAll();
         setErrors(all);
@@ -589,8 +592,6 @@ const Acceder = () => {
           documentoExists === true
         ) {
           focusFirstErrorField(all);
-          // Se eliminan los toasts redundantes ya que el feedback se muestra en el formulario ("en el medio")
-          setLoading(false);
           return;
         }
 
@@ -649,8 +650,6 @@ const Acceder = () => {
 
         if (emailErr || passErr) {
           focusFirstErrorField({ email: emailErr, password: passErr });
-          // Se elimina toast redundante
-          setLoading(false);
           return;
         }
 
@@ -659,7 +658,7 @@ const Acceder = () => {
         const { user } = await login(emailNormalizado, formData.password);
         if (isUserInactive(user)) {
           logout();
-          toastError("Tu cuenta esta desactivada. Comunicate con el administrador.");
+          toastError("Tu cuenta está desactivada. Comunícate con el administrador.");
           return;
         }
 
@@ -679,46 +678,47 @@ const Acceder = () => {
           navigate("/empleados/dashboardEmpleado");
         }
       }
-    } catch (error) {
-      // 👇 Manejo especial: cuenta no verificada
-      if (
-        modo === "login" &&
-        (error.code === "EMAIL_NOT_VERIFIED" ||
-          /verificaci[oó]n/i.test(error.message || ""))
-      ) {
-        const emailNormalizado = formData.email.trim().toLowerCase();
+      } catch (error) {
+        // 👇 Manejo especial: cuenta no verificada
+        if (
+          modo === "login" &&
+          (error.code === "EMAIL_NOT_VERIFIED" ||
+            /verificaci[oó]n/i.test(error.message || ""))
+        ) {
+          const emailNormalizado = formData.email.trim().toLowerCase();
 
-        // (Opcional) Reenviar el código de verificación automáticamente
-        try {
-          await resendVerification(emailNormalizado);
-        } catch {
-          // Si falla, igual continuamos con la redirección
+          // (Opcional) Reenviar el código de verificación automáticamente
+          try {
+            await resendVerification(emailNormalizado);
+          } catch {
+            // Si falla, igual continuamos con la redirección
+          }
+
+          toastError(
+            "Tu cuenta aún no está verificada. Te enviamos un nuevo código a tu correo."
+          );
+
+          navigate("/verificar-cuenta", {
+            replace: true,
+            state: { email: emailNormalizado },
+          });
+        } else if (modo === "login" && isDisabledLoginError(error)) {
+          toastError("Tu cuenta está desactivada. Comunícate con el administrador.");
+        } else if (modo === "login") {
+          const detalle =
+            error?.message && String(error.message).trim()
+              ? ` Detalle: ${String(error.message).trim()}`
+              : "";
+          toastError(
+            `Inicio de sesión fallido. No fue posible ingresar con los datos enviados y tu sesión no se abrió.${detalle}`
+          );
+        } else {
+          toastError(error.message || "Ocurrió un error inesperado.");
         }
-
-        toastError(
-          "Tu cuenta aún no está verificada. Te enviamos un nuevo código a tu correo."
-        );
-
-        navigate("/verificar-cuenta", {
-          replace: true,
-          state: { email: emailNormalizado },
-        });
-      } else if (modo === "login" && isDisabledLoginError(error)) {
-        toastError("Tu cuenta esta desactivada. Comunicate con el administrador.");
-      } else if (modo === "login") {
-        const detalle =
-          error?.message && String(error.message).trim()
-            ? ` Detalle: ${String(error.message).trim()}`
-            : "";
-        toastError(
-          `Inicio de sesión fallido. No fue posible ingresar con los datos enviados y tu sesión no se abrio.${detalle}`
-        );
-      } else {
-        toastError(error.message || "Ocurrió un error inesperado");
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   const emailHelp = useMemo(() => {

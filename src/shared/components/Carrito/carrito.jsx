@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 import { DescargarComprobante } from "./descargarComprobante";
 import { useCarrito } from "../../components/Carrito/carritoContext";
+import { formatCurrencyCOP } from "../../utils/currency";
 
 const CarritoCompras = ({ onClose }) => {
   const {
@@ -45,12 +46,7 @@ const CarritoCompras = ({ onClose }) => {
       })()
     : "";
 
-  const formatoCOP = (valor) =>
-    new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 0,
-    }).format(valor);
+  const formatoCOP = (valor) => formatCurrencyCOP(valor);
 
   const esMembresia = (item) =>
     String(
@@ -333,7 +329,7 @@ const CarritoCompras = ({ onClose }) => {
         <div className="carrito-items">
           {items.length === 0 ? (
             <div className="carrito-empty-state">
-              <p className="carrito-empty-state__title">Tu carrito esta vacio</p>
+              <p className="carrito-empty-state__title">Tu carrito está vacío.</p>
             </div>
           ) : (
             itemsVista.map((item) => {
@@ -402,7 +398,7 @@ const CarritoCompras = ({ onClose }) => {
                           aria-disabled={bloquearSuma}
                           title={
                             bloquearSuma
-                              ? "No puede agregar mas unidades"
+                              ? "No puedes agregar más unidades."
                               : "Agregar una unidad"
                           }
                         >
@@ -469,7 +465,7 @@ const CarritoCompras = ({ onClose }) => {
               className="carrito-vaciar"
               onClick={vaciarCarrito}
             >
-              Limpiar  Carrito
+              Limpiar carrito
             </button>
           )}
 

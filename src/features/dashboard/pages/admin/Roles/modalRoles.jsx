@@ -8,6 +8,7 @@ import Modal from "../../../../../shared/components/Modal/Modal";
 import { ConfirmModal } from "../../../../../shared/components/ConfirmModal/confirmModal";
 import { DeleteModal } from "../../../../../shared/components/deleteModal/deleteModal";
 import { validarRol } from "../../../hooks/validaciones/validaciones";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 import "../../../../../shared/styles/restructured/components/modal-roles.css";
 
 // Acciones permitidas a nivel de UI
@@ -271,6 +272,7 @@ const BaseRoleModal = ({
   isEdit = false,
 }) => {
   const modalRef = useRef(null);
+  const { runGuardedSubmit } = useSubmitGuard();
 
   const permisosIniciales = useMemo(() => {
     if (initialData.permisosModulos) {
@@ -431,26 +433,28 @@ const BaseRoleModal = ({
         ),
       };
 
-      try {
-        const ok = await onSave(payload);
-        if (!ok) {
-          toast.error("No se pudo guardar el rol");
-          return;
+      await runGuardedSubmit(async () => {
+        try {
+          const ok = await onSave(payload);
+          if (!ok) {
+            toast.error("No se pudo guardar el rol");
+            return;
+          }
+          toast.success(
+            formData.id ? "Rol actualizado exitosamente" : "Rol creado exitosamente"
+          );
+          onClose();
+        } catch (err) {
+          console.error(err);
+          toast.error(
+            err?.response?.data?.message ||
+              err?.message ||
+              "Error al guardar el rol"
+          );
         }
-        toast.success(
-          formData.id ? "Rol actualizado exitosamente" : "Rol creado exitosamente"
-        );
-        onClose();
-      } catch (err) {
-        console.error(err);
-        toast.error(
-          err?.response?.data?.message ||
-            err?.message ||
-            "Error al guardar el rol"
-        );
-      }
+      });
     },
-    [formData, onSave, onClose, permisoHelpers, permisosListos, existingRoles, isEdit, isProtectedPrimaryRole],
+    [formData, onSave, onClose, permisoHelpers, permisosListos, existingRoles, isEdit, isProtectedPrimaryRole, runGuardedSubmit],
   );
 
   return (

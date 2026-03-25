@@ -15,6 +15,7 @@ import {
   ESTADOS_APP,
   OPCIONES_ESTADO_ASISTENCIA,
 } from "../../../components/dataTables/badgesEstado";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 
 const CLIENT_ROLE_ID = 33;
 const EMPLOYEE_ATTENDANCE_EXCLUDED_ROLE_IDS = new Set([32, CLIENT_ROLE_ID]);
@@ -141,6 +142,7 @@ export const ModalFormularioAsistencia = ({
   tipo = "cliente",
 }) => {
   useLockBodyScroll(isOpen);
+  const { runGuardedSubmit } = useSubmitGuard();
 
   const isCliente = tipo !== "empleado";
   const estadosDisponibles = isCliente ? ESTADOS_CLIENTE : ESTADOS_EMPLEADO;
@@ -631,14 +633,18 @@ export const ModalFormularioAsistencia = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (procesando) return;
     if (!validateForm()) return;
 
-    setProcesando(true);
     const esEdicion = Boolean(asistencia);
-    try {
-      const horaEntradaEmpleado = toTimeApiValue(formData.hora_entrada_empleado);
-      const horaSalidaEmpleado = toTimeApiValue(formData.hora_salida_empleado);
-      const payload = isCliente
+    await runGuardedSubmit(async () => {
+      setProcesando(true);
+      try {
+        const horaEntradaEmpleado = toTimeApiValue(
+          formData.hora_entrada_empleado
+        );
+        const horaSalidaEmpleado = toTimeApiValue(formData.hora_salida_empleado);
+        const payload = isCliente
           ? {
               id_cita: Number(formData.id_cita),
               id_usuario: Number(formData.id_usuario),
@@ -657,33 +663,34 @@ export const ModalFormularioAsistencia = ({
               hora_salida: horaSalidaEmpleado,
               id_estado: Number(formData.id_estado),
               observaciones: formData.observaciones || "",
-           };
+            };
 
-      const resultado = await onSubmit(payload);
-      if (resultado === false) {
-        throw new Error(
+        const resultado = await onSubmit(payload);
+        if (resultado === false) {
+          throw new Error(
+            esEdicion
+              ? "No se pudo actualizar la asistencia"
+              : "No se pudo registrar la asistencia"
+          );
+        }
+        toast.success(
           esEdicion
-            ? "No se pudo actualizar la asistencia"
-            : "No se pudo registrar la asistencia"
+            ? "Asistencia actualizada exitosamente"
+            : "Asistencia registrada exitosamente"
         );
+      } catch (error) {
+        console.error("Error al guardar asistencia:", error);
+        toast.error(
+          error?.response?.data?.message ||
+            error?.message ||
+            (esEdicion
+              ? "No se pudo actualizar la asistencia"
+              : "No se pudo registrar la asistencia")
+        );
+      } finally {
+        setProcesando(false);
       }
-      toast.success(
-        esEdicion
-          ? "Asistencia actualizada exitosamente"
-          : "Asistencia registrada exitosamente"
-      );
-    } catch (error) {
-      console.error("Error al guardar asistencia:", error);
-      toast.error(
-        error?.response?.data?.message ||
-          error?.message ||
-          (esEdicion
-            ? "No se pudo actualizar la asistencia"
-            : "No se pudo registrar la asistencia")
-      );
-    } finally {
-      setProcesando(false);
-    }
+    });
   };
 
   return (

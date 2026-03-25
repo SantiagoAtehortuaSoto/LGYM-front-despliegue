@@ -9,8 +9,10 @@ import {
 
 import toast from "react-hot-toast";
 import { IconMail, IconLock } from "@tabler/icons-react";
+import useSubmitGuard from "../../../../shared/hooks/useSubmitGuard";
 
 const VerificarCuenta = () => {
+  const { runGuardedSubmit } = useSubmitGuard();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -59,22 +61,24 @@ const VerificarCuenta = () => {
       return;
     }
 
-    setLoading(true);
-    try {
-      await verifyRegistroEmail({
-        email,
-        verificationCode: code,
-      });
+    await runGuardedSubmit(async () => {
+      setLoading(true);
+      try {
+        await verifyRegistroEmail({
+          email,
+          verificationCode: code,
+        });
 
-      toastSuccess(
-        "Cuenta verificada correctamente. Ahora puedes iniciar sesión."
-      );
-      navigate("/acceder", { replace: true });
-    } catch (err) {
-      toastError(err.message || "No se pudo verificar la cuenta.");
-    } finally {
-      setLoading(false);
-    }
+        toastSuccess(
+          "Cuenta verificada correctamente. Ahora puedes iniciar sesión."
+        );
+        navigate("/acceder", { replace: true });
+      } catch (err) {
+        toastError(err.message || "No se pudo verificar la cuenta.");
+      } finally {
+        setLoading(false);
+      }
+    });
   };
 
   const handleResend = async () => {
@@ -109,7 +113,7 @@ const VerificarCuenta = () => {
             Escríbelo a continuación para activar tu cuenta.
           </p>
 
-          {/* form más angosto y centrado */}
+          {/* Formulario más angosto y centrado */}
           <form className="verificar-form" onSubmit={handleSubmit} noValidate>
             {/* Email */}
             <div
@@ -118,7 +122,7 @@ const VerificarCuenta = () => {
               }`}
             >
               <div className="grupo-label">
-                <IconMail /> <label>Email</label>
+                <IconMail /> <label>Correo electrónico</label>
               </div>
               <input
                 type="email"

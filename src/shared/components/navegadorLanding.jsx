@@ -4,6 +4,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 /* Importación de imagenes */
 import Logo from "../../assets/LGYM_logo.png";
+
+const isCompactLandingViewport = () => {
+  if (typeof window === "undefined") return false;
+
+  return window.matchMedia(
+    "(max-width: 768px), (max-height: 500px) and (orientation: landscape)"
+  ).matches;
+};
+
 function readUser() {
   try {
     return JSON.parse(localStorage.getItem("user"));
@@ -99,8 +108,7 @@ const NavegadorLanding = () => {
       return undefined;
     }
 
-    const isMobileViewport = window.innerWidth <= 768;
-    if (!mobileMenuOpen || !isMobileViewport) {
+    if (!mobileMenuOpen || !isCompactLandingViewport()) {
       document.body.style.overflow = "";
       return undefined;
     }
@@ -117,7 +125,7 @@ const NavegadorLanding = () => {
     if (typeof window === "undefined") return undefined;
 
     const handleResize = () => {
-      if (window.innerWidth > 768) {
+      if (!isCompactLandingViewport()) {
         setMobileMenuOpen(false);
       }
     };

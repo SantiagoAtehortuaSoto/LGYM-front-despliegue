@@ -15,6 +15,7 @@ import {
   getEmployeeScheduleWindow,
   validateAppointmentScheduling,
 } from "../../../../../shared/utils/employeeSchedule";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 
 const Motion = motion;
 
@@ -124,6 +125,79 @@ const formatTimeLabel = (value) => {
   return text ? text.slice(0, 5) : "Por definir";
 };
 
+const formatDateToInputValue = (date) => {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+    date.getDate(),
+  ).padStart(2, "0")}`;
+};
+
+const formatTimeToInputValue = (date) => {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+
+  return `${String(date.getHours()).padStart(2, "0")}:${String(
+    date.getMinutes(),
+  ).padStart(2, "0")}`;
+};
+
+const toValidDate = (value) => {
+  if (!value) return null;
+
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? null : value;
+  }
+
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const normalizeDateInputValue = (...values) => {
+  for (const value of values) {
+    if (!value) continue;
+
+    if (typeof value === "string") {
+      const trimmed = value.trim();
+      if (!trimmed) continue;
+
+      const isoDateMatch = trimmed.match(/^(\d{4}-\d{2}-\d{2})/);
+      if (isoDateMatch) {
+        return isoDateMatch[1];
+      }
+    }
+
+    const parsed = toValidDate(value);
+    if (parsed) {
+      return formatDateToInputValue(parsed);
+    }
+  }
+
+  return "";
+};
+
+const normalizeTimeInputValue = (...values) => {
+  for (const value of values) {
+    if (!value) continue;
+
+    if (typeof value === "string") {
+      const trimmed = value.trim();
+      if (!trimmed) continue;
+
+      const timeMatch = trimmed.match(/(\d{2}:\d{2})/);
+      if (timeMatch) {
+        return timeMatch[1];
+      }
+    }
+
+    const parsed = toValidDate(value);
+    if (parsed) {
+      return formatTimeToInputValue(parsed);
+    }
+  }
+
+  return "";
+};
+
 const EMPTY_FORM_DATA = {
   id_agenda: "",
   actividad_agenda: "",
@@ -136,6 +210,83 @@ const EMPTY_FORM_DATA = {
   id_cliente: "",
   id_cliente_usuario: null,
   id_estado: "",
+};
+
+const normalizeInitialFormData = (data = {}) => {
+  const extendedProps =
+    data?.extendedProps && typeof data.extendedProps === "object"
+      ? data.extendedProps
+      : {};
+
+  return {
+    ...EMPTY_FORM_DATA,
+    id_agenda: data.id_agenda ?? extendedProps.id_agenda ?? data.id ?? extendedProps.id ?? "",
+    actividad_agenda:
+      data.actividad_agenda ??
+      extendedProps.actividad_agenda ??
+      data.title ??
+      extendedProps.title ??
+      "",
+    observacion_agenda:
+      data.observacion_agenda ??
+      extendedProps.observacion_agenda ??
+      data.descripcion_agenda ??
+      extendedProps.descripcion_agenda ??
+      data.observaciones ??
+      extendedProps.observaciones ??
+      "",
+    agenda_fecha: normalizeDateInputValue(
+      data.agenda_fecha,
+      extendedProps.agenda_fecha,
+      data.fecha,
+      extendedProps.fecha,
+      data.start,
+      extendedProps.start,
+    ),
+    hora_inicio: normalizeTimeInputValue(
+      data.hora_inicio,
+      extendedProps.hora_inicio,
+      data.horaInicio,
+      extendedProps.horaInicio,
+      data.start,
+      extendedProps.start,
+    ),
+    hora_fin: normalizeTimeInputValue(
+      data.hora_fin,
+      extendedProps.hora_fin,
+      data.horaFin,
+      extendedProps.horaFin,
+      data.end,
+      extendedProps.end,
+    ),
+    id_empleado:
+      String(
+        data.id_empleado ??
+          extendedProps.id_empleado ??
+          data.id_empleado_usuario?.id_usuario ??
+          extendedProps.id_empleado_usuario?.id_usuario ??
+          data.id_empleado_usuario?.id ??
+          extendedProps.id_empleado_usuario?.id ??
+          "",
+      ) || "",
+    id_empleado_usuario:
+      data.id_empleado_usuario ?? extendedProps.id_empleado_usuario ?? null,
+    id_cliente:
+      String(
+        data.id_cliente ??
+          extendedProps.id_cliente ??
+          data.id_cliente_usuario?.id_usuario ??
+          extendedProps.id_cliente_usuario?.id_usuario ??
+          data.id_cliente_usuario?.id ??
+          extendedProps.id_cliente_usuario?.id ??
+          "",
+      ) || "",
+    id_cliente_usuario:
+      data.id_cliente_usuario ?? extendedProps.id_cliente_usuario ?? null,
+    id_estado: String(
+      data.id_estado ?? extendedProps.id_estado ?? ESTADOS_APP.PENDIENTE,
+    ),
+  };
 };
 
 const ModalCitasAd = ({
@@ -154,6 +305,7 @@ const ModalCitasAd = ({
   actividades: actividadesIniciales = [],
   agendaItems = [],
 }) => {
+  const { runGuardedSubmit } = useSubmitGuard();
   const [loading, setLoading] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [errors, setErrors] = useState({});
@@ -195,34 +347,7 @@ const ModalCitasAd = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    const esEdicion = Boolean(initialData?.id_agenda);
-    if (!esEdicion) {
-      setFormData(EMPTY_FORM_DATA);
-      setErrors({});
-      setBusquedaEmpleado("");
-      setBusquedaCliente("");
-      setMostrarDropdownEmpleado(false);
-      setMostrarDropdownCliente(false);
-      return;
-    }
-
-    setFormData({
-      id_agenda: initialData.id_agenda || "",
-      actividad_agenda: initialData.actividad_agenda || "",
-      observacion_agenda: initialData.observacion_agenda || "",
-      agenda_fecha: initialData.agenda_fecha || "",
-      hora_inicio: initialData.hora_inicio
-        ? String(initialData.hora_inicio).substring(0, 5)
-        : "",
-      hora_fin: initialData.hora_fin
-        ? String(initialData.hora_fin).substring(0, 5)
-        : "",
-      id_empleado: initialData.id_empleado || "",
-      id_empleado_usuario: initialData.id_empleado_usuario || null,
-      id_cliente: initialData.id_cliente || "",
-      id_cliente_usuario: initialData.id_cliente_usuario || null,
-      id_estado: String(initialData.id_estado || ESTADOS_APP.PENDIENTE),
-    });
+    setFormData(normalizeInitialFormData(initialData));
     setErrors({});
     setBusquedaEmpleado("");
     setBusquedaCliente("");
@@ -384,7 +509,7 @@ const ModalCitasAd = ({
   const handleSubmit = useCallback(
     async (event) => {
       event.preventDefault();
-      if (disabled) return;
+      if (disabled || loading) return;
 
       const nextErrors = validateFormData(formData);
       setErrors(nextErrors);
@@ -393,45 +518,47 @@ const ModalCitasAd = ({
         return;
       }
 
-      try {
-        setLoading(true);
-        const resultado = await onSave({
-          ...formData,
-          id_estado: formData.id_estado || String(ESTADOS_APP.PENDIENTE),
-          hora_inicio:
-            formData.hora_inicio.length === 5
-              ? `${formData.hora_inicio}:00`
-              : formData.hora_inicio,
-          hora_fin:
-            formData.hora_fin.length === 5
-              ? `${formData.hora_fin}:00`
-              : formData.hora_fin,
-        });
-        if (resultado === false) {
-          throw new Error(
+      await runGuardedSubmit(async () => {
+        try {
+          setLoading(true);
+          const resultado = await onSave({
+            ...formData,
+            id_estado: formData.id_estado || String(ESTADOS_APP.PENDIENTE),
+            hora_inicio:
+              formData.hora_inicio.length === 5
+                ? `${formData.hora_inicio}:00`
+                : formData.hora_inicio,
+            hora_fin:
+              formData.hora_fin.length === 5
+                ? `${formData.hora_fin}:00`
+                : formData.hora_fin,
+          });
+          if (resultado === false) {
+            throw new Error(
+              formData.id_agenda
+                ? "No se pudo actualizar la cita"
+                : "No se pudo crear la cita"
+            );
+          }
+          toast.success(
             formData.id_agenda
-              ? "No se pudo actualizar la cita"
-              : "No se pudo crear la cita"
+              ? "Cita actualizada exitosamente"
+              : "Cita creada exitosamente"
           );
+          onClose();
+        } catch (error) {
+          console.error("Error al guardar cita:", error);
+          toast.error(
+            error?.response?.data?.message ||
+              error?.message ||
+              "No se pudo guardar la cita"
+          );
+        } finally {
+          setLoading(false);
         }
-        toast.success(
-          formData.id_agenda
-            ? "Cita actualizada exitosamente"
-            : "Cita creada exitosamente"
-        );
-        onClose();
-      } catch (error) {
-        console.error("Error al guardar cita:", error);
-        toast.error(
-          error?.response?.data?.message ||
-            error?.message ||
-            "No se pudo guardar la cita"
-        );
-      } finally {
-        setLoading(false);
-      }
+      });
     },
-    [disabled, formData, onClose, onSave, validateFormData],
+    [disabled, formData, loading, onClose, onSave, runGuardedSubmit, validateFormData],
   );
 
   const empleadoLabel = useMemo(() => {
@@ -792,7 +919,6 @@ const ModalCitasAd = ({
                 onChange={handleChange}
                 min={getTomorrowISO()}
                 disabled={disabled || loading}
-                required
                 className={`modal-field-input ${
                   errors.agenda_fecha ? "modal-field-input--error" : ""
                 }`}
@@ -812,7 +938,6 @@ const ModalCitasAd = ({
                 value={formData.hora_inicio || ""}
                 onChange={handleChange}
                 disabled={disabled || loading}
-                required
                 className={`modal-field-input ${
                   errors.hora_inicio ? "modal-field-input--error" : ""
                 }`}
@@ -844,7 +969,6 @@ const ModalCitasAd = ({
                 value={formData.hora_fin || ""}
                 onChange={handleChange}
                 disabled={disabled || loading}
-                required
                 className={`modal-field-input ${
                   errors.hora_fin ? "modal-field-input--error" : ""
                 }`}
@@ -1002,7 +1126,6 @@ const ModalCitasAd = ({
                   value={formData.actividad_agenda || ""}
                   onChange={handleChange}
                   disabled={disabled || loading}
-                  required
                   className={`modal-field-input modal-field-input--select ${
                     errors.actividad_agenda ? "modal-field-input--error" : ""
                   }`}

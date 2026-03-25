@@ -1,9 +1,9 @@
 import { toast } from 'react-hot-toast';
 import { buildApiUrl, buildUrl } from "../apiConfig";
 
-// ConfiguraciÃ³n del servicio de correo
+// Configuración del servicio de correo
 const EMAIL_CONFIG = {
-  // Puedes cambiar estos valores segÃºn tu proveedor de correo
+  // Puedes cambiar estos valores según tu proveedor de correo
   service: 'gmail',
   host: 'smtp.gmail.com',
   port: 587,
@@ -207,15 +207,15 @@ const postCorreoConFallback = async (endpoint, body) => {
 
   throw (
     ultimoError ||
-    new Error("No se encontro un endpoint válido para envio de correo")
+    new Error("No se encontró un endpoint válido para envío de correo.")
   );
 };
 
-// FunciÃ³n para crear el contenido HTML del correo
+// Función para crear el contenido HTML del correo
 const crearContenidoCorreo = (pedido, proveedor, productos, opciones = {}) => {
   const { isUpdate = false } = opciones;
   const tituloPrincipal = isUpdate
-    ? "ACTUALIZACION DE ORDEN DE COMPRA"
+    ? "ACTUALIZACIÓN DE ORDEN DE COMPRA"
     : "ORDEN DE COMPRA";
   const mensajeIntro = isUpdate
     ? "Se ha actualizado el pedido con la siguiente información:"
@@ -316,26 +316,26 @@ const crearContenidoCorreo = (pedido, proveedor, productos, opciones = {}) => {
             <div class="header">
                 <div class="logo">LGYM</div>
                 <h1 style="margin: 0; color: #e53e3e;">${tituloPrincipal}</h1>
-                <p style="margin: 5px 0 0 0; color: #666;">NÃºmero de Pedido: <span class="highlight">${pedido.numero_pedido}</span></p>
+                <p style="margin: 5px 0 0 0; color: #666;">Número de pedido: <span class="highlight">${pedido.numero_pedido}</span></p>
             </div>
 
             <p style="margin: 0 0 18px 0; color: #374151;">${mensajeIntro}</p>
 
             <div class="order-info">
-                <h3 style="margin: 0 0 10px 0; color: #e53e3e;">InformaciÃ³n del Pedido</h3>
-                <p><strong>Fecha de Pedido:</strong> ${new Date(pedido.fecha_pedido).toLocaleDateString('es-CO')}</p>
-                <p><strong>Fecha de Entrega:</strong> ${new Date(pedido.fecha_entrega).toLocaleDateString('es-CO')}</p>
+                <h3 style="margin: 0 0 10px 0; color: #e53e3e;">Información del pedido</h3>
+                <p><strong>Fecha del pedido:</strong> ${new Date(pedido.fecha_pedido).toLocaleDateString('es-CO')}</p>
+                <p><strong>Fecha de entrega:</strong> ${new Date(pedido.fecha_entrega).toLocaleDateString('es-CO')}</p>
                 <p><strong>Estado:</strong> <span class="highlight">${isUpdate ? "Actualizado" : "Pendiente"}</span></p>
             </div>
 
             <div class="provider-info">
-                <h3 style="margin: 0 0 10px 0; color: #3182ce;">InformaciÃ³n del Proveedor</h3>
+                <h3 style="margin: 0 0 10px 0; color: #3182ce;">Información del proveedor</h3>
                 <p><strong>Nombre:</strong> ${proveedor.nombre_proveedor}</p>
                 <p><strong>NIT:</strong> ${proveedor.nit_proveedor}</p>
                 <p><strong>Contacto:</strong> ${proveedor.nombre_contacto}</p>
-                <p><strong>TelÃ©fono:</strong> ${proveedor.telefono_proveedor}</p>
+                <p><strong>Teléfono:</strong> ${proveedor.telefono_proveedor}</p>
                 <p><strong>Email:</strong> ${proveedor.email_proveedor}</p>
-                ${proveedor.direccion_proveedor ? `<p><strong>DirecciÃ³n:</strong> ${proveedor.direccion_proveedor}</p>` : ''}
+                ${proveedor.direccion_proveedor ? `<p><strong>Dirección:</strong> ${proveedor.direccion_proveedor}</p>` : ''}
                 ${proveedor.ciudad_proveedor ? `<p><strong>Ciudad:</strong> ${proveedor.ciudad_proveedor}</p>` : ''}
             </div>
 
@@ -363,21 +363,21 @@ const crearContenidoCorreo = (pedido, proveedor, productos, opciones = {}) => {
             <div class="footer">
                 <h4 style="margin: 0 0 10px 0; color: #e53e3e;">Instrucciones</h4>
                 <ul style="margin: 0; padding-left: 20px;">
-                    <li>Por favor confirme la recepciÃ³n de este correo</li>
-                    <li>Verifique la disponibilidad de los productos solicitados</li>
-                    <li>ComunÃ­quese con nosotros para cualquier aclaraciÃ³n</li>
-                    <li>La fecha de entrega es obligatoria segÃºn lo especificado</li>
+                    <li>Por favor, confirme la recepción de este correo.</li>
+                    <li>Verifique la disponibilidad de los productos solicitados.</li>
+                    <li>Comuníquese con nosotros para cualquier aclaración.</li>
+                    <li>La fecha de entrega es obligatoria según lo especificado.</li>
                 </ul>
                 
                 <p style="margin-top: 20px;">
                     <strong>Para contactarnos:</strong><br>
                     Email: contacto@lgymsas.com<br>
-                    TelÃ©fono: (57) 311 123 4567
+                    Teléfono: (57) 311 123 4567
                 </p>
 
                 <p style="margin-top: 20px; font-style: italic; color: #6c757d;">
-                    Este es un correo automÃ¡tico generado por el sistema de gestiÃ³n de LGYM.
-                    Por favor no responda a esta direcciÃ³n de correo electrÃ³nico.
+                    Este es un correo automático generado por el sistema de gestión de LGYM.
+                    Por favor, no responda a esta dirección de correo electrónico.
                 </p>
             </div>
         </div>
@@ -386,7 +386,7 @@ const crearContenidoCorreo = (pedido, proveedor, productos, opciones = {}) => {
   `;
 };
 
-// FunciÃ³n para enviar correo al proveedor
+// Función para enviar correo al proveedor
 export const enviarCorreoPedido = async (
   pedido,
   proveedor,
@@ -405,7 +405,7 @@ export const enviarCorreoPedido = async (
 
     // Validar email del proveedor
     if (!correoProveedor) {
-      throw new Error('El proveedor no tiene un email registrado');
+      throw new Error("El proveedor no tiene un correo electrónico registrado.");
     }
 
     const proveedorNormalizado = {
@@ -415,12 +415,12 @@ export const enviarCorreoPedido = async (
 
     const detalles = normalizarDetallesPedido(productos);
     if (!detalles.length) {
-      throw new Error("No se encontraron detalles validos del pedido para enviar el correo");
+      throw new Error("No se encontraron detalles válidos del pedido para enviar el correo.");
     }
 
     // Crear contenido del correo
     const asunto = `${
-      isUpdate ? "Actualizacion de Pedido LGYM" : "Orden de Compra LGYM"
+      isUpdate ? "Actualización de pedido LGYM" : "Orden de compra LGYM"
     } - ${pedido.numero_pedido}`;
     const contenidoHtml = crearContenidoCorreo(pedido, proveedorNormalizado, detalles, {
       isUpdate,
@@ -507,12 +507,12 @@ export const enviarCorreoPedido = async (
     }
     
     if (notify) {
-      toast.success(`Correo enviado exitosamente a ${proveedorNormalizado.nombre_proveedor}`);
+      toast.success(`Correo enviado exitosamente a ${proveedorNormalizado.nombre_proveedor}.`);
     }
     
     return {
       success: true,
-      message: 'Correo enviado exitosamente',
+      message: "Correo enviado exitosamente.",
       data: result
     };
 
@@ -523,11 +523,11 @@ export const enviarCorreoPedido = async (
         skipped: true,
         reason: "estado_no_pendiente",
         message:
-          "El backend solo permite reenviar correo cuando el pedido esta pendiente de aprobacion.",
+          "El backend solo permite reenviar correos cuando el pedido está pendiente de aprobación.",
       };
     }
 
-    console.error('Error al enviar correo:', error);
+    console.error("Error al enviar correo:", error);
     if (notify) {
       toast.error(`Error al enviar correo al proveedor: ${error.message}`);
     }
@@ -535,20 +535,20 @@ export const enviarCorreoPedido = async (
   }
 };
 
-// FunciÃ³n para enviar correo de confirmaciÃ³n (cuando el pedido cambia de estado)
+// Función para enviar correo de confirmación (cuando el pedido cambia de estado)
 export const enviarCorreoConfirmacion = async (pedido, proveedor, nuevoEstado) => {
   try {
     if (!pedido || !proveedor) {
-      throw new Error('Faltan datos para enviar correo de confirmaciÃ³n');
+      throw new Error("Faltan datos para enviar el correo de confirmación.");
     }
 
-    const asunto = `ConfirmaciÃ³n de Estado - Pedido ${pedido.numero_pedido}`;
+    const asunto = `Confirmación de estado - Pedido ${pedido.numero_pedido}`;
     const contenidoHtml = `
       <!DOCTYPE html>
       <html>
       <head>
           <meta charset="UTF-8">
-          <title>ConfirmaciÃ³n de Estado - LGYM</title>
+          <title>Confirmación de estado - LGYM</title>
           <style>
               body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
               .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -568,10 +568,10 @@ export const enviarCorreoConfirmacion = async (pedido, proveedor, nuevoEstado) =
                   <p>Le informamos que el estado de su pedido <strong>${pedido.numero_pedido}</strong> ha sido actualizado.</p>
                   <p><strong>Nuevo Estado:</strong> <span style="color: #e53e3e; font-weight: bold;">${nuevoEstado}</span></p>
                   <p><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-CO')}</p>
-                  <p>Por favor, mantÃ©ngase atento a futuras actualizaciones.</p>
+                  <p>Por favor, manténgase atento a futuras actualizaciones.</p>
               </div>
               <div class="footer">
-                  <p>Este es un correo automÃ¡tico. Por favor no responda a esta direcciÃ³n.</p>
+                  <p>Este es un correo automático. Por favor, no responda a esta dirección.</p>
               </div>
           </div>
       </body>
@@ -587,32 +587,32 @@ export const enviarCorreoConfirmacion = async (pedido, proveedor, nuevoEstado) =
 
     await postCorreoConFallback("enviar-correo-confirmacion", emailData);
 
-    toast.success(`Correo de confirmaciÃ³n enviado a ${proveedor.nombre_proveedor}`);
+    toast.success(`Correo de confirmación enviado a ${proveedor.nombre_proveedor}.`);
     return { success: true };
 
   } catch (error) {
-    console.error('Error al enviar correo de confirmaciÃ³n:', error);
-    toast.error(`Error al enviar correo de confirmaciÃ³n: ${error.message}`);
+    console.error("Error al enviar correo de confirmación:", error);
+    toast.error(`Error al enviar correo de confirmación: ${error.message}`);
     throw error;
   }
 };
 
-// FunciÃ³n para validar si el proveedor tiene email
+// Función para validar si el proveedor tiene correo electrónico
 export const validarProveedorConEmail = (proveedor) => {
   if (!proveedor) {
-    return { valido: false, mensaje: 'No se ha seleccionado un proveedor' };
+    return { valido: false, mensaje: "No se ha seleccionado un proveedor." };
   }
   
   if (!proveedor.email_proveedor) {
-    return { valido: false, mensaje: 'El proveedor no tiene un email registrado' };
+    return { valido: false, mensaje: "El proveedor no tiene un correo electrónico registrado." };
   }
 
-  // Validar formato bÃ¡sico de email
+  // Validar formato básico de correo electrónico
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(proveedor.email_proveedor)) {
-    return { valido: false, mensaje: 'El email del proveedor no tiene un formato vÃ¡lido' };
+    return { valido: false, mensaje: "El correo electrónico del proveedor no tiene un formato válido." };
   }
 
-  return { valido: true, mensaje: 'Proveedor vÃ¡lido para envÃ­o de correo' };
+  return { valido: true, mensaje: "Proveedor válido para envío de correo." };
 };
 

@@ -16,6 +16,7 @@ import {
 import { getMembresias } from "../../../hooks/Membresia_API/Membresia.jsx";
 import { validarCliente } from "../../../hooks/validaciones/validaciones";
 import { normalizePaginatedResponse } from "../../../../../shared/utils/pagination";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 import "../../../../../shared/styles/restructured/components/modal-clientes.css";
 
 const Motion = motion;
@@ -110,6 +111,7 @@ const BaseClienteModal = ({
   onRefreshBeneficiarios = () => {},
   modoRelacionManual = false,
 }) => {
+  const { runGuardedSubmit, isSubmitting } = useSubmitGuard();
   const initialRolId = useMemo(() => {
     const posibles = [
       initialData.rol_id,
@@ -534,7 +536,7 @@ const BaseClienteModal = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (modoRelacionManual) return;
+    if (disabled || modoRelacionManual || isSubmitting) return;
     const nextErrors = validateClientForm(formData);
     const documentoDigits = String(formData.documento || "").replace(/\D/g, "");
     setErrors(nextErrors);
@@ -543,100 +545,102 @@ const BaseClienteModal = ({
       return;
     }
 
-    try {
-      const rolIdFinal =
-        formData.id_usuario && initialRolId ? initialRolId : formData.rol_id;
+    await runGuardedSubmit(async () => {
+      try {
+        const rolIdFinal =
+          formData.id_usuario && initialRolId ? initialRolId : formData.rol_id;
 
-      const clienteParaGuardar = {
-        nombre_usuario: formData.nombre_usuario,
-        apellido_usuario: formData.apellido_usuario,
-        tipo_documento: formData.tipo_documento,
-        documento: documentoDigits,
-        email: formData.email,
-        telefono: formData.telefono,
-        c_emergencia: formData.c_emergencia,
-        n_emergencia: formData.n_emergencia,
-        fecha_nacimiento: formData.fecha_nacimiento,
-        genero: formData.genero,
-        password: formData.password,
-        enfermedades: formData.enfermedades,
-        id_estado: formData.id_estado,
-        ...(rolIdFinal ? { rol_id: rolIdFinal } : {}),
-        ...(formData.id_usuario && { id_usuario: formData.id_usuario }),
-      };
+        const clienteParaGuardar = {
+          nombre_usuario: formData.nombre_usuario,
+          apellido_usuario: formData.apellido_usuario,
+          tipo_documento: formData.tipo_documento,
+          documento: documentoDigits,
+          email: formData.email,
+          telefono: formData.telefono,
+          c_emergencia: formData.c_emergencia,
+          n_emergencia: formData.n_emergencia,
+          fecha_nacimiento: formData.fecha_nacimiento,
+          genero: formData.genero,
+          password: formData.password,
+          enfermedades: formData.enfermedades,
+          id_estado: formData.id_estado,
+          ...(rolIdFinal ? { rol_id: rolIdFinal } : {}),
+          ...(formData.id_usuario && { id_usuario: formData.id_usuario }),
+        };
 
-      const resultado = await onSave(clienteParaGuardar);
-      if (resultado === false) {
-        throw new Error(
-          formData.id_usuario
-            ? "No se pudo actualizar el cliente"
-            : "No se pudo crear el cliente"
-        );
-      }
-
-      // Agregar automaticamente a beneficiarios (self-beneficiario) si no existe
-      const userId =
-        resultado?.id_usuario ||
-        resultado?.id ||
-        formData.id_usuario ||
-        initialData.id_usuario;
-
-      const membershipId =
-        [
-          resultado?.id_membresia,
-          resultado?.id_membresias,
-          initialData?.id_membresia,
-          initialData?.id_membresias,
-          initialData?.membresia?.id_membresia,
-          initialData?.membresia?.id_membresias,
-        ]
-          .map((v) => Number(v))
-          .find((n) => Number.isInteger(n) && n > 0) || null;
-
-      const yaEsBeneficiario = beneficiarios.some(
-        (b) =>
-          Number(b.id_usuario) === Number(userId) &&
-          Number(b.id_relacion) === Number(userId)
-      );
-
-      if (userId && !yaEsBeneficiario) {
-        if (!membershipId) {
-          console.warn(
-            "Salta creación automática de beneficiario: sin membresía activa"
+        const resultado = await onSave(clienteParaGuardar);
+        if (resultado === false) {
+          throw new Error(
+            formData.id_usuario
+              ? "No se pudo actualizar el cliente"
+              : "No se pudo crear el cliente"
           );
-        } else {
-          try {
-            await crearBeneficiario({
-              id_usuario: Number(userId),
-              id_relacion: Number(userId),
-              id_membresia: membershipId,
-            });
-            onRefreshBeneficiarios();
-          } catch (err) {
-            console.error("No se pudo crear beneficiario automático", err);
-            const msg =
-              err?.response?.data?.message ||
-              err?.message ||
-              "No se pudo agregar al beneficiario automáticamente";
-            toast.error(msg);
+        }
+
+        // Agregar automaticamente a beneficiarios (self-beneficiario) si no existe
+        const userId =
+          resultado?.id_usuario ||
+          resultado?.id ||
+          formData.id_usuario ||
+          initialData.id_usuario;
+
+        const membershipId =
+          [
+            resultado?.id_membresia,
+            resultado?.id_membresias,
+            initialData?.id_membresia,
+            initialData?.id_membresias,
+            initialData?.membresia?.id_membresia,
+            initialData?.membresia?.id_membresias,
+          ]
+            .map((v) => Number(v))
+            .find((n) => Number.isInteger(n) && n > 0) || null;
+
+        const yaEsBeneficiario = beneficiarios.some(
+          (b) =>
+            Number(b.id_usuario) === Number(userId) &&
+            Number(b.id_relacion) === Number(userId)
+        );
+
+        if (userId && !yaEsBeneficiario) {
+          if (!membershipId) {
+            console.warn(
+              "Salta creación automática de beneficiario: sin membresía activa"
+            );
+          } else {
+            try {
+              await crearBeneficiario({
+                id_usuario: Number(userId),
+                id_relacion: Number(userId),
+                id_membresia: membershipId,
+              });
+              onRefreshBeneficiarios();
+            } catch (err) {
+              console.error("No se pudo crear beneficiario automático", err);
+              const msg =
+                err?.response?.data?.message ||
+                err?.message ||
+                "No se pudo agregar al beneficiario automáticamente";
+              toast.error(msg);
+            }
           }
         }
-      }
 
-      toast.success(
-        formData.id_usuario
-          ? "Cliente actualizado exitosamente"
-          : "Cliente creado exitosamente"
-      );
-      onClose();
-    } catch (error) {
-      console.error("Error al procesar el formulario:", error);
-      toast.error(
-        error?.response?.data?.message ||
-          error?.message ||
-          "No se pudo guardar el cliente"
-      );
-    }
+        toast.success(
+          formData.id_usuario
+            ? "Cliente actualizado exitosamente"
+            : "Cliente creado exitosamente"
+        );
+        onClose();
+      } catch (error) {
+        console.error("Error al procesar el formulario:", error);
+        toast.error(
+          error?.response?.data?.message ||
+            error?.message ||
+            "No se pudo guardar el cliente"
+        );
+      }
+    });
   };
 
   const usuariosBeneficiariosElegibles = useMemo(
@@ -1248,6 +1252,7 @@ const BaseClienteModal = ({
         type="submit"
         form={formId}
         className="boton boton-primario"
+        disabled={disabled || isSubmitting}
       >
         Guardar
       </button>

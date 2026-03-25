@@ -465,9 +465,9 @@ function SidebarEmpleados({ isOpen = true }) {
   return (
     <div className={`sidebar-emp ${isOpen ? "" : "collapsed"}`}>
       <div className="sidebar-top">
-        <a className="logo" href="">
+        <Link className="logo" to="/">
           <img className="logo" src={Logo} alt="LGYM Logo" />
-        </a>
+        </Link>
         <Link
           className="dash-button poppins-regular"
           to="/empleados/dashboardEmpleado"

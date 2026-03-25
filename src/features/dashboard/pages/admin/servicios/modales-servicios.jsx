@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import { DeleteModal } from "../../../../../shared/components/deleteModal/deleteModal";
 import Modal from "../../../../../shared/components/Modal/Modal";
+import { formatCurrencyCOP } from "../../../../../shared/utils/currency";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 import "../../../../../shared/styles/restructured/components/modal-servicios.css";
 
 const useLockBodyScroll = (isOpen) => {
@@ -51,6 +53,7 @@ export const ModalFormularioServicio = ({
   title = "Nuevo Servicio",
 }) => {
   useLockBodyScroll(isOpen);
+  const { runGuardedSubmit } = useSubmitGuard();
 
   const [formData, setFormData] = useState({
     id_servicio: "",
@@ -188,22 +191,24 @@ export const ModalFormularioServicio = ({
       if (!formData.id_servicio) {
         datosEnviar.fecha_creacion = now;
       }
-      try {
-        setIsSubmitting(true);
-        const resultado = await Promise.resolve(onSave(datosEnviar));
-        if (resultado === false) {
-          return;
+      await runGuardedSubmit(async () => {
+        try {
+          setIsSubmitting(true);
+          const resultado = await Promise.resolve(onSave(datosEnviar));
+          if (resultado === false) {
+            return;
+          }
+          onClose();
+        } catch (error) {
+          toast.error(
+            error?.response?.data?.message ||
+              error?.message ||
+              "No se pudo guardar el servicio"
+          );
+        } finally {
+          setIsSubmitting(false);
         }
-        onClose();
-      } catch (error) {
-        toast.error(
-          error?.response?.data?.message ||
-            error?.message ||
-            "No se pudo guardar el servicio"
-        );
-      } finally {
-        setIsSubmitting(false);
-      }
+      });
     }
   };
 
@@ -479,10 +484,7 @@ export const ModalVerServicio = ({ isOpen, onClose, servicio }) => {
 
   const formatearPrecio = (precio) => {
     if (precio === undefined || precio === null) return "No especificado";
-    return `$${parseFloat(precio).toLocaleString("es-CO", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
+    return formatCurrencyCOP(precio);
   };
 
   return (

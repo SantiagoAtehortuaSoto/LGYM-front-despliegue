@@ -14,7 +14,7 @@ import {
   ModalEliminarRol,
 } from "./modalRoles";
 
-import { columnasRoles } from "../../../../../shared/utils/data/ejemploRoles.jsx";
+import { columnasRoles } from "../../../../../shared/utils/data/columnasRoles.jsx";
 import { ConfirmModal } from "../../../../../shared/components/ConfirmModal/confirmModal";
 import { getApiErrorMessage } from "../../../../../shared/utils/apiErrorMessage";
 import {

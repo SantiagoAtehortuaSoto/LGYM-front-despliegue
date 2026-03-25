@@ -29,6 +29,7 @@ import toast from "react-hot-toast";
 import { getCurrentUser } from "../../../hooks/Acceder_API/authService";
 import Modal from "../../../../../shared/components/Modal/Modal";
 import { buildUrl } from "../../../hooks/apiConfig";
+import { formatCurrencyCOP } from "../../../../../shared/utils/currency";
 import "../../../../../shared/styles/restructured/pages/servicios-usuario-page.css";
 
 const URL_VENTAS_USUARIO = buildUrl("/ventas/usuario");
@@ -48,21 +49,21 @@ const ServiciosUsuario = () => {
       longDescription:
         "Incluye acceso a mquinas de cardio y pesas en horario regular.",
       duracion: "30 das",
-      precio: "COP $0",
+      precio: formatCurrencyCOP(0),
     },
     General: {
       descripcion: "Incluye clases grupales.",
       longDescription:
         "Acceso completo al gimnasio, clases grupales y soporte bsico.",
       duracion: "30 das",
-      precio: "COP $0",
+      precio: formatCurrencyCOP(0),
     },
     Premium: {
       descripcion: "Experiencia completa con extras.",
       longDescription:
         "Incluye todo lo de General ms entrenamientos personalizados y beneficios exclusivos.",
       duracion: "30 das",
-      precio: "COP $0",
+      precio: formatCurrencyCOP(0),
     },
   };
 
@@ -1781,7 +1782,7 @@ const ServiciosUsuario = () => {
                   <div>
                     <strong className="servicios-usuario__strong">Precio:</strong>{" "}
                     {Number.isFinite(membresiaEstado.precio)
-                      ? `$ ${Number(membresiaEstado.precio).toLocaleString()}`
+                      ? formatCurrencyCOP(membresiaEstado.precio)
                       : "No especificado"}
                   </div>
                   <div className="servicios-usuario__full-width">
@@ -2063,7 +2064,7 @@ const ServiciosUsuario = () => {
                       className="servicios-usuario__detail-input"
                       value={
                         Number.isFinite(membresiaEstado.precio)
-                          ? `$ ${Number(membresiaEstado.precio || 0).toLocaleString()}`
+                          ? formatCurrencyCOP(membresiaEstado.precio || 0)
                           : membershipData.precio
                       }
                       readOnly

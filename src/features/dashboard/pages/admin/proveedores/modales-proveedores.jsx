@@ -7,6 +7,7 @@ import "../../../../../shared/styles/restructured/components/modal-proveedores.c
 import Modal from "../../../../../shared/components/Modal/Modal";
 import { DeleteModal } from "../../../../../shared/components/deleteModal/deleteModal";
 import { validarProveedor } from "../../../hooks/validaciones/validaciones";
+import useSubmitGuard from "../../../../../shared/hooks/useSubmitGuard";
 
 const useLockBodyScroll = (isOpen) => {
   useEffect(() => {
@@ -146,6 +147,7 @@ export const ModalFormularioProveedor = ({
   proveedoresExistentes = [],
 }) => {
   useLockBodyScroll(isOpen);
+  const { runGuardedSubmit } = useSubmitGuard();
   const [formData, setFormData] = useState({
     nit: "",
     nombre: "",
@@ -334,7 +336,9 @@ export const ModalFormularioProveedor = ({
     const isValid = Object.keys(extras).length === 0;
     setErrores(extras);
 
-    if (isValid) {
+    if (!isValid) return;
+
+    await runGuardedSubmit(async () => {
       try {
         const resultado = await Promise.resolve(onSubmit(formData));
         if (resultado === false) {
@@ -357,7 +361,7 @@ export const ModalFormularioProveedor = ({
             "No se pudo guardar el proveedor"
         );
       }
-    }
+    });
   };
 
   const overlayVariants = {

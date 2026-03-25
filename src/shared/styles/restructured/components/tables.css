@@ -38,7 +38,9 @@
 .contenedor-tabla {
     width: 100%;
     max-width: 95%;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
     box-shadow: var(--shadow-md);
     border-radius: var(--radius-md);
     background: var(--bg-primary);
@@ -158,6 +160,10 @@
 }
 
 .celda-contenido {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     width: 100%;
     min-width: 0;
 }
@@ -166,9 +172,11 @@
     display: block;
     width: 100%;
     min-width: 0;
+    margin: 0 auto;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-align: center;
 }
 
 .celda-estado {
@@ -228,17 +236,28 @@
     vertical-align: middle;
 }
 
-.boton-accion {
+.celda-acciones-grupo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+    white-space: nowrap;
+}
+
+.boton-accion,
+.boton-acción {
     background: none;
     border: none;
     cursor: pointer;
     padding: 0.4rem;
-    margin: 0 0.2rem;
+    margin: 0;
     border-radius: 4px;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .boton-ver {
@@ -592,7 +611,8 @@
     .contenedor-tabla {
         margin: 0;
         border-radius: 0;
-        overflow: hidden;
+        overflow-x: visible;
+        overflow-y: visible;
         box-shadow: none;
     }
 
@@ -633,12 +653,13 @@
         padding: 0.5rem 0;
         border-bottom: 1px solid #f0f0f0;
         display: flex;
-        justify-content: flex-start;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
-        gap: 0.75rem;
+        gap: 0.35rem;
         white-space: normal;
         max-width: 100%;
-        text-align: right;
+        text-align: center !important;
     }
 
     .celda-tabla:last-child {
@@ -648,41 +669,63 @@
     /* Agregar etiquetas antes de cada dato usando data-label */
     .celda-tabla::before {
         content: attr(data-label);
+        display: block;
+        width: 100%;
         font-weight: 600;
         text-transform: uppercase;
         font-size: 0.75rem;
         color: #6c757d;
         letter-spacing: 0.5px;
         flex-shrink: 0;
-        text-align: left;
+        text-align: center;
     }
 
     .celda-tabla > .celda-texto-truncado,
     .celda-tabla > .celda-contenido {
         flex: 1 1 auto;
+        width: 100%;
         min-width: 0;
-        text-align: right;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .celda-texto-truncado {
+        white-space: normal;
+        text-overflow: initial;
+        overflow: visible;
+        overflow-wrap: anywhere;
+        word-break: break-word;
     }
 
     /* Celda de acciones en móvil */
     .celda-acciones {
-        justify-content: flex-end;
         padding: 0.75rem 0 0 0;
         border-top: 2px solid #e9ecef;
         margin-top: 0.5rem;
         width: 100%;
         min-width: auto;
+        text-align: center;
     }
 
     .celda-acciones::before {
         content: "Acciones";
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 0.25rem;
     }
 
-    .boton-accion {
-        width: 36px;
-        height: 36px;
+    .celda-acciones-grupo {
+        width: 100%;
+        gap: 0.5rem;
+    }
+
+    .boton-accion,
+    .boton-acción {
+        width: 40px;
+        height: 40px;
         padding: 0;
-        margin: 0 0.25rem;
+        margin: 0;
     }
 
     .datatable-toolbar {
@@ -762,7 +805,8 @@
         font-size: 0.85rem;
     }
 
-    .boton-accion {
+    .boton-accion,
+    .boton-acción {
         width: 32px;
         height: 32px;
     }
