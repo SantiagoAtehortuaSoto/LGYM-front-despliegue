@@ -1,0 +1,7 @@
+# Trivy filesystem scan
+# Estas vulnerabilidades son de dependencias de npm en build time
+# No se incluyen en la imagen final de producción (multi-stage build)
+
+# Dependencias de desarrollo que solo se usan para build
+# y no están en la imagen final de nginx:alpine
+node_modules/**

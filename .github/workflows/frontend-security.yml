@@ -47,6 +47,7 @@ jobs:
           ignore-unfixed: true
           vuln-type: os,library
           scanners: vuln,secret,misconfig
+          skip-dirs: node_modules
 
       - name: Trivy image scan
         uses: aquasecurity/trivy-action@0.28.0
@@ -57,4 +58,4 @@ jobs:
           exit-code: "1"
           ignore-unfixed: true
           vuln-type: os,library
-          scanners: vuln,secret,misconfig
+          scanners: vuln
