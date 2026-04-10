@@ -17,13 +17,6 @@ dist-ssr
 # Environment variables
 .env
 
-# Docker / local deployment
-Dockerfile
-docker-compose.yml
-docker-compose.*.yml
-docker/
-nginx/
-
 # Local config
 *.local
 

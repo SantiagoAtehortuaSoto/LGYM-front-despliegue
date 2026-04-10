@@ -1,25 +1,20 @@
 services:
-  frontend:
+  lgym-frontend:
     build:
       context: .
       dockerfile: Dockerfile
-    image: lgym-frontend:latest
+    container_name: lgym-frontend
     ports:
       - "${FRONTEND_PORT:-8080}:8080"
+    env_file:
+      - .env
     environment:
-      VITE_API_BASE_URL: "${VITE_API_BASE_URL:-http://localhost:3000}"
-      VITE_API_URL: "${VITE_API_URL:-}"
-      VITE_API_URL_OVERRIDE: "${VITE_API_URL_OVERRIDE:-false}"
-      VITE_API_PATH_PREFIX: "${VITE_API_PATH_PREFIX:-}"
-      VITE_DEV_USE_PROXY: "${VITE_DEV_USE_PROXY:-false}"
-      VITE_API_PRODUCTOS_URL: "${VITE_API_PRODUCTOS_URL:-}"
-      VITE_DIAS_PLAZO_RECLAMO: "${VITE_DIAS_PLAZO_RECLAMO:-3}"
-    read_only: true
-    tmpfs:
-      - /tmp
-    cap_drop:
-      - ALL
-    security_opt:
-      - no-new-privileges:true
-    init: true
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:3000}
+      - API_PROXY_TARGET=${API_PROXY_TARGET:-}
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s

@@ -1,31 +1,57 @@
-FROM node:22-bookworm-slim AS build
+# ============================================
+# Stage 1: Build
+# ============================================
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-ENV CI=true \
-  NODE_ENV=development
-
+# Copiar solo package files primero para mejor cache de Docker
 COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund
 
+# Instalar dependencias
+RUN npm ci --ignore-scripts
+
+# Copiar el resto del código fuente
 COPY . .
+
+# Build de producción
 RUN npm run build
 
-FROM nginxinc/nginx-unprivileged:stable-bookworm AS runtime
+# ============================================
+# Stage 2: Production
+# ============================================
+FROM nginx:1.27-alpine AS production
 
-ENV PORT=8080
-LABEL org.opencontainers.image.source="https://github.com/SantiagoAtehortuaSoto/LGYM-front-despliegue"
+# Metadata
+LABEL maintainer="lgym-team"
+LABEL description="LGYM Frontend - Production"
 
-USER root
+# Instalar solo lo esencial y limpiar cache en una sola capa
+RUN apk update && \
+    apk upgrade --available && \
+    rm -rf /var/cache/apk/*
 
+# Copiar configuración de nginx personalizada
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
-COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
-COPY docker/40-env-config.sh /docker-entrypoint.d/40-env-config.sh
-RUN sed -i 's/\r$//' /docker-entrypoint.d/40-env-config.sh \
-  && chmod 0555 /docker-entrypoint.d/40-env-config.sh
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY nginx/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
-COPY --from=build --chown=101:101 /app/dist /usr/share/nginx/html
+# Copiar el build estático
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-USER 101:101
+# Crear archivo env-config.js para inyección de variables en runtime
+RUN echo "window.__ENV__ = {};" > /usr/share/nginx/html/env-config.js
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/healthz || exit 1
+
+# Exponer puerto
 EXPOSE 8080
+
+# Entry point para configuración en runtime
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Iniciar nginx
+CMD ["nginx", "-g", "daemon off;"]
